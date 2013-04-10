@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/splashscreen_background"
+    android:orientation="vertical"
+    android:gravity="top">
+
+
+<RelativeLayout android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/login_screen_top1"
+    android:id="@+id/headerlayout"
+    >
+    <TextView android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:textColor="@color/login_top_header"
+    android:text="@string/title"
+    android:layout_centerInParent="true"
+    android:textSize="24sp"
+    android:textStyle="bold"
+    android:id="@+id/yourcard_header"/>
+    <LinearLayout 
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:background="@drawable/recover_top"
+    android:orientation="horizontal"
+    android:gravity="center"
+    android:layout_centerVertical="true"
+    android:layout_alignParentLeft="true"
+    android:layout_marginLeft="2dip"
+    android:id="@+id/top_button">
+     <TextView android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:textColor="@color/login_text"
+    android:text="@string/yourcard_client"
+    android:textSize="12sp"
+    android:textStyle="bold"/>
+    </LinearLayout>
+</RelativeLayout>
+
+<LinearLayout android:layout_width="match_parent"
+    android:layout_height="0dp"
+    android:gravity="center"
+    android:layout_weight="1"
+    android:orientation="vertical"
+    >
+
+</LinearLayout>
+
+<LinearLayout android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:gravity="left"
+    android:baselineAligned="false">
+<LinearLayout android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_weight="1"
+    android:background="@drawable/login_screen_bottom1"
+    android:gravity="center"
+    android:id="@+id/tab_add_project_layout">
+<TextView android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:textColor="@color/selected_tab"
+    android:text="@string/add_project"
+    android:textSize="14sp"
+    android:textStyle="bold"
+    android:id="@+id/bottom_tab_add_project"/>
+</LinearLayout>
+
+</LinearLayout>
+</LinearLayout>
+

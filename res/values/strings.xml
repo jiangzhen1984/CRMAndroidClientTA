@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string
+        name="hello">Hello World, AuguraClient!</string>
+    <string
+        name="app_name">AuguraClient</string>
+    <string
+        name="login_error_1">Please enter valid username.</string>
+    <string
+        name="login_error_3">Username must be valid email address.</string>
+    <string
+        name="login_error_2">Please enter valid password.</string>
+    <string
+        name="login_error_4">Password must contain atleast 8 characters.</string>
+    <string
+        name="login_error_header">UNABLE TO LOGIN</string>
+          <string
+        name="login_waiting_login">Please waiting for logging in</string>
+    <string
+        name="first_screen_text">Login your account with the same data you use in your
+        website access.</string>
+    <string
+        name="login_initial_text">Login</string>
+    <string
+        name="login_screen_ok">OK</string>
+    <string
+        name="title">Sugura Client</string>
+    <string
+        name="password_initial_text">Password</string>
+        <string
+        name="add_project">Add Project</string>
+        <string name="yourcard_client">CLIENT</string>
+</resources>
