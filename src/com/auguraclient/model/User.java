@@ -1,6 +1,8 @@
 package com.auguraclient.model;
 
-public class User {
+import org.json.JSONObject;
+
+public class User implements ProjectJSONParser {
 
     private String mSessionID;
 
@@ -40,6 +42,10 @@ public class User {
 
     public void setUserLanguage(String userLanguage) {
         this.userLanguage = userLanguage;
+    }
+
+    public void parser(JSONObject jsonObject) throws JSONParserException {
+
     }
 
 

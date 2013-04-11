@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/splashscreen_background"
+    android:orientation="vertical"
+    android:gravity="top">
+<RelativeLayout android:layout_width="match_parent"
+    android:layout_height="0dp"
+    android:gravity="top"
+    android:layout_weight="1"
+    android:paddingTop="10dip"
+    android:paddingBottom="10dip"
+    android:orientation="vertical">
+
+<EditText android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+     android:layout_marginLeft="40dip"
+     android:layout_marginRight="40dip"
+     android:layout_marginTop="5dip"
+     android:textSize="12sp"
+     android:textColor="@color/login_text_color"
+     android:inputType="textEmailAddress"
+     android:gravity="center"
+     android:background="@drawable/login_screen_button"
+     android:layout_centerHorizontal="true"
+	 android:id="@+id/project_numc"/>
+<LinearLayout android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+     android:layout_marginLeft="40dip"
+     android:layout_marginRight="40dip"
+     android:layout_marginTop="5dip"
+     android:gravity="center"
+      android:background="@drawable/login_screen_ok"
+     android:layout_below="@+id/project_numc"
+     android:id="@+id/ok_button_lin"
+     android:orientation="horizontal">
+<TextView android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:textColor="@color/selected_tab"
+    android:text="@string/query"
+    android:textSize="12sp"
+    android:textStyle="bold"
+   
+    android:id="@+id/ok_button"
+    />    
+
+  
+</LinearLayout>
+
+
+
+
+
+
+</RelativeLayout>
+</LinearLayout>
+

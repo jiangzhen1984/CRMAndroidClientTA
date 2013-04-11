@@ -1,18 +1,16 @@
 package com.auguraclient.model;
 
 import com.auguraclient.http.HttpWrapper;
+import com.auguraclient.util.GlobalHolder;
 import com.auguraclient.util.Util;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import android.net.Uri;
-
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 public class SuguraRestAPIImpl implements ISuguraRestAPI {
 
@@ -56,10 +54,10 @@ public class SuguraRestAPIImpl implements ISuguraRestAPI {
         String response;
 
             try {
-                response = http.sendHttpGetRequest(url+"?"+"method=login&input_type=JSON&response_type=JSON&rest_data="+URLEncoder.encode(restData.toString(), "UTF-8"));
-                System.out.println("========4444========="+ response);
+                response = http.sendHttpGetRequest(url+URLEncoder.encode(restData.toString(), "UTF-8"));
                 if(response != null) {
                     JSONObject resp = new JSONObject(response);
+                    return Util.parserUserJson(resp);
                 }
             } catch (UnsupportedEncodingException e) {
                 throw new APIException(" can't find UTF-8 encder instance");
@@ -72,7 +70,50 @@ public class SuguraRestAPIImpl implements ISuguraRestAPI {
     }
 
 
-    public List<Project> queryProjectList(String name) throws APIException {
+    public ProjectList queryProjectList(String name) throws APIException {
+        String sessionId = GlobalHolder.getSessionId();
+        if(sessionId == null || sessionId.isEmpty()) {
+            return null;
+        }
+
+        //{"session":"XXXXXXXX","module_name":"Project","query":"num_c='0556'","order_by":"","offset":"0","select_fields":["id","name","num_c"],"deleted":"0"}
+
+        JSONObject restData = new JSONObject();
+        JSONArray selectFields =  new JSONArray();
+        try {
+            restData.put("session", sessionId);
+            restData.put("module_name", "Project");
+            restData.put("query", "num_c='"+name+"'");
+            restData.put("order_by", "");
+            restData.put("offset", "0");
+            selectFields.put("id");
+            selectFields.put("name");
+            selectFields.put("num_c");
+            restData.put("select_fields", selectFields);
+            restData.put("deleted", "0");
+            System.out.println(restData.toString());
+
+        } catch (JSONException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+
+
+        String url = Util.getQueryProjectUrl();
+        String response;
+
+            try {
+                response = http.sendHttpGetRequest(url+URLEncoder.encode(restData.toString()));
+                if(response != null) {
+                    JSONObject resp = new JSONObject(response);
+                    return Util.parserProjectListJson(resp);
+                }
+            } catch (JSONException e) {
+                throw new APIException(" can't parse API response");
+            }
+
+
+
         return null;
     }
 

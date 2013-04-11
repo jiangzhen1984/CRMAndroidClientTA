@@ -24,41 +24,54 @@ public final class R {
     }
     public static final class drawable {
         public static final int alert_icon=0x7f020000;
-        public static final int app_icon=0x7f020001;
-        public static final int icon=0x7f020002;
-        public static final int login_screen_bottom1=0x7f020003;
-        public static final int login_screen_bottom2=0x7f020004;
-        public static final int login_screen_button=0x7f020005;
-        public static final int login_screen_ok=0x7f020006;
-        public static final int login_screen_question=0x7f020007;
-        public static final int login_screen_top1=0x7f020008;
-        public static final int recover_top=0x7f020009;
+        public static final int icon=0x7f020001;
+        public static final int login_screen_bottom1=0x7f020002;
+        public static final int login_screen_bottom2=0x7f020003;
+        public static final int login_screen_button=0x7f020004;
+        public static final int login_screen_ok=0x7f020005;
+        public static final int login_screen_question=0x7f020006;
+        public static final int login_screen_top1=0x7f020007;
+        public static final int logo72x72=0x7f020008;
+        public static final int logo_24_24=0x7f020009;
+        public static final int logo_36_36=0x7f02000a;
+        public static final int project_ok=0x7f02000b;
+        public static final int project_sync=0x7f02000c;
+        public static final int recover_top=0x7f02000d;
     }
     public static final class id {
-        public static final int bottom_tab_add_project=0x7f08000b;
-        public static final int first_screen_text=0x7f080001;
-        public static final int forgot_password=0x7f080006;
-        public static final int headerlayout=0x7f080007;
-        public static final int login_text=0x7f080002;
-        public static final int ok_button=0x7f080004;
-        public static final int ok_button_text=0x7f080005;
-        public static final int password_text=0x7f080003;
-        public static final int tab_add_project_layout=0x7f08000a;
-        public static final int top_button=0x7f080009;
-        public static final int your_card_header=0x7f080000;
-        public static final int yourcard_header=0x7f080008;
+        public static final int bottom_tab_add_project=0x7f080011;
+        public static final int first_screen_text=0x7f080004;
+        public static final int forgot_password=0x7f080008;
+        public static final int headerlayout=0x7f08000c;
+        public static final int images_id=0x7f08000b;
+        public static final int login_text=0x7f080005;
+        public static final int ok_button=0x7f080002;
+        public static final int ok_button_lin=0x7f080001;
+        public static final int ok_button_text=0x7f080007;
+        public static final int password_text=0x7f080006;
+        public static final int projectList=0x7f08000f;
+        public static final int projectListItemName=0x7f08000a;
+        public static final int projectListItemheaderlayout=0x7f080009;
+        public static final int project_numc=0x7f080000;
+        public static final int tab_add_project_layout=0x7f080010;
+        public static final int top_button=0x7f08000e;
+        public static final int your_card_header=0x7f080003;
+        public static final int yourcard_header=0x7f08000d;
     }
     public static final class layout {
-        public static final int loginscreen=0x7f030000;
-        public static final int main=0x7f030001;
-        public static final int projectlist=0x7f030002;
+        public static final int add_project_dialog=0x7f030000;
+        public static final int loginscreen=0x7f030001;
+        public static final int main=0x7f030002;
+        public static final int project_list_item=0x7f030003;
+        public static final int projectlist=0x7f030004;
     }
     public static final class raw {
         public static final int button=0x7f050000;
     }
     public static final class string {
-        public static final int add_project=0x7f07000d;
+        public static final int add_project=0x7f07000b;
         public static final int app_name=0x7f070001;
+        public static final int cancel=0x7f07000e;
         public static final int first_screen_text=0x7f070008;
         public static final int hello=0x7f070000;
         public static final int login_error_1=0x7f070002;
@@ -66,11 +79,11 @@ public final class R {
         public static final int login_error_3=0x7f070003;
         public static final int login_error_4=0x7f070005;
         public static final int login_error_header=0x7f070006;
-        public static final int login_initial_text=0x7f070009;
-        public static final int login_screen_ok=0x7f07000a;
+        public static final int login_screen_ok=0x7f070009;
         public static final int login_waiting_login=0x7f070007;
-        public static final int password_initial_text=0x7f07000c;
-        public static final int title=0x7f07000b;
-        public static final int yourcard_client=0x7f07000e;
+        public static final int not_null_query=0x7f07000f;
+        public static final int query=0x7f07000d;
+        public static final int title=0x7f07000a;
+        public static final int yourcard_client=0x7f07000c;
     }
 }

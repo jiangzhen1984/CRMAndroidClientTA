@@ -1,6 +1,14 @@
 
 package com.auguraclient.util;
 
+import com.auguraclient.model.Project;
+import com.auguraclient.model.ProjectList;
+import com.auguraclient.model.User;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import android.util.Log;
 
 import java.security.MessageDigest;
@@ -42,5 +50,89 @@ public class Util {
     public static String getLoginUrl() {
         return Constants.API_TABLE[Constants.LOGIN_URL_INDEX];
     }
+
+
+    public static String getQueryProjectUrl() {
+        return Constants.API_TABLE[Constants.QUERY_PROJECT_URL_INDEX];
+    }
+
+
+    public static User parserUserJson(JSONObject object) {
+        if (object == null) {
+            return null;
+        }
+        User user = new User ();
+        Object obj;
+        try {
+            obj = object.get("id");
+            if(obj == null) {
+                return null;
+            }
+            user.setmSessionID(obj.toString());
+        } catch (JSONException e) {
+            e.printStackTrace();
+            return null;
+        }
+
+        return user;
+    }
+
+
+
+    public static ProjectList parserProjectListJson(JSONObject object) {
+        if (object == null) {
+            return null;
+        }
+        ProjectList pl = new ProjectList();
+
+        Object obj;
+        try {
+            obj = object.get("result_count");
+            if(obj == null) {
+                return null;
+            }
+            //FIXME check number format
+            pl.setResultCount(Integer.parseInt(obj.toString()));
+
+
+            obj = object.get("total_count");
+            if(obj == null) {
+                return null;
+            }
+            //FIXME check number format
+            pl.setTotalCount(Integer.parseInt(obj.toString()));
+
+            obj = object.get("next_offset");
+            if(obj == null) {
+                return null;
+            }
+            //FIXME check number format
+            pl.setNextOffet(Integer.parseInt(obj.toString()));
+
+
+            JSONArray entryList  = object.getJSONArray("entry_list");
+            for( int i =0 ;i <entryList.length(); i++) {
+                Project p = new Project();
+                JSONObject it = (JSONObject)entryList.get(i);
+                p.setId(it.get("id").toString());
+
+               String text = ((JSONObject) ((JSONObject)it.get("name_value_list")).get("name")).get("value").toString();
+                p.setText(text);
+
+                String name = ((JSONObject) ((JSONObject)it.get("name_value_list")).get("num_c")).get("value").toString();
+                p.setName(name);
+                pl.addProject(p);
+
+            }
+
+            return pl;
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+            return null;
+        }
+
+    }
+
 
 }

@@ -7,11 +7,13 @@ import com.auguraclient.model.ISuguraRestAPI;
 import com.auguraclient.model.SuguraRestAPIImpl;
 import com.auguraclient.model.User;
 import com.auguraclient.util.Constants;
+import com.auguraclient.util.GlobalHolder;
 import com.auguraclient.util.SoundEngine;
 
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Resources;
@@ -43,6 +45,8 @@ public class LoginScreen extends Activity {
 
     private static final int PROGRESS_START_TO_LOG_IN_SUCCESSFUL = 3;
 
+    private static final int PROGRESS_START_TO_LOG_IN_ERROR_WITH_USER_INVALID = 4;
+
     private TextView login_header = null;
 
     private TextView tab_your_card = null;
@@ -66,6 +70,9 @@ public class LoginScreen extends Activity {
     private ProgressHandler progressHandler;
 
     private ISuguraRestAPI api;
+
+
+    private Context context;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -99,6 +106,8 @@ public class LoginScreen extends Activity {
         progressHandler = new ProgressHandler();
 
         api = new SuguraRestAPIImpl();
+
+        context = this;
     }
 
     OnTouchListener login_touch = new OnTouchListener() {
@@ -122,13 +131,17 @@ public class LoginScreen extends Activity {
         public void onClick(View v) {
             SoundEngine.sharedEngine().playEffect(getApplicationContext(), R.raw.button);
 
+             if(edit_login.getText() ==null || edit_password.getText() == null) {
+                 showErrorDialog(R.string.app_name, Resources.getSystem().getString(R.string.login_error_1));
+                 return;
+             }
             String username = edit_login.getText().toString();
 
             String password = edit_password.getText().toString();
 
             if (username == null || username.trim().equals("Login")
                     || username.trim().length() == 0) {
-                showErrorDialog(R.string.app_name, Resources.getSystem().getString(R.string.login_error_1));
+                showErrorDialog(R.string.app_name, context.getString(R.string.login_error_1));
                 return;
             }
 
@@ -179,7 +192,7 @@ public class LoginScreen extends Activity {
                 case PROGRESS_START_TO_LOG_IN:
 
                     AlertDialog.Builder builder = new AlertDialog.Builder(LoginScreen.this);
-                    builder.setIcon(R.drawable.alert_icon);
+                    builder.setIcon(R.drawable.logo_24_24);
                     builder.setMessage(R.string.login_waiting_login);
                     builder.setTitle(R.string.app_name);
                     loggingInDialog = builder.create();
@@ -194,6 +207,7 @@ public class LoginScreen extends Activity {
                     loggingInDialog.show();
 
                     break;
+                case PROGRESS_START_TO_LOG_IN_ERROR_WITH_USER_INVALID:
                 case PROGRESS_START_TO_LOG_IN_ERROR:
                     if(loggingInDialog!= null) {
                         loggingInDialog.cancel();
@@ -235,8 +249,14 @@ public class LoginScreen extends Activity {
                     String password = ((String[])msg.obj)[1];
                     try {
                         User user = api.login(username, password);
-                        Message.obtain(progressHandler, PROGRESS_START_TO_LOG_IN_SUCCESSFUL)
-                        .sendToTarget();
+                        if(user == null ) {
+                            Message.obtain(progressHandler, PROGRESS_START_TO_LOG_IN_ERROR_WITH_USER_INVALID, " Log in failed")
+                            .sendToTarget();
+                        } else {
+                            GlobalHolder.setCurrentUser(user);
+                            Message.obtain(progressHandler, PROGRESS_START_TO_LOG_IN_SUCCESSFUL)
+                            .sendToTarget();
+                        }
                     } catch (APIException e) {
                         // send login progress
                         Message.obtain(progressHandler, PROGRESS_START_TO_LOG_IN_ERROR, e.getMessage())
@@ -245,6 +265,10 @@ public class LoginScreen extends Activity {
                     break;
             }
         }
+
+
+
+
 
     }
 
