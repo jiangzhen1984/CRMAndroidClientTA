@@ -1,5 +1,7 @@
 package com.auguraclient.model;
 
+import java.util.List;
+
 
 public interface ISuguraRestAPI {
 
@@ -7,5 +9,11 @@ public interface ISuguraRestAPI {
 
 
     public ProjectList queryProjectList(String name) throws APIException;
+
+
+    public List<ProjectItem> queryProjectItemList(String projectID) throws APIException;
+
+
+    public List<ProjectItem> queryProjectItemOrderList(String orderId) throws APIException;
 
 }

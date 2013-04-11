@@ -1,11 +1,16 @@
 package com.auguraclient.model;
 
+import com.auguraclient.util.Constants;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.text.DateFormat;
 import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 public class ProjectItem implements ProjectJSONParser {
 
@@ -28,29 +33,44 @@ public class ProjectItem implements ProjectJSONParser {
 
     private Project project;
 
-    public ProjectItem() {
+    private String photoName;
 
+    private String photoPath;
+
+    private List<ProjectItemOrder> orderList;
+
+    public ProjectItem() {
+        orderList =new ArrayList<ProjectItemOrder>();
     }
 
     public ProjectItem(JSONObject jsonObject) {
         this.jsonObject = jsonObject;
+        orderList =new ArrayList<ProjectItemOrder>();
     }
 
 
     public void parser(JSONObject jsonObject) throws JSONParserException {
         try {
             this.id = jsonObject.getString("id");
-            this.name =( (JSONObject)jsonObject.get("name")).getString("value");
-            this.quantity =( (JSONObject)jsonObject.get("quantity")).getString("value");
 
-            this.qcStatus =( (JSONObject)jsonObject.get("qc_status")).getString("value");
+            JSONObject NameValue = (JSONObject) jsonObject.getJSONObject("name_value_list");
+            this.name =((JSONObject) NameValue.get("name")).getString("value");
+            this.quantity =( (JSONObject)NameValue.get("quantity")).getString("value");
 
-            this.quantityChecked =( (JSONObject)jsonObject.get("quantity_checked")).getString("value");
+            this.qcStatus =( (JSONObject)NameValue.get("qc_status")).getString("value");
 
-            String lastDate =( (JSONObject)jsonObject.get("date_modified")).getString("value");
-            DateFormat da = DateFormat.getInstance();
-            this.dateDodified  = da.parse(lastDate);
 
+
+            this.quantityChecked =( (JSONObject)NameValue.get("quantity_checked")).getString("value");
+
+            String lastDate =( (JSONObject)NameValue.get("date_modified")).getString("value");
+            if (lastDate !=null && !lastDate.isEmpty()) {
+                DateFormat da = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                this.dateDodified  = da.parse(lastDate);
+            }
+
+            this.photoName = ( (JSONObject)NameValue.get("photo_c")).getString("value");
+            this.photoPath = Constants.PHTOT_COMPRESSED_API_URL +photoName+"&h=70&w=70";
 
         } catch (JSONException e) {
             throw new JSONParserException(e);
@@ -123,8 +143,44 @@ public class ProjectItem implements ProjectJSONParser {
         this.project = project;
     }
 
+    public String getPhotoName() {
+        return photoName;
+    }
+
+    public void setPhotoName(String photoName) {
+        this.photoName = photoName;
+    }
+
+    public String getPhotoPath() {
+        return photoPath;
+    }
+
+    public void setPhotoPath(String photoPath) {
+        this.photoPath = photoPath;
+    }
 
 
+    public void addItemOrder(ProjectItemOrder po) {
+        this.orderList.add(po);
+    }
+
+    public void addItemOrder(List<ProjectItemOrder> poList) {
+        if (poList == null ) {
+            return;
+        }
+        for(int i=0;i<poList.size(); i++) {
+            ProjectItemOrder pi = poList.get(i);
+            this.orderList.add(pi);
+            pi.setProjectItem(this);
+        }
+    }
+
+    public ProjectItemOrder getItemOrderByIndex(int pos) {
+        if(pos <0 || pos >= orderList.size()) {
+            return null;
+        }
+        return orderList.get(pos);
+    }
 
 
 }

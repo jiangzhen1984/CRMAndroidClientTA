@@ -1,7 +1,9 @@
 
 package com.auguraclient.util;
 
+import com.auguraclient.model.JSONParserException;
 import com.auguraclient.model.Project;
+import com.auguraclient.model.ProjectItem;
 import com.auguraclient.model.ProjectList;
 import com.auguraclient.model.User;
 
@@ -13,6 +15,8 @@ import android.util.Log;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Util {
 
@@ -54,6 +58,15 @@ public class Util {
 
     public static String getQueryProjectUrl() {
         return Constants.API_TABLE[Constants.QUERY_PROJECT_URL_INDEX];
+    }
+
+    public static String getQueryProjectItemUrl() {
+        return Constants.API_TABLE[Constants.QUERY_PROJECT_ITEM_URL_INDEX];
+    }
+
+
+    public static String getQueryProjectItemOrderUrl() {
+        return Constants.API_TABLE[Constants.QUERY_PROJECT_ORDER_URL_INDEX];
     }
 
 
@@ -125,13 +138,34 @@ public class Util {
 
             }
 
-            return pl;
+
 
         } catch (JSONException e) {
             e.printStackTrace();
-            return null;
         }
 
+        return pl;
+    }
+
+
+    public static List<ProjectItem> parserProjectItemListJson(JSONObject object) {
+        try {
+            List<ProjectItem> l = new ArrayList<ProjectItem>();
+            JSONArray itemAr = object.getJSONArray("entry_list");
+            for( int i =0 ;i <itemAr.length(); i++) {
+                ProjectItem pi = new ProjectItem();
+                JSONObject it = (JSONObject)itemAr.get(i);
+                pi.parser(it);
+                l.add(pi);
+            }
+            return l;
+        } catch (JSONException e) {
+            e.printStackTrace();
+            return null;
+        } catch (JSONParserException e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 
 

@@ -55,6 +55,28 @@ public class Project implements ProjectJSONParser {
         pi.setProject(this);
     }
 
+    public void addProject( List<ProjectItem> list) {
+        if (list == null ) {
+            return;
+        }
+        for(int i=0;i<list.size(); i++) {
+            ProjectItem pi = list.get(i);
+            this.projectItemList.add(pi);
+            pi.setProject(this);
+        }
+    }
+
+    public ProjectItem getItem(int index) {
+        if (index <0 || index > projectItemList.size() ) {
+            return null;
+        }
+        return projectItemList.get(index);
+    }
+
+
+    public int getItemCount() {
+        return projectItemList.size();
+    }
 
 
 }

@@ -14,6 +14,7 @@ import android.app.Activity;
 import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.HandlerThread;
@@ -25,6 +26,8 @@ import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.BaseAdapter;
 import android.widget.EditText;
 import android.widget.LinearLayout;
@@ -80,6 +83,17 @@ public class ProjectListScreen extends Activity {
 
         projectAdapter = new  ListAdapter(context);
         projectList.setAdapter(projectAdapter);
+
+        projectList.setOnItemClickListener( new OnItemClickListener() {
+
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Intent i = new Intent();
+                i.setClass(context, ProjectItemView.class);
+                i.putExtra("project", position);
+                context.startActivity(i);
+            }
+
+        });
 
     }
 
@@ -229,6 +243,7 @@ public class ProjectListScreen extends Activity {
          private Context mContext;
 
          private TextView tv;
+
 
          public ItemView(Context context) {
              super(context);

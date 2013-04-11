@@ -38,7 +38,7 @@ import java.io.InputStream;
 import java.net.URL;
 import java.util.List;
 
-public class ProjectItemView extends Activity {
+public class OrderView extends Activity {
 
     private static final int START_WAITING = 1;
 
@@ -48,7 +48,7 @@ public class ProjectItemView extends Activity {
 
     private Context mContext;
 
-    private ListView projectItemList;
+    private ListView projectOrderList;
 
     private Project project;
 
@@ -62,18 +62,25 @@ public class ProjectItemView extends Activity {
 
     private UIHandler uiHandler;
 
+
+    private ProjectItem projectItem;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setfullScreen();
-        this.setContentView(R.layout.project_item_list);
-        projectItemList = (ListView)this.findViewById(R.id.projectItemList);
+        this.setContentView(R.layout.project_order_list);
+        projectOrderList = (ListView)this.findViewById(R.id.projectItemList);
         Integer position = (Integer)this.getIntent().getExtras().get("project");
+        Integer itemPosition = (Integer)this.getIntent().getExtras().get("itemPosition");
+
         project = GlobalHolder.getProject(position);
+
+        projectItem = project.getItem(itemPosition);
 
         mContext = this;
         adapter = new ListAdapter(this);
-        projectItemList.setAdapter(adapter);
+        projectOrderList.setAdapter(adapter);
 
         api = new SuguraRestAPIImpl();
 
@@ -83,13 +90,13 @@ public class ProjectItemView extends Activity {
         uiHandler = new UIHandler();
         Message.obtain(handler, LOAD_PROJECT_ITEM).sendToTarget();
 
-        projectItemList.setOnItemClickListener( new OnItemClickListener() {
+        projectOrderList.setOnItemClickListener( new OnItemClickListener() {
 
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Intent i = new Intent();
-                i.setClass(mContext, ProjectItemView.class);
-                i.putExtra("project", position);
-                mContext.startActivity(i);
+//                Intent i = new Intent();
+//                i.setClass(mContext, ProjectItemView.class);
+//                i.putExtra("project", position);
+//                mContext.startActivity(i);
             }
 
         });
