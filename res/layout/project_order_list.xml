@@ -21,11 +21,10 @@
             android:layout_centerInParent="true"
             android:textSize="24sp"
             android:textStyle="bold"
-            android:id="@+id/yourcard_header" />
+            android:id="@+id/orderItemTitle" />
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="@drawable/recover_top"
             android:orientation="horizontal"
             android:gravity="center"
             android:layout_centerVertical="true"
@@ -36,101 +35,88 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textColor="@color/login_text"
-                android:text="@string/yourcard_client"
+                android:text=" Return"         
                 android:textSize="12sp"
-                android:textStyle="bold" />
+                android:textStyle="bold"
+                android:id="@+id/orderItemReturn" />
         </LinearLayout>
     </RelativeLayout>
 
 
 
+    <RelativeLayout
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent">
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="top"
-        android:layout_weight="1"
-        android:orientation="vertical">
 
-        <LinearLayout
-            android:layout_width="match_parent"
+        <ImageView
+            android:id="@+id/projectItemPhoto"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:gravity="top"
-            android:orientation="horizontal">
-
-            <ImageView
-                android:id="@+id/projectItemPhoto"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerVertical="true"
-                android:layout_alignParentLeft="true"
-                android:layout_centerInParent="true" />
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="top"
-                android:layout_weight="1"
-                android:orientation="vertical">
-                <TextView
-                    android:layout_width="fill_parent"
-                    android:layout_height="fill_parent"
-                    android:textSize="8sp"
-                    android:textStyle="bold"
-                    android:id="@+id/itemOrderName" />
-
-                <TextView
-                    android:layout_width="fill_parent"
-                    android:layout_height="wrap_content"
-                    android:textSize="8sp"
-                    android:textStyle="bold"
-                    android:id="@+id/itemOrderQuntity" />
-            </LinearLayout>
+            android:layout_marginLeft="5dip"
+            android:layout_marginRight="5dip"
+            android:layout_marginTop="5dip"
+            android:layout_alignParentLeft="true" />
 
 
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="top"
-            android:orientation="vertical">
-            
-             <TextView
-                    android:layout_width="fill_parent"
-                    android:layout_height="fill_parent"
-                    android:textSize="8sp"
-                    android:textStyle="bold"
-                    android:id="@+id/itemOrderQT" />
-
-                <TextView
-                    android:layout_width="fill_parent"
-                    android:layout_height="wrap_content"
-                    android:textSize="8sp"
-                    android:textStyle="bold"
-                    android:id="@+id/itemOrderComment" />
-
-        </LinearLayout>
-
-
-    </LinearLayout>
-
-
-
-
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:gravity="top"
-        android:layout_weight="1"
-        android:orientation="vertical">
-
-        <ListView
-            android:id="@+id/projectOrderList"
+        <TextView
             android:layout_width="fill_parent"
-            android:layout_height="wrap_content" />
-    </LinearLayout>
+            android:layout_height="wrap_content"
+            android:textSize="15sp"
+            android:textStyle="bold"
+            android:layout_toRightOf="@id/projectItemPhoto"
+            android:id="@+id/itemOrderQuntity" />
+
+
+        <TextView
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:textSize="10sp"
+            android:textStyle="bold"
+            android:layout_toRightOf="@id/projectItemPhoto"
+            android:layout_below="@id/itemOrderQuntity"
+            android:id="@+id/itemOrderDescription" />
+
+
+   
+
+
+
+        <TextView
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:textSize="15sp"
+            android:textStyle="bold"
+            android:layout_below="@id/projectItemPhoto"
+            android:id="@+id/itemOrderQT" />
+            
+            
+            
+            
+        <TextView
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:textSize="10sp"
+            android:textStyle="bold"
+            android:layout_below="@id/itemOrderQT"
+            android:id="@+id/itemOrderComment" />
+            
+            
+            
+            
+             <ListView
+        android:id="@+id/projectOrderList"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/itemOrderComment"
+        android:cacheColorHint="#00000000" />
+
+
+
+    </RelativeLayout>
+
+
+
 
 </LinearLayout>
 

@@ -37,6 +37,27 @@ public class ProjectItem implements ProjectJSONParser {
 
     private String photoPath;
 
+    private String photoBigPath;
+
+    private String description;
+
+    public String getPhotoBigPath() {
+        return photoBigPath;
+    }
+
+    public void setPhotoBigPath(String photoBigPath) {
+        this.photoBigPath = photoBigPath;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+
     private List<ProjectItemOrder> orderList;
 
     public ProjectItem() {
@@ -71,6 +92,8 @@ public class ProjectItem implements ProjectJSONParser {
 
             this.photoName = ( (JSONObject)NameValue.get("photo_c")).getString("value");
             this.photoPath = Constants.PHTOT_COMPRESSED_API_URL +photoName+"&h=70&w=70";
+            this.photoBigPath = Constants.PHTOT_COMPRESSED_API_URL +photoName+"&h=150&w=150";
+
 
         } catch (JSONException e) {
             throw new JSONParserException(e);
@@ -182,5 +205,9 @@ public class ProjectItem implements ProjectJSONParser {
         return orderList.get(pos);
     }
 
+
+    public int getItemOrderCount() {
+        return orderList.size();
+    }
 
 }

@@ -85,7 +85,7 @@ public class HttpWrapper {
 
             HttpGet httpget = null;
             try {
-
+                Log.i(Constants.TAG, "sending url:  " + url);
                 httpget = new HttpGet(url);
 
                 HttpResponse response = null;

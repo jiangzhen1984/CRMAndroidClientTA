@@ -85,7 +85,11 @@ public class ProjectItemOrder implements ProjectJSONParser {
             }
 
             this.photoName = ( (JSONObject)NameValue.get("visual")).getString("value");
-            this.photoPath = Constants.PHTOT_COMPRESSED_API_URL +photoName+"&h=70&w=70";
+            if(this.photoName !=null && !this.photoName.isEmpty()) {
+                this.photoPath = Constants.PHTOT_COMPRESSED_API_URL +photoName+"&h=70&w=70";
+            } else {
+                this.photoPath  = null;
+            }
 
         } catch (JSONException e) {
             e.printStackTrace();

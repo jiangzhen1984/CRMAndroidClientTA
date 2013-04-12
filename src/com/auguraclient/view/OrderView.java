@@ -6,34 +6,35 @@ import com.auguraclient.model.APIException;
 import com.auguraclient.model.ISuguraRestAPI;
 import com.auguraclient.model.Project;
 import com.auguraclient.model.ProjectItem;
+import com.auguraclient.model.ProjectItemOrder;
 import com.auguraclient.model.SuguraRestAPIImpl;
+import com.auguraclient.util.Constants;
 import com.auguraclient.util.GlobalHolder;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
-import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.HandlerThread;
 import android.os.Looper;
 import android.os.Message;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.widget.AdapterView.OnItemClickListener;
 
-import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.util.List;
@@ -56,7 +57,7 @@ public class OrderView extends Activity {
 
     private ISuguraRestAPI api;
 
-    private static final int LOAD_PROJECT_ITEM =  1;
+    private static final int LOAD_PROJECT_ITEM_ORDER =  1;
 
     private LoaderHandler handler;
 
@@ -65,12 +66,41 @@ public class OrderView extends Activity {
 
     private ProjectItem projectItem;
 
+
+    private ImageView projectItemPhotoIV;
+
+    private TextView itemOrderQuntityTV;
+
+    private TextView itemOrderDescriptionTV;
+
+    private TextView itemOrderCommentTV;
+
+    private TextView itemOrderQTTV;
+
+    private TextView orderItemTitleTV;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setfullScreen();
         this.setContentView(R.layout.project_order_list);
-        projectOrderList = (ListView)this.findViewById(R.id.projectItemList);
+        projectOrderList = (ListView)this.findViewById(R.id.projectOrderList);
+
+        projectItemPhotoIV = (ImageView)this.findViewById(R.id.projectItemPhoto);
+
+        itemOrderQuntityTV = (TextView)this.findViewById(R.id.itemOrderQuntity);
+
+        itemOrderDescriptionTV = (TextView)this.findViewById(R.id.itemOrderDescription);
+
+
+        itemOrderCommentTV = (TextView)this.findViewById(R.id.itemOrderComment);
+
+        itemOrderQTTV = (TextView)this.findViewById(R.id.itemOrderQT);
+
+        orderItemTitleTV = (TextView)this.findViewById(R.id.orderItemTitle);
+
+
         Integer position = (Integer)this.getIntent().getExtras().get("project");
         Integer itemPosition = (Integer)this.getIntent().getExtras().get("itemPosition");
 
@@ -79,6 +109,7 @@ public class OrderView extends Activity {
         projectItem = project.getItem(itemPosition);
 
         mContext = this;
+
         adapter = new ListAdapter(this);
         projectOrderList.setAdapter(adapter);
 
@@ -88,7 +119,7 @@ public class OrderView extends Activity {
         ht.start();
         handler = new LoaderHandler(ht.getLooper());
         uiHandler = new UIHandler();
-        Message.obtain(handler, LOAD_PROJECT_ITEM).sendToTarget();
+        Message.obtain(handler, LOAD_PROJECT_ITEM_ORDER).sendToTarget();
 
         projectOrderList.setOnItemClickListener( new OnItemClickListener() {
 
@@ -100,6 +131,16 @@ public class OrderView extends Activity {
             }
 
         });
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        orderItemTitleTV.setText(projectItem.getName());
+        itemOrderQuntityTV.setText(" Quantity: " +projectItem.getQuantity());
+        itemOrderDescriptionTV.setText(projectItem.getDescription());
+        itemOrderCommentTV.setText("QC Comments:\n" + projectItem.getQcComment() == null? "":projectItem.getQcComment());
+        itemOrderQTTV.setText("Q777C Date:     " +"Quantity Checked:"+projectItem.getQuantityChecked()+"  QC Status:"+projectItem.getQcStatus());
     }
 
     public void setfullScreen() {
@@ -127,6 +168,7 @@ public class OrderView extends Activity {
                         dialog.dismiss();
                     }
                     adapter.notifyDataSetChanged();
+                    projectItemPhotoIV.setImageDrawable(getDrawable(projectItem.getPhotoBigPath()));
                     break;
                 case END_WAITING_WITH_ERROR:
                     if (dialog != null) {
@@ -157,12 +199,12 @@ public class OrderView extends Activity {
     @Override
     public void handleMessage(Message msg) {
         switch(msg.what) {
-            case LOAD_PROJECT_ITEM:
+            case LOAD_PROJECT_ITEM_ORDER:
               Message.obtain(uiHandler, START_WAITING).sendToTarget();
-                List<ProjectItem> l;
+                List<ProjectItemOrder> l;
                 try {
-                    l = api.queryProjectItemList(project.getId());
-                    project.addProject(l);
+                    l = api.queryProjectItemOrderList(projectItem.getId());
+                    projectItem.addItemOrder(l);
                     Message.obtain(uiHandler, END_WAITING).sendToTarget();
                 } catch (APIException e) {
                     e.printStackTrace();
@@ -183,11 +225,11 @@ public class OrderView extends Activity {
         }
 
         public int getCount() {
-            return project.getItemCount();
+            return projectItem.getItemOrderCount();
         }
 
         public Object getItem(int position) {
-            return project.getItem(position);
+            return projectItem.getItemOrderByIndex(position);
         }
 
         public long getItemId(int position) {
@@ -197,7 +239,7 @@ public class OrderView extends Activity {
         public View getView(int position, View convertView, ViewGroup parent) {
             if (convertView == null) {
                 ItemView appView = new ItemView(context);
-                appView.updateView(project.getItem(position));
+                appView.updateView(projectItem.getItemOrderByIndex(position));
                 convertView = appView;
             }
             return convertView;
@@ -209,13 +251,13 @@ public class OrderView extends Activity {
 
         private Context mContext;
 
-        private TextView itemNameTV;
+        private TextView itemOrderCategoryCheckType;
 
-        private TextView qcStatusTV;
+        private TextView itemOrderDefectAlert;
 
-        private TextView quantityTV;
+        private TextView itemOrderQcComments;
 
-        private ImageView itemPhotoIV;
+        private ImageView projectItemOrderPhoto;
 
         private ImageView itemOperationIV;
 
@@ -227,33 +269,44 @@ public class OrderView extends Activity {
 
         public void initilize(Context c) {
             this.mContext = c;
-            View view = LayoutInflater.from(this.mContext).inflate(R.xml.project_item, null);
+            View view = LayoutInflater.from(this.mContext).inflate(R.xml.project_item_order, null);
             addView(view);
-            itemNameTV = (TextView)this.findViewById(R.id.itemName);
-            qcStatusTV = (TextView)this.findViewById(R.id.qcStatus);
-            quantityTV = (TextView)this.findViewById(R.id.itemQuntity);
-            itemPhotoIV = (ImageView)this.findViewById(R.id.projectItemPhoto);
+            itemOrderCategoryCheckType = (TextView)this.findViewById(R.id.itemOrderCategoryCheckType);
+            itemOrderDefectAlert = (TextView)this.findViewById(R.id.itemOrderDefectAlert);
+            itemOrderQcComments = (TextView)this.findViewById(R.id.itemOrderQcComments);
+            projectItemOrderPhoto = (ImageView)this.findViewById(R.id.projectItemOrderPhoto);
+            itemOperationIV = (ImageView)this.findViewById(R.id.projectItemOrderOperation);
         }
 
-        public void updateView(ProjectItem pi) {
-            itemNameTV.setText(pi.getName());
-            qcStatusTV.setText("QC Status :"+ pi.getQcStatus());
-            quantityTV.setText("Quantity :"+pi.getQuantity());
-            itemPhotoIV.setImageDrawable(getDrawable(pi.getPhotoPath()));
-        }
-
-        private Drawable getDrawable(String url) {
-            InputStream is = null;
-            try {
-                is = (InputStream) new URL(url).getContent();
-                Drawable d = Drawable.createFromStream(is, "src name");
-                return d;
-            } catch (Exception e) {
-                e.printStackTrace();
+        public void updateView(ProjectItemOrder pi) {
+            if(pi == null) {
+                Log.e(Constants.TAG, " can't update view for order view ProjectItemOrder is null");
+                return;
             }
-            return null;
-
+            itemOrderCategoryCheckType.setText(pi.getCategory()+"   >> " +pi.getCheckType()+"   >>"+ pi.getName());
+            itemOrderDefectAlert.setText(pi.getNumberDefect() +"   "+pi.getQcAction());
+            itemOrderQcComments.setText(pi.getQcComments()==null?"" :pi.getQcComments());
+            if(pi.getPhotoPath() != null && !pi.getPhotoPath().isEmpty() ) {
+                projectItemOrderPhoto.setImageDrawable(getDrawable(pi.getPhotoPath()));
+            }
         }
+
+
+    }
+
+
+    private Drawable getDrawable(String url) {
+        Log.e(Constants.TAG, url);
+        InputStream is = null;
+        try {
+            is = (InputStream) new URL(url).getContent();
+            Drawable d = Drawable.createFromStream(is, "src name");
+            return d;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+
     }
 
 }

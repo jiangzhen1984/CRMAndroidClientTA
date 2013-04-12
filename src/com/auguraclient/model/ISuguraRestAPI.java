@@ -14,6 +14,6 @@ public interface ISuguraRestAPI {
     public List<ProjectItem> queryProjectItemList(String projectID) throws APIException;
 
 
-    public List<ProjectItem> queryProjectItemOrderList(String orderId) throws APIException;
+    public List<ProjectItemOrder> queryProjectItemOrderList(String orderId) throws APIException;
 
 }

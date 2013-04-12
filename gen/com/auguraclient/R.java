@@ -39,35 +39,43 @@ public final class R {
         public static final int recover_top=0x7f02000d;
     }
     public static final class id {
-        public static final int bottom_tab_add_project=0x7f090015;
+        public static final int bottom_tab_add_project=0x7f090018;
         public static final int first_screen_text=0x7f090004;
         public static final int forgot_password=0x7f090008;
         public static final int headerlayout=0x7f090009;
-        public static final int images_id=0x7f09001a;
-        public static final int itemName=0x7f090017;
-        public static final int itemOrderComment=0x7f090011;
-        public static final int itemOrderName=0x7f09000e;
-        public static final int itemOrderQT=0x7f090010;
-        public static final int itemOrderQuntity=0x7f09000f;
-        public static final int itemQuntity=0x7f090018;
+        public static final int images_id=0x7f09001d;
+        public static final int itemName=0x7f09001a;
+        public static final int itemOrderCategoryCheckType=0x7f09001f;
+        public static final int itemOrderComment=0x7f090013;
+        public static final int itemOrderDefectAlert=0x7f090020;
+        public static final int itemOrderDescription=0x7f090011;
+        public static final int itemOrderQT=0x7f090012;
+        public static final int itemOrderQcComments=0x7f090021;
+        public static final int itemOrderQuntity=0x7f090010;
+        public static final int itemQuntity=0x7f09001b;
+        public static final int itemTitle=0x7f09000a;
         public static final int login_text=0x7f090005;
         public static final int ok_button=0x7f090002;
         public static final int ok_button_lin=0x7f090001;
         public static final int ok_button_text=0x7f090007;
+        public static final int orderItemReturn=0x7f09000e;
+        public static final int orderItemTitle=0x7f09000d;
         public static final int password_text=0x7f090006;
-        public static final int projectItemContent=0x7f090016;
+        public static final int projectItemContent=0x7f090019;
         public static final int projectItemList=0x7f09000c;
-        public static final int projectItemPhoto=0x7f09000d;
-        public static final int projectList=0x7f090013;
-        public static final int projectListItemName=0x7f09001c;
-        public static final int projectListItemheaderlayout=0x7f09001b;
-        public static final int projectOrderList=0x7f090012;
+        public static final int projectItemOrderOperation=0x7f09001e;
+        public static final int projectItemOrderPhoto=0x7f090022;
+        public static final int projectItemPhoto=0x7f09000f;
+        public static final int projectList=0x7f090016;
+        public static final int projectListItemName=0x7f090024;
+        public static final int projectListItemheaderlayout=0x7f090023;
+        public static final int projectOrderList=0x7f090014;
         public static final int project_numc=0x7f090000;
-        public static final int qcStatus=0x7f090019;
-        public static final int tab_add_project_layout=0x7f090014;
+        public static final int qcStatus=0x7f09001c;
+        public static final int tab_add_project_layout=0x7f090017;
         public static final int top_button=0x7f09000b;
         public static final int your_card_header=0x7f090003;
-        public static final int yourcard_header=0x7f09000a;
+        public static final int yourcard_header=0x7f090015;
     }
     public static final class layout {
         public static final int add_project_dialog=0x7f030000;
@@ -100,6 +108,7 @@ public final class R {
     }
     public static final class xml {
         public static final int project_item=0x7f050000;
-        public static final int project_list_item=0x7f050001;
+        public static final int project_item_order=0x7f050001;
+        public static final int project_list_item=0x7f050002;
     }
 }

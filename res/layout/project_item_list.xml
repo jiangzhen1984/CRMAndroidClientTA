@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/splashscreen_background"
@@ -7,51 +8,54 @@
     android:gravity="top">
 
 
-<RelativeLayout android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:background="@drawable/login_screen_top1"
-    android:id="@+id/headerlayout"
-    >
-    <TextView android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:textColor="@color/login_top_header"
-    android:text="@string/title"
-    android:layout_centerInParent="true"
-    android:textSize="24sp"
-    android:textStyle="bold"
-    android:id="@+id/yourcard_header"/>
-    <LinearLayout 
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:background="@drawable/recover_top"
-    android:orientation="horizontal"
-    android:gravity="center"
-    android:layout_centerVertical="true"
-    android:layout_alignParentLeft="true"
-    android:layout_marginLeft="2dip"
-    android:id="@+id/top_button">
-     <TextView android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:textColor="@color/login_text"
-    android:text="@string/yourcard_client"
-    android:textSize="12sp"
-    android:textStyle="bold"/>
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/login_screen_top1"
+        android:id="@+id/headerlayout">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/login_top_header"
+            android:text="@string/title"
+            android:layout_centerInParent="true"
+            android:textSize="24sp"
+            android:textStyle="bold"
+            android:id="@+id/itemTitle" />
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/recover_top"
+            android:orientation="horizontal"
+            android:gravity="center"
+            android:layout_centerVertical="true"
+            android:layout_alignParentLeft="true"
+            android:layout_marginLeft="2dip"
+            android:id="@+id/top_button">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/login_text"
+                android:text="@string/yourcard_client"
+                android:textSize="12sp"
+                android:textStyle="bold" />
+        </LinearLayout>
+    </RelativeLayout>
+
+  
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:gravity="top"
+        android:layout_weight="1"
+        android:orientation="vertical">
+
+        <ListView
+            android:id="@+id/projectItemList"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content" />
     </LinearLayout>
-</RelativeLayout>
-
-<LinearLayout android:layout_width="match_parent"
-    android:layout_height="0dp"
-    android:gravity="top"
-    android:layout_weight="1"
-    android:orientation="vertical"
-    >
-
-<ListView  
- android:id="@+id/projectItemList"
-    android:layout_width="fill_parent" 
-    android:layout_height="wrap_content" 
-    />
-</LinearLayout>
 
 </LinearLayout>
 

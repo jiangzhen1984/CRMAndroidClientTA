@@ -62,18 +62,24 @@ public class ProjectItemView extends Activity {
 
     private UIHandler uiHandler;
 
+    private int currentProjectPosition;
+
+    private TextView itemTitleTV;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setfullScreen();
         this.setContentView(R.layout.project_item_list);
         projectItemList = (ListView)this.findViewById(R.id.projectItemList);
-        Integer position = (Integer)this.getIntent().getExtras().get("project");
-        project = GlobalHolder.getProject(position);
+        currentProjectPosition = (Integer)this.getIntent().getExtras().get("project");
+        project = GlobalHolder.getProject(currentProjectPosition);
 
         mContext = this;
         adapter = new ListAdapter(this);
         projectItemList.setAdapter(adapter);
+
+        itemTitleTV = (TextView)this.findViewById(R.id.itemTitle);
 
         api = new SuguraRestAPIImpl();
 
@@ -87,13 +93,26 @@ public class ProjectItemView extends Activity {
 
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Intent i = new Intent();
-                i.setClass(mContext, ProjectItemView.class);
-                i.putExtra("project", position);
+                i.setClass(mContext, OrderView.class);
+                i.putExtra("project", currentProjectPosition);
+                i.putExtra("itemPosition", position);
                 mContext.startActivity(i);
             }
 
         });
     }
+
+
+
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        itemTitleTV.setText(this.project.getName());
+    }
+
+
+
 
     public void setfullScreen() {
         requestWindowFeature(Window.FEATURE_NO_TITLE);

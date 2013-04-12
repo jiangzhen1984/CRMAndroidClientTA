@@ -31,4 +31,7 @@ public class Constants {
     public static final int QUERY_PROJECT_ITEM_URL_INDEX = 2;
 
     public static final int QUERY_PROJECT_ORDER_URL_INDEX = 3;
+
+
+    public static final int BUFFER_SIZE = 5000;
 }

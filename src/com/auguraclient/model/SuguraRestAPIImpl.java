@@ -2,12 +2,15 @@
 package com.auguraclient.model;
 
 import com.auguraclient.http.HttpWrapper;
+import com.auguraclient.util.Constants;
 import com.auguraclient.util.GlobalHolder;
 import com.auguraclient.util.Util;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import android.util.Log;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
@@ -48,7 +51,7 @@ public class SuguraRestAPIImpl implements ISuguraRestAPI {
         } catch (JSONException e) {
             throw new APIException(" can't wrpe json data", e);
         }
-        System.out.println(restData);
+        Log.i(Constants.TAG, restData.toString());
 
         // TODO send request
         String url = Util.getLoginUrl();
@@ -91,7 +94,7 @@ public class SuguraRestAPIImpl implements ISuguraRestAPI {
             selectFields.put("num_c");
             restData.put("select_fields", selectFields);
             restData.put("deleted", "0");
-            System.out.println(restData.toString());
+            Log.i(Constants.TAG, restData.toString());
 
         } catch (JSONException e) {
             e.printStackTrace();
@@ -122,6 +125,8 @@ public class SuguraRestAPIImpl implements ISuguraRestAPI {
             return null;
         }
 
+
+
         JSONObject restData = new JSONObject();
         JSONArray selectFields = new JSONArray();
         try {
@@ -142,7 +147,7 @@ public class SuguraRestAPIImpl implements ISuguraRestAPI {
             selectFields.put("quantity");
             restData.put("related_fields", selectFields);
             restData.put("deleted", "0");
-            System.out.println(restData.toString());
+            Log.i(Constants.TAG, restData.toString());
 
         } catch (JSONException e) {
             e.printStackTrace();
@@ -166,7 +171,7 @@ public class SuguraRestAPIImpl implements ISuguraRestAPI {
 
     }
 
-    public List<ProjectItem> queryProjectItemOrderList(String orderId) throws APIException {
+    public List<ProjectItemOrder> queryProjectItemOrderList(String orderId) throws APIException {
         //{"session":"9467257e6ce3e29f46082b473c9e3554","module_name":"AGR_OrderDetails","module_id":"d82e0333-5e06-df53-7695-515d29c81443","link_field_name":"agr_orderdetails_agr_qccheckpoints","related_module_query":"","related_fields":["id","name","category","checktype","description","qc_status","executed_date","number_defect","qc_comment","qc_action","visual","date_modified","photo_c"],"deleted":"0"}
 
         String sessionId = GlobalHolder.getSessionId();
@@ -180,7 +185,7 @@ public class SuguraRestAPIImpl implements ISuguraRestAPI {
             restData.put("session", sessionId);
             restData.put("module_name", "AGR_OrderDetails");
             restData.put("module_id", orderId);
-            restData.put("link_field_name", "related_module_query");
+            restData.put("link_field_name", "agr_orderdetails_agr_qccheckpoints");
             restData.put("related_module_query", "");
 
             selectFields.put("id");
@@ -198,7 +203,7 @@ public class SuguraRestAPIImpl implements ISuguraRestAPI {
 
             restData.put("related_fields", selectFields);
             restData.put("deleted", "0");
-            System.out.println(restData.toString());
+            Log.i(Constants.TAG, restData.toString());
 
         } catch (JSONException e) {
             e.printStackTrace();
@@ -212,7 +217,7 @@ public class SuguraRestAPIImpl implements ISuguraRestAPI {
             response = http.sendHttpGetRequest(url + URLEncoder.encode(restData.toString()));
             if (response != null) {
                 JSONObject resp = new JSONObject(response);
-                return Util.parserProjectItemListJson(resp);
+                return Util.parserProjectItemOrderListJson(resp);
             }
         } catch (JSONException e) {
             throw new APIException(" can't parse API response");
