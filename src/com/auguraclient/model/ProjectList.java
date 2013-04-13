@@ -16,7 +16,7 @@ public class ProjectList implements ProjectJSONParser {
     private List<Project> list;
 
     public int getResultCount() {
-        return resultCount;
+        return list == null? 0: list.size();
     }
 
     public void setResultCount(int resultCount) {
@@ -56,7 +56,6 @@ public class ProjectList implements ProjectJSONParser {
             return ;
         }
         this.list.add(p);
-        this.resultCount += 1;
     }
 
     public void parser(JSONObject jsonObject) throws JSONParserException {

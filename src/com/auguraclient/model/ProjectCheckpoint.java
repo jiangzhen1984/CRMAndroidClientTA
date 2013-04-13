@@ -1,10 +1,15 @@
 package com.auguraclient.model;
 
 import com.auguraclient.util.Constants;
+import com.auguraclient.util.GlobalHolder;
+import com.auguraclient.util.Util;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -89,15 +94,20 @@ public class ProjectCheckpoint implements ProjectJSONParser {
             this.photoName = ( (JSONObject)NameValue.get("visual")).getString("value");
             if(this.photoName !=null && !this.photoName.isEmpty()) {
                 this.photoPath = Constants.PHTOT_COMPRESSED_API_URL +photoName+"&h=70&w=70";
+                Util.loadImageFromURL(new URL(Constants.PHTOT_COMPRESSED_API_URL +photoName+"&h=70&w=70"), GlobalHolder.GLOBAL_STORAGE_PATH+Constants.CommonConfig.PIC_DIR+this.photoPath);
             } else {
                 this.photoPath  = null;
             }
 
         } catch (JSONException e) {
-            e.printStackTrace();
+            throw new JSONParserException(e);
         } catch (ParseException e) {
-            e.printStackTrace();
-        }
+        	throw new JSONParserException(e);
+		} catch (MalformedURLException e) {
+			throw new JSONParserException(e);
+		} catch (IOException e) {
+			throw new JSONParserException(e);
+		}
     }
 
     public String getPhotoPath() {

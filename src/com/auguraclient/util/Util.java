@@ -188,6 +188,7 @@ public class Util {
     }
 
     public static void loadImageFromURL(URL url, String photoPath) throws IOException {
+    	
         InputStream input = null;
         OutputStream output = null;
 
@@ -201,6 +202,9 @@ public class Util {
                 output.write(buffer, 0, bytesRead);
             }
 
+        } catch(IOException e){
+        	e.printStackTrace();
+        	throw e;
         } finally {
             try {
                 if (input != null) {

@@ -1,4 +1,3 @@
-
 package com.auguraclient.view;
 
 import com.auguraclient.R;
@@ -37,231 +36,231 @@ import android.widget.Toast;
 
 public class ProjectListScreen extends Activity {
 
-    private static final int QUERY_PROJECT = 1;
+	private static final int QUERY_PROJECT = 1;
 
-    private static final int START_WAITING = 1;
+	private static final int START_WAITING = 1;
 
-    private static final int END_WAITING = 2;
+	private static final int END_WAITING = 2;
 
-    private static final int END_WAITING_WITH_ERROR = 3;
+	private static final int END_WAITING_WITH_ERROR = 3;
 
-    private LinearLayout addProjectLayout = null;
+	private LinearLayout addProjectLayout = null;
 
-    private Context context;
+	private Context context;
 
-    private ISuguraRestAPI api;
+	private ISuguraRestAPI api;
 
-    private CmdHandler handler;
+	private CmdHandler handler;
 
-    private UIHandler uiHandler;
+	private UIHandler uiHandler;
 
-    private ListView projectList;
+	private ListView projectList;
 
-    private ListAdapter projectAdapter;
+	private ListAdapter projectAdapter;
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setfullScreen();
-         setContentView(R.layout.projectlist);
+	@Override
+	protected void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+		setfullScreen();
+		setContentView(R.layout.projectlist);
 
+		projectList = (ListView) findViewById(R.id.projectList);
 
+		addProjectLayout = (LinearLayout) findViewById(R.id.tab_add_project_layout);
+		addProjectLayout.setOnClickListener(addProjectListener);
 
-         projectList =    (ListView)findViewById(R.id.projectList);
+		context = this;
+		api = new SuguraRestAPIImpl();
+		HandlerThread th = new HandlerThread("project");
+		th.start();
+		handler = new CmdHandler(th.getLooper());
 
-         addProjectLayout =
-        (LinearLayout)findViewById(R.id.tab_add_project_layout);
-        addProjectLayout.setOnClickListener(addProjectListener);
+		uiHandler = new UIHandler();
 
-        context = this;
-        api = new SuguraRestAPIImpl();
-        HandlerThread th = new HandlerThread("project");
-        th.start();
-        handler = new CmdHandler(th.getLooper());
+		projectAdapter = new ListAdapter(context);
+		projectList.setAdapter(projectAdapter);
 
-        uiHandler = new UIHandler();
+		projectList.setOnItemClickListener(new OnItemClickListener() {
 
-        projectAdapter = new  ListAdapter(context);
-        projectList.setAdapter(projectAdapter);
+			public void onItemClick(AdapterView<?> parent, View view,
+					int position, long id) {
+				Intent i = new Intent();
+				i.setClass(context, ProjectItemView.class);
+				i.putExtra("project", position);
+				context.startActivity(i);
+			}
 
-        projectList.setOnItemClickListener( new OnItemClickListener() {
+		});
 
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Intent i = new Intent();
-                i.setClass(context, ProjectItemView.class);
-                i.putExtra("project", position);
-                context.startActivity(i);
-            }
+	}
 
-        });
+	OnClickListener addProjectListener = new OnClickListener() {
+		public void onClick(View v) {
+			SoundEngine.sharedEngine().playEffect(getApplicationContext(),
+					R.raw.button);
+			// custom dialog
+			final Dialog dialog = new Dialog(context);
+			dialog.setCanceledOnTouchOutside(true);
+			dialog.setContentView(R.layout.add_project_dialog);
+			dialog.setTitle(context.getText(R.string.add_project));
+			LinearLayout dialogButton = (LinearLayout) dialog
+					.findViewById(R.id.ok_button_lin);
+			// if button is clicked, close the custom dialog
+			dialogButton.setOnClickListener(new OnClickListener() {
+				public void onClick(View v) {
+					EditText projectText = (EditText) dialog
+							.findViewById(R.id.project_numc);
+					if (projectText.getText() == null
+							|| projectText.getText().toString() == null
+							|| projectText.getText().toString().isEmpty()) {
+						Toast.makeText(dialog.getContext(), context
+								.getText(R.string.not_null_query),
+								Toast.LENGTH_LONG);
+					} else {
+						Message.obtain(handler, QUERY_PROJECT,
+								projectText.getText().toString())
+								.sendToTarget();
+						Message.obtain(uiHandler, START_WAITING).sendToTarget();
 
-    }
+					}
 
+					dialog.dismiss();
+				}
+			});
 
-    OnClickListener addProjectListener = new OnClickListener() {
-        public void onClick(View v) {
-            SoundEngine.sharedEngine().playEffect(getApplicationContext(), R.raw.button);
-            // custom dialog
-            final Dialog dialog = new Dialog(context);
-            dialog.setCanceledOnTouchOutside(true);
-            dialog.setContentView(R.layout.add_project_dialog);
-            dialog.setTitle(context.getText(R.string.add_project));
-            LinearLayout dialogButton = (LinearLayout)dialog.findViewById(R.id.ok_button_lin);
-            // if button is clicked, close the custom dialog
-            dialogButton.setOnClickListener(new OnClickListener() {
-                public void onClick(View v) {
-                    EditText projectText = (EditText)dialog.findViewById(R.id.project_numc);
-                    if (projectText.getText() == null || projectText.getText().toString() == null
-                            || projectText.getText().toString().isEmpty()) {
-                        Toast.makeText(dialog.getContext(),
-                                context.getText(R.string.not_null_query), Toast.LENGTH_LONG);
-                    } else {
-                        Message.obtain(handler, QUERY_PROJECT, projectText.getText().toString())
-                                .sendToTarget();
-                        Message.obtain(uiHandler, START_WAITING).sendToTarget();
+			dialog.show();
 
-                    }
+		}
+	};
 
-                    dialog.dismiss();
-                }
-            });
+	public void setfullScreen() {
+		requestWindowFeature(Window.FEATURE_NO_TITLE);
+		getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
+				WindowManager.LayoutParams.FLAG_FULLSCREEN);
+		getWindow().setFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON,
+				WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+	}
 
-            dialog.show();
+	private ProgressDialog dialog;
 
-        }
-    };
+	class UIHandler extends Handler {
+		public void handleMessage(Message msg) {
+			switch (msg.what) {
+			case QUERY_PROJECT:
+				dialog = ProgressDialog.show(context, "Loading",
+						"Please wait...", true);
+				dialog.setIcon(R.drawable.logo_24_24);
+				dialog.show();
+				break;
+			case END_WAITING:
+				if (dialog != null) {
+					dialog.cancel();
+					dialog.dismiss();
+				}
+				projectAdapter.notifyDataSetChanged();
+				break;
+			case END_WAITING_WITH_ERROR:
+				if (dialog != null) {
+					dialog.cancel();
+					dialog.dismiss();
+				}
+				// TODO show toast
+				Toast.makeText(dialog.getContext(), "errorr ---------------",
+						Toast.LENGTH_SHORT).show();
+			}
+		}
+	}
 
-    public void setfullScreen() {
-        requestWindowFeature(Window.FEATURE_NO_TITLE);
-        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
-                WindowManager.LayoutParams.FLAG_FULLSCREEN);
-        getWindow().setFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON,
-                WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
-    }
+	class CmdHandler extends Handler {
 
-    private ProgressDialog dialog;
+		public CmdHandler() {
+			super();
+		}
 
-    class UIHandler extends Handler {
-        public void handleMessage(Message msg) {
-            switch (msg.what) {
-                case QUERY_PROJECT:
-                    dialog = ProgressDialog.show(context, "Loading", "Please wait...", true);
-                    dialog.setIcon(R.drawable.logo_24_24);
-                    dialog.show();
-                    break;
-                case END_WAITING:
-                    if (dialog != null) {
-                        dialog.cancel();
-                        dialog.dismiss();
-                    }
-                    projectAdapter.notifyDataSetChanged();
-                    break;
-                case END_WAITING_WITH_ERROR:
-                    if (dialog != null) {
-                        dialog.cancel();
-                        dialog.dismiss();
-                    }
-                    // TODO show toast
-                    Toast.makeText(dialog.getContext(), "errorr ---------------",
-                            Toast.LENGTH_SHORT).show();
-            }
-        }
-    }
+		public CmdHandler(Looper looper) {
+			super(looper);
+		}
 
-    class CmdHandler extends Handler {
+		@Override
+		public void handleMessage(Message msg) {
+			switch (msg.what) {
+			case QUERY_PROJECT:
 
-        public CmdHandler() {
-            super();
-        }
+				try {
+					ProjectList pl = api.loadProject((String) msg.obj);
+					if (pl == null) {
+						Message.obtain(uiHandler, END_WAITING_WITH_ERROR)
+								.sendToTarget();
+					} else {
+						GlobalHolder.addProject(pl);
+						Message.obtain(uiHandler, END_WAITING).sendToTarget();
+					}
+					// TODO save project to database
+				} catch (APIException e) {
+					e.printStackTrace();
+					Message.obtain(uiHandler, END_WAITING_WITH_ERROR)
+							.sendToTarget();
+				}
+				break;
+			}
+		}
 
-        public CmdHandler(Looper looper) {
-            super(looper);
-        }
+	}
 
-        @Override
-        public void handleMessage(Message msg) {
-            switch (msg.what) {
-                case QUERY_PROJECT:
+	class ListAdapter extends BaseAdapter {
 
-                    try {
-                        ProjectList pl = api.loadProject((String)msg.obj);
-                        if (pl == null) {
-                            Message.obtain(uiHandler, END_WAITING_WITH_ERROR).sendToTarget();
-                        } else {
-                            GlobalHolder.addProject(pl);
-                            Message.obtain(uiHandler, END_WAITING).sendToTarget();
-                        }
-                        // TODO save project to database
-                    } catch (APIException e) {
-                        e.printStackTrace();
-                        Message.obtain(uiHandler, END_WAITING_WITH_ERROR).sendToTarget();
-                    }
-                    break;
-            }
-        }
+		private Context context;
 
-    }
+		public ListAdapter(Context context) {
+			this.context = context;
+		}
 
+		public int getCount() {
+			return GlobalHolder.getPl() == null ? 0 : GlobalHolder.getPl()
+					.getResultCount();
+		}
 
+		public Object getItem(int position) {
+			return GlobalHolder.getProject(position);
+		}
 
+		public long getItemId(int position) {
+			return 0;
+		}
 
+		public View getView(int position, View convertView, ViewGroup parent) {
+			if (convertView == null) {
+				ItemView appView = new ItemView(context);
+				appView.updateView(GlobalHolder.getProject(position));
+				convertView = appView;
+			}
+			return convertView;
+		}
 
-     class ListAdapter extends BaseAdapter {
+	}
 
-         private Context context;
+	class ItemView extends LinearLayout {
 
-         public ListAdapter(Context context) {
-             this.context = context;
-         }
+		private Context mContext;
 
-        public int getCount() {
-            return GlobalHolder.getPl()== null? 0: GlobalHolder.getPl().getResultCount();
-        }
+		private TextView tv;
 
-        public Object getItem(int position) {
-            return GlobalHolder.getProject(position);
-        }
+		public ItemView(Context context) {
+			super(context);
+			this.mContext = context;
+			initilize(context);
+		}
 
-        public long getItemId(int position) {
-            return 0;
-        }
+		public void initilize(Context c) {
+			this.mContext = c;
+			View view = LayoutInflater.from(this.mContext).inflate(
+					R.xml.project_list_item, null);
+			addView(view);
+			tv = (TextView) this.findViewById(R.id.projectListItemName);
+		}
 
-        public View getView(int position, View convertView, ViewGroup parent) {
-            if(convertView == null){
-                ItemView appView = new ItemView(context);
-                appView.updateView(GlobalHolder.getProject(position));
-                convertView = appView;
-               }
-               return convertView;
-              }
-
-    }
-
-
-
-      class ItemView extends LinearLayout {
-
-         private Context mContext;
-
-         private TextView tv;
-
-
-         public ItemView(Context context) {
-             super(context);
-             this.mContext = context;
-             initilize(context);
-            }
-
-
-         public void initilize(Context c){
-             this.mContext = c;
-             View view = LayoutInflater.from(this.mContext).inflate(R.xml.project_list_item, null);
-             addView(view);
-             tv = (TextView)this.findViewById(R.id.projectListItemName);
-            }
-
-         public void updateView(Project p) {
-             tv.setText(p.getText());
-         }
-     }
+		public void updateView(Project p) {
+			tv.setText(p.getText());
+		}
+	}
 }

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="splashscreen_background">#ffe3e1d5</color>
+    <color name="main_background">#ffe3e1d5</color>
     <color name="login_header">#451a01</color>
     <color name="selected_tab">#ffffff</color>
     <color name="login_text">#231f20</color>

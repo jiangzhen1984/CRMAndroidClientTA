@@ -19,8 +19,8 @@ public final class R {
         public static final int login_text=0x7f070003;
         public static final int login_text_color=0x7f070004;
         public static final int login_top_header=0x7f070005;
+        public static final int main_background=0x7f070000;
         public static final int selected_tab=0x7f070002;
-        public static final int splashscreen_background=0x7f070000;
     }
     public static final class drawable {
         public static final int alert_icon=0x7f020000;
@@ -35,9 +35,10 @@ public final class R {
         public static final int logo72x72=0x7f020009;
         public static final int logo_24_24=0x7f02000a;
         public static final int logo_36_36=0x7f02000b;
-        public static final int project_ok=0x7f02000c;
-        public static final int project_sync=0x7f02000d;
-        public static final int recover_top=0x7f02000e;
+        public static final int logo_asiaction=0x7f02000c;
+        public static final int project_ok=0x7f02000d;
+        public static final int project_sync=0x7f02000e;
+        public static final int recover_top=0x7f02000f;
     }
     public static final class id {
         public static final int actionLin=0x7f09000f;
@@ -98,10 +99,11 @@ public final class R {
         public static final int add_project_dialog=0x7f030000;
         public static final int checkpoint_update=0x7f030001;
         public static final int loginscreen=0x7f030002;
-        public static final int main=0x7f030003;
-        public static final int project_item_list=0x7f030004;
-        public static final int project_order_list=0x7f030005;
-        public static final int projectlist=0x7f030006;
+        public static final int logo_view=0x7f030003;
+        public static final int main=0x7f030004;
+        public static final int project_item_list=0x7f030005;
+        public static final int project_order_list=0x7f030006;
+        public static final int projectlist=0x7f030007;
     }
     public static final class raw {
         public static final int button=0x7f060000;
@@ -110,6 +112,7 @@ public final class R {
         public static final int add_project=0x7f08000b;
         public static final int app_name=0x7f080001;
         public static final int cancel=0x7f08000e;
+        public static final int error_create_pic_dir=0x7f080010;
         public static final int first_screen_text=0x7f080008;
         public static final int hello=0x7f080000;
         public static final int login_error_1=0x7f080002;

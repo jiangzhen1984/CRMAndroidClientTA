@@ -1,16 +1,21 @@
 package com.auguraclient.model;
 
-import com.auguraclient.util.Constants;
-
-import org.json.JSONException;
-import org.json.JSONObject;
-
+import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import com.auguraclient.util.Constants;
+import com.auguraclient.util.GlobalHolder;
+import com.auguraclient.util.Util;
 
 public class ProjectOrder implements ProjectJSONParser {
 
@@ -93,15 +98,21 @@ public class ProjectOrder implements ProjectJSONParser {
             }
 
             this.photoName = ( (JSONObject)NameValue.get("photo_c")).getString("value");
-            this.photoPath = Constants.PHTOT_COMPRESSED_API_URL +photoName+"&h=70&w=70";
-            this.photoBigPath = Constants.PHTOT_COMPRESSED_API_URL +photoName+"&h=150&w=150";
+            this.photoPath = Constants.CommonConfig.PIC_DIR+"p_70_70_"+photoName ; //Constants.PHTOT_COMPRESSED_API_URL +photoName+"&h=70&w=70";
+            this.photoBigPath = Constants.CommonConfig.PIC_DIR+"p_150_150_"+photoName ; // Constants.PHTOT_COMPRESSED_API_URL +photoName+"&h=150&w=150";
+            Util.loadImageFromURL(new URL(Constants.PHTOT_COMPRESSED_API_URL +photoName+"&h=70&w=70"), GlobalHolder.GLOBAL_STORAGE_PATH+Constants.CommonConfig.PIC_DIR+this.photoPath);
+            Util.loadImageFromURL(new URL(Constants.PHTOT_COMPRESSED_API_URL +photoName+"&h=150&w=150"), GlobalHolder.GLOBAL_STORAGE_PATH+Constants.CommonConfig.PIC_DIR+this.photoBigPath);
 
 
         } catch (JSONException e) {
             throw new JSONParserException(e);
         } catch (ParseException e) {
-            e.printStackTrace();
-        }
+        	throw new JSONParserException(e);
+        } catch (MalformedURLException e) {
+        	throw new JSONParserException(e);
+		} catch (IOException e) {
+			throw new JSONParserException(e);
+		}
     }
 
     public String getId() {
