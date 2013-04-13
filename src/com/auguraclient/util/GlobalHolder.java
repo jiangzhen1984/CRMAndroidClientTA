@@ -42,6 +42,15 @@ public class GlobalHolder {
 
         return pl.getList().get(index);
     }
+    
+    public static void addProject(Project p) {
+    	pl.addProject(p);
+    }
 
+    public static void addProject(ProjectList pList) {
+    	for(int i =0; i < pList.getList().size(); i++) {
+    		pl.addProject(pList.getList().get(i));
+    	}
+    }
 
 }

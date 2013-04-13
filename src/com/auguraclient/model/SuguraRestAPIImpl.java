@@ -53,7 +53,6 @@ public class SuguraRestAPIImpl implements ISuguraRestAPI {
         }
         Log.i(Constants.TAG, restData.toString());
 
-        // TODO send request
         String url = Util.getLoginUrl();
         String response;
 
@@ -71,6 +70,22 @@ public class SuguraRestAPIImpl implements ISuguraRestAPI {
         }
 
         return null;
+    }
+    
+    
+    public ProjectList loadProject(String name) throws APIException {
+    	ProjectList pl = this.queryProjectList(name);
+    	List<Project> l = pl.getList();
+    	for(int i =0; i <l.size(); i++) {
+    		Project p = l.get(i);
+    		List<ProjectOrder> poList = this.queryProjectOrderList(p.getId()); 
+    		p.addProjectOrder(poList);
+    		for(int j = 0; j < poList.size(); j++) {
+    			ProjectOrder po = poList.get(j);
+    			po.addOrderCheckpoint(this.queryProjectOrderCheckpointList(po.getId()));
+    		}
+    	}
+    	return pl;
     }
 
     public ProjectList queryProjectList(String name) throws APIException {
@@ -118,7 +133,7 @@ public class SuguraRestAPIImpl implements ISuguraRestAPI {
     }
 
 
-    public List<ProjectOrder> queryProjectItemList(String projectID) throws APIException {
+    public List<ProjectOrder> queryProjectOrderList(String projectID) throws APIException {
         // {"session":"9467257e6ce3e29f46082b473c9e3554","module_name":"Project","module_id":"a3c3613d-cdc5-703a-55af-513945799b60","link_field_name":"agr_orderdetails_project","related_module_query":"","related_fields":["id","name","quantity","photo_c","qc_status","qc_date","quantity_checked","qc_comment","date_modified"],"deleted":"0"}
         String sessionId = GlobalHolder.getSessionId();
         if (sessionId == null || sessionId.isEmpty()) {
@@ -171,7 +186,7 @@ public class SuguraRestAPIImpl implements ISuguraRestAPI {
 
     }
 
-    public List<ProjectCheckpoint> queryProjectItemOrderList(String orderId) throws APIException {
+    public List<ProjectCheckpoint> queryProjectOrderCheckpointList(String orderId) throws APIException {
         //{"session":"9467257e6ce3e29f46082b473c9e3554","module_name":"AGR_OrderDetails","module_id":"d82e0333-5e06-df53-7695-515d29c81443","link_field_name":"agr_orderdetails_agr_qccheckpoints","related_module_query":"","related_fields":["id","name","category","checktype","description","qc_status","executed_date","number_defect","qc_comment","qc_action","visual","date_modified","photo_c"],"deleted":"0"}
 
         String sessionId = GlobalHolder.getSessionId();

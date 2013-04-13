@@ -1,15 +1,6 @@
 
 package com.auguraclient.view;
 
-import com.auguraclient.R;
-import com.auguraclient.model.APIException;
-import com.auguraclient.model.ISuguraRestAPI;
-import com.auguraclient.model.SuguraRestAPIImpl;
-import com.auguraclient.model.User;
-import com.auguraclient.util.Constants;
-import com.auguraclient.util.GlobalHolder;
-import com.auguraclient.util.SoundEngine;
-
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -27,13 +18,21 @@ import android.util.Log;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.View.OnClickListener;
-import android.view.View.OnTouchListener;
 import android.view.Window;
 import android.view.WindowManager;
+import android.view.View.OnClickListener;
+import android.view.View.OnTouchListener;
 import android.widget.EditText;
 import android.widget.LinearLayout;
-import android.widget.TextView;
+
+import com.auguraclient.R;
+import com.auguraclient.model.APIException;
+import com.auguraclient.model.ISuguraRestAPI;
+import com.auguraclient.model.SuguraRestAPIImpl;
+import com.auguraclient.model.User;
+import com.auguraclient.util.Constants;
+import com.auguraclient.util.GlobalHolder;
+import com.auguraclient.util.SoundEngine;
 
 public class LoginScreen extends Activity {
 
@@ -47,23 +46,12 @@ public class LoginScreen extends Activity {
 
     private static final int PROGRESS_START_TO_LOG_IN_ERROR_WITH_USER_INVALID = 4;
 
-    private TextView login_header = null;
-
-    private TextView tab_your_card = null;
-
-    private TextView tab_promotions = null;
-
-    private TextView tab_instructions = null;
-
-    private TextView first_screen_text = null;
 
     private EditText edit_login = null;
 
     private EditText edit_password = null;
 
     private LinearLayout ok_button = null;
-
-    private LinearLayout question = null;
 
     private CmdHandler handler;
 
@@ -82,9 +70,6 @@ public class LoginScreen extends Activity {
         setContentView(R.layout.loginscreen);
         overridePendingTransition(R.anim.fadein, R.anim.fadeout);
 
-        login_header = (TextView)findViewById(R.id.your_card_header);
-
-        first_screen_text = (TextView)findViewById(R.id.first_screen_text);
 
         edit_login = (EditText)findViewById(R.id.login_text);
 
@@ -187,7 +172,6 @@ public class LoginScreen extends Activity {
 
         @Override
         public void handleMessage(Message msg) {
-            System.out.println("==============" + msg.what);
             switch (msg.what) {
                 case PROGRESS_START_TO_LOG_IN:
 

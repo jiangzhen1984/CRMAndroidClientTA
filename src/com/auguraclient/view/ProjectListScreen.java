@@ -163,7 +163,7 @@ public class ProjectListScreen extends Activity {
                     }
                     // TODO show toast
                     Toast.makeText(dialog.getContext(), "errorr ---------------",
-                            Toast.LENGTH_SHORT);
+                            Toast.LENGTH_SHORT).show();
             }
         }
     }
@@ -184,16 +184,17 @@ public class ProjectListScreen extends Activity {
                 case QUERY_PROJECT:
 
                     try {
-                        ProjectList pl = api.queryProjectList((String)msg.obj);
+                        ProjectList pl = api.loadProject((String)msg.obj);
                         if (pl == null) {
                             Message.obtain(uiHandler, END_WAITING_WITH_ERROR).sendToTarget();
                         } else {
-                            GlobalHolder.setPl(pl);
+                            GlobalHolder.addProject(pl);
                             Message.obtain(uiHandler, END_WAITING).sendToTarget();
                         }
-                        // TODO populate project list;
+                        // TODO save project to database
                     } catch (APIException e) {
                         e.printStackTrace();
+                        Message.obtain(uiHandler, END_WAITING_WITH_ERROR).sendToTarget();
                     }
                     break;
             }

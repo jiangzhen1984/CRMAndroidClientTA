@@ -25,11 +25,11 @@ public class Project implements ProjectJSONParser {
 
     private String text;
 
-    private List<ProjectOrder> projectItemList;
+    private List<ProjectOrder> projectOrderList;
 
 
     public Project() {
-        this.projectItemList =  new ArrayList<ProjectOrder>();
+        this.projectOrderList =  new ArrayList<ProjectOrder>();
     }
 
 
@@ -62,32 +62,32 @@ public class Project implements ProjectJSONParser {
 
     }
 
-    public void addProject(ProjectOrder pi) {
-        this.projectItemList.add(pi);
+    public void addProjectOrder(ProjectOrder pi) {
+        this.projectOrderList.add(pi);
         pi.setProject(this);
     }
 
-    public void addProject( List<ProjectOrder> list) {
+    public void addProjectOrder( List<ProjectOrder> list) {
         if (list == null ) {
             return;
         }
         for(int i=0;i<list.size(); i++) {
             ProjectOrder pi = list.get(i);
-            this.projectItemList.add(pi);
+            this.projectOrderList.add(pi);
             pi.setProject(this);
         }
     }
 
-    public ProjectOrder getItem(int index) {
-        if (index <0 || index > projectItemList.size() ) {
+    public ProjectOrder getOrder(int index) {
+        if (index <0 || index > projectOrderList.size() ) {
             return null;
         }
-        return projectItemList.get(index);
+        return projectOrderList.get(index);
     }
 
 
-    public int getItemCount() {
-        return projectItemList.size();
+    public int getOrderCount() {
+        return projectOrderList.size();
     }
 
 

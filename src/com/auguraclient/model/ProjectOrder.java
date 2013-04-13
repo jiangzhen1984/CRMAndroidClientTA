@@ -185,11 +185,11 @@ public class ProjectOrder implements ProjectJSONParser {
     }
 
 
-    public void addItemOrder(ProjectCheckpoint po) {
+    public void addOrderCheckpoint(ProjectCheckpoint po) {
         this.orderList.add(po);
     }
 
-    public void addItemOrder(List<ProjectCheckpoint> poList) {
+    public void addOrderCheckpoint(List<ProjectCheckpoint> poList) {
         if (poList == null ) {
             return;
         }

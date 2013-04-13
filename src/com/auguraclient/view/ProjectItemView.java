@@ -1,13 +1,9 @@
 
 package com.auguraclient.view;
 
-import com.auguraclient.R;
-import com.auguraclient.model.APIException;
-import com.auguraclient.model.ISuguraRestAPI;
-import com.auguraclient.model.Project;
-import com.auguraclient.model.ProjectOrder;
-import com.auguraclient.model.SuguraRestAPIImpl;
-import com.auguraclient.util.GlobalHolder;
+import java.io.InputStream;
+import java.net.URL;
+import java.util.List;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
@@ -33,10 +29,13 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.AdapterView.OnItemClickListener;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.URL;
-import java.util.List;
+import com.auguraclient.R;
+import com.auguraclient.model.APIException;
+import com.auguraclient.model.ISuguraRestAPI;
+import com.auguraclient.model.Project;
+import com.auguraclient.model.ProjectOrder;
+import com.auguraclient.model.SuguraRestAPIImpl;
+import com.auguraclient.util.GlobalHolder;
 
 public class ProjectItemView extends Activity {
 
@@ -147,7 +146,7 @@ public class ProjectItemView extends Activity {
                     }
                     // TODO show toast
                     Toast.makeText(dialog.getContext(), "errorr ---------------",
-                            Toast.LENGTH_SHORT);
+                            Toast.LENGTH_SHORT).show();
             }
         }
     }
@@ -173,9 +172,11 @@ public class ProjectItemView extends Activity {
               Message.obtain(uiHandler, START_WAITING).sendToTarget();
                 List<ProjectOrder> l;
                 try {
-                    l = api.queryProjectItemList(project.getId());
-                    project.addProject(l);
-                    Message.obtain(uiHandler, END_WAITING).sendToTarget();
+                	if(project.getOrderCount() <= 0) {
+                		l = api.queryProjectOrderList(project.getId());
+                		project.addProjectOrder(l);
+                	}
+                	Message.obtain(uiHandler, END_WAITING).sendToTarget();
                 } catch (APIException e) {
                     e.printStackTrace();
                     Message.obtain(uiHandler, END_WAITING_WITH_ERROR).sendToTarget();
@@ -195,11 +196,11 @@ public class ProjectItemView extends Activity {
         }
 
         public int getCount() {
-            return project.getItemCount();
+            return project.getOrderCount();
         }
 
         public Object getItem(int position) {
-            return project.getItem(position);
+            return project.getOrder(position);
         }
 
         public long getItemId(int position) {
@@ -209,7 +210,7 @@ public class ProjectItemView extends Activity {
         public View getView(int position, View convertView, ViewGroup parent) {
             if (convertView == null) {
                 ItemView appView = new ItemView(context);
-                appView.updateView(project.getItem(position));
+                appView.updateView(project.getOrder(position));
                 convertView = appView;
             }
             return convertView;

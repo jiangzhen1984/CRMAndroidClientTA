@@ -56,6 +56,7 @@ public class ProjectList implements ProjectJSONParser {
             return ;
         }
         this.list.add(p);
+        this.resultCount += 1;
     }
 
     public void parser(JSONObject jsonObject) throws JSONParserException {
