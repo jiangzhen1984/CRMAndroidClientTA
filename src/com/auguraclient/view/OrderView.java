@@ -5,8 +5,8 @@ import com.auguraclient.R;
 import com.auguraclient.model.APIException;
 import com.auguraclient.model.ISuguraRestAPI;
 import com.auguraclient.model.Project;
-import com.auguraclient.model.ProjectItem;
-import com.auguraclient.model.ProjectItemOrder;
+import com.auguraclient.model.ProjectOrder;
+import com.auguraclient.model.ProjectCheckpoint;
 import com.auguraclient.model.SuguraRestAPIImpl;
 import com.auguraclient.util.Constants;
 import com.auguraclient.util.GlobalHolder;
@@ -64,7 +64,7 @@ public class OrderView extends Activity {
     private UIHandler uiHandler;
 
 
-    private ProjectItem projectItem;
+    private ProjectOrder projectItem;
 
 
     private ImageView projectItemPhotoIV;
@@ -201,7 +201,7 @@ public class OrderView extends Activity {
         switch(msg.what) {
             case LOAD_PROJECT_ITEM_ORDER:
               Message.obtain(uiHandler, START_WAITING).sendToTarget();
-                List<ProjectItemOrder> l;
+                List<ProjectCheckpoint> l;
                 try {
                     l = api.queryProjectItemOrderList(projectItem.getId());
                     projectItem.addItemOrder(l);
@@ -278,7 +278,7 @@ public class OrderView extends Activity {
             itemOperationIV = (ImageView)this.findViewById(R.id.projectItemOrderOperation);
         }
 
-        public void updateView(ProjectItemOrder pi) {
+        public void updateView(ProjectCheckpoint pi) {
             if(pi == null) {
                 Log.e(Constants.TAG, " can't update view for order view ProjectItemOrder is null");
                 return;

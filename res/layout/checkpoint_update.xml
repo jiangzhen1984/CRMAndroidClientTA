@@ -1,4 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:scrollbars="none">
+    
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
 	android:layout_width="match_parent" android:layout_height="match_parent"
 	android:background="@color/splashscreen_background"
@@ -18,10 +23,10 @@
 		android:layout_weight="1" android:paddingTop="10dip"
 		android:orientation="vertical">
 
-		<TextView android:layout_width="wrap_content"
+		<TextView android:layout_width="100px"
 			android:layout_height="wrap_content" android:id="@+id/textView1"
 			android:text="Category:" android:layout_marginLeft="20dip"
-			android:layout_marginTop="8dip" android:textSize="19sp"></TextView>
+			android:layout_marginTop="8dip" android:textSize="14sp"></TextView>
 
 
 		<EditText android:layout_width="wrap_content"
@@ -33,10 +38,10 @@
 			android:layout_toRightOf="@+id/textView1"
 			android:layout_centerHorizontal="true" android:id="@+id/login_text" />
 
-		<TextView android:layout_width="wrap_content"
+		<TextView android:layout_width="100px"
 			android:layout_height="wrap_content" android:id="@+id/textView2"
 			android:text="Checkpoint:" android:layout_marginTop="10dip"
-			android:layout_marginLeft="20dip" android:textSize="19sp"
+			android:layout_marginRight="20dip" android:textSize="14sp"
 			android:layout_below="@+id/textView1"></TextView>
 
 
@@ -56,10 +61,10 @@
 
 
 
-		<TextView android:layout_width="wrap_content"
+		<TextView android:layout_width="100px"
 			android:layout_height="wrap_content" android:id="@+id/textView3"
 			android:text="Name" android:layout_marginTop="18dip"
-			android:textSize="19sp" android:layout_marginLeft="20dip"
+			android:textSize="14sp" android:layout_marginRight="20dip"
 			android:layout_below="@+id/textView2"></TextView>
 
 
@@ -96,7 +101,7 @@
 			android:layout_marginTop="5dip" />
 
 		<ImageView android:layout_width="fill_parent"
-			android:layout_height="wrap_content" android:src="@drawable/app_icon"
+			android:layout_height="wrap_content" 
 			android:id="@+id/im" android:layout_below="@+id/login_text4"
 			android:layout_margin="10dip" />
 
@@ -174,4 +179,5 @@
 
 	</LinearLayout>
 </LinearLayout>
+</ScrollView>
 

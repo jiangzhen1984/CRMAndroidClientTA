@@ -14,7 +14,7 @@
         android:label="@string/app_name">
       <!--  <activity android:name=".view.LoginScreen"  -->
         <activity
-            android:name=".view.LoginScreen"
+            android:name=".view.CreateUpdateCheckpoint"
             android:label="@string/app_name">
             <intent-filter>
                 <action

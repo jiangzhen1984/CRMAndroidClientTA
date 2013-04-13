@@ -5,7 +5,7 @@ import com.auguraclient.R;
 import com.auguraclient.model.APIException;
 import com.auguraclient.model.ISuguraRestAPI;
 import com.auguraclient.model.Project;
-import com.auguraclient.model.ProjectItem;
+import com.auguraclient.model.ProjectOrder;
 import com.auguraclient.model.SuguraRestAPIImpl;
 import com.auguraclient.util.GlobalHolder;
 
@@ -171,7 +171,7 @@ public class ProjectItemView extends Activity {
         switch(msg.what) {
             case LOAD_PROJECT_ITEM:
               Message.obtain(uiHandler, START_WAITING).sendToTarget();
-                List<ProjectItem> l;
+                List<ProjectOrder> l;
                 try {
                     l = api.queryProjectItemList(project.getId());
                     project.addProject(l);
@@ -247,7 +247,7 @@ public class ProjectItemView extends Activity {
             itemPhotoIV = (ImageView)this.findViewById(R.id.projectItemPhoto);
         }
 
-        public void updateView(ProjectItem pi) {
+        public void updateView(ProjectOrder pi) {
             itemNameTV.setText(pi.getName());
             qcStatusTV.setText("QC Status :"+ pi.getQcStatus());
             quantityTV.setText("Quantity :"+pi.getQuantity());

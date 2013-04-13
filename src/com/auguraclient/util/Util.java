@@ -3,8 +3,8 @@ package com.auguraclient.util;
 
 import com.auguraclient.model.JSONParserException;
 import com.auguraclient.model.Project;
-import com.auguraclient.model.ProjectItem;
-import com.auguraclient.model.ProjectItemOrder;
+import com.auguraclient.model.ProjectOrder;
+import com.auguraclient.model.ProjectCheckpoint;
 import com.auguraclient.model.ProjectList;
 import com.auguraclient.model.User;
 
@@ -145,12 +145,12 @@ public class Util {
         return pl;
     }
 
-    public static List<ProjectItem> parserProjectItemListJson(JSONObject object) {
+    public static List<ProjectOrder> parserProjectItemListJson(JSONObject object) {
         try {
-            List<ProjectItem> l = new ArrayList<ProjectItem>();
+            List<ProjectOrder> l = new ArrayList<ProjectOrder>();
             JSONArray itemAr = object.getJSONArray("entry_list");
             for (int i = 0; i < itemAr.length(); i++) {
-                ProjectItem pi = new ProjectItem();
+                ProjectOrder pi = new ProjectOrder();
                 JSONObject it = (JSONObject)itemAr.get(i);
                 pi.parser(it);
                 l.add(pi);
@@ -167,12 +167,12 @@ public class Util {
 
 
 
-    public static List<ProjectItemOrder> parserProjectItemOrderListJson(JSONObject object) {
+    public static List<ProjectCheckpoint> parserProjectItemOrderListJson(JSONObject object) {
         try {
-            List<ProjectItemOrder> l = new ArrayList<ProjectItemOrder>();
+            List<ProjectCheckpoint> l = new ArrayList<ProjectCheckpoint>();
             JSONArray itemAr = object.getJSONArray("entry_list");
             for (int i = 0; i < itemAr.length(); i++) {
-                ProjectItemOrder pi = new ProjectItemOrder();
+                ProjectCheckpoint pi = new ProjectCheckpoint();
                 JSONObject it = (JSONObject)itemAr.get(i);
                 pi.parser(it);
                 l.add(pi);

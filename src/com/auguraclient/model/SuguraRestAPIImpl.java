@@ -118,7 +118,7 @@ public class SuguraRestAPIImpl implements ISuguraRestAPI {
     }
 
 
-    public List<ProjectItem> queryProjectItemList(String projectID) throws APIException {
+    public List<ProjectOrder> queryProjectItemList(String projectID) throws APIException {
         // {"session":"9467257e6ce3e29f46082b473c9e3554","module_name":"Project","module_id":"a3c3613d-cdc5-703a-55af-513945799b60","link_field_name":"agr_orderdetails_project","related_module_query":"","related_fields":["id","name","quantity","photo_c","qc_status","qc_date","quantity_checked","qc_comment","date_modified"],"deleted":"0"}
         String sessionId = GlobalHolder.getSessionId();
         if (sessionId == null || sessionId.isEmpty()) {
@@ -171,7 +171,7 @@ public class SuguraRestAPIImpl implements ISuguraRestAPI {
 
     }
 
-    public List<ProjectItemOrder> queryProjectItemOrderList(String orderId) throws APIException {
+    public List<ProjectCheckpoint> queryProjectItemOrderList(String orderId) throws APIException {
         //{"session":"9467257e6ce3e29f46082b473c9e3554","module_name":"AGR_OrderDetails","module_id":"d82e0333-5e06-df53-7695-515d29c81443","link_field_name":"agr_orderdetails_agr_qccheckpoints","related_module_query":"","related_fields":["id","name","category","checktype","description","qc_status","executed_date","number_defect","qc_comment","qc_action","visual","date_modified","photo_c"],"deleted":"0"}
 
         String sessionId = GlobalHolder.getSessionId();
