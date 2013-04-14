@@ -11,19 +11,11 @@ public class Project implements ProjectJSONParser {
 
     private String id;
 
-    public Integer getnID() {
-        return nID;
-    }
-
-
-    public void setnID(Integer nID) {
-        this.nID = nID;
-    }
-
-
     private String name;
 
     private String text;
+
+    private boolean isLoadOrderFromDB;
 
     private List<ProjectOrder> projectOrderList;
 
@@ -88,6 +80,26 @@ public class Project implements ProjectJSONParser {
 
     public int getOrderCount() {
         return projectOrderList.size();
+    }
+
+
+    public Integer getnID() {
+        return nID;
+    }
+
+
+    public void setnID(Integer nID) {
+        this.nID = nID;
+    }
+
+
+    public boolean isLoadOrderFromDB() {
+        return isLoadOrderFromDB;
+    }
+
+
+    public void setLoadOrderFromDB(boolean isLoadOrderFromDB) {
+        this.isLoadOrderFromDB = isLoadOrderFromDB;
     }
 
 

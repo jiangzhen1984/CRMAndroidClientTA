@@ -84,6 +84,12 @@ public class Util {
                 return null;
             }
             user.setmSessionID(obj.toString());
+
+            JSONObject valueObject = (JSONObject)object.get("name_value_list");
+           if(valueObject != null) {
+               user.setUseID(((JSONObject)valueObject.get("user_id")).getString("value"));
+               user.setUserName(((JSONObject)valueObject.get("user_name")).getString("value"));
+           }
         } catch (JSONException e) {
             e.printStackTrace();
             return null;
@@ -188,13 +194,17 @@ public class Util {
     }
 
     public static void loadImageFromURL(URL url, String photoPath) throws IOException {
-    	
+        Log.i(Constants.TAG, photoPath);
         InputStream input = null;
         OutputStream output = null;
 
         try {
+            File f =  new  File(photoPath);
+            if(!f.exists()) {
+                f.createNewFile();
+            }
             input = url.openStream();
-            output = new FileOutputStream(new File(photoPath));
+            output = new FileOutputStream(f);
 
             byte[] buffer = new byte[Constants.BUFFER_SIZE];
             int bytesRead = 0;

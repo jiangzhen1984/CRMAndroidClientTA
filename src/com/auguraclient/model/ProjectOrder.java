@@ -48,32 +48,19 @@ public class ProjectOrder implements ProjectJSONParser {
 
     private String description;
 
-    public String getPhotoBigPath() {
-        return photoBigPath;
-    }
-
-    public void setPhotoBigPath(String photoBigPath) {
-        this.photoBigPath = photoBigPath;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
+    private boolean isLoadedCheckpointFromDB;
 
 
-    private List<ProjectCheckpoint> orderList;
+
+    private List<ProjectCheckpoint> checkpointList;
 
     public ProjectOrder() {
-        orderList =new ArrayList<ProjectCheckpoint>();
+        checkpointList =new ArrayList<ProjectCheckpoint>();
     }
 
     public ProjectOrder(JSONObject jsonObject) {
         this.jsonObject = jsonObject;
-        orderList =new ArrayList<ProjectCheckpoint>();
+        checkpointList =new ArrayList<ProjectCheckpoint>();
     }
 
 
@@ -100,8 +87,8 @@ public class ProjectOrder implements ProjectJSONParser {
             this.photoName = ( (JSONObject)NameValue.get("photo_c")).getString("value");
             this.photoPath = Constants.CommonConfig.PIC_DIR+"p_70_70_"+photoName ; //Constants.PHTOT_COMPRESSED_API_URL +photoName+"&h=70&w=70";
             this.photoBigPath = Constants.CommonConfig.PIC_DIR+"p_150_150_"+photoName ; // Constants.PHTOT_COMPRESSED_API_URL +photoName+"&h=150&w=150";
-            Util.loadImageFromURL(new URL(Constants.PHTOT_COMPRESSED_API_URL +photoName+"&h=70&w=70"), GlobalHolder.GLOBAL_STORAGE_PATH+Constants.CommonConfig.PIC_DIR+this.photoPath);
-            Util.loadImageFromURL(new URL(Constants.PHTOT_COMPRESSED_API_URL +photoName+"&h=150&w=150"), GlobalHolder.GLOBAL_STORAGE_PATH+Constants.CommonConfig.PIC_DIR+this.photoBigPath);
+            Util.loadImageFromURL(new URL(Constants.PHTOT_COMPRESSED_API_URL +photoName+"&h=70&w=70"), GlobalHolder.GLOBAL_STORAGE_PATH+this.photoPath);
+            Util.loadImageFromURL(new URL(Constants.PHTOT_COMPRESSED_API_URL +photoName+"&h=150&w=150"), GlobalHolder.GLOBAL_STORAGE_PATH+this.photoBigPath);
 
 
         } catch (JSONException e) {
@@ -197,7 +184,10 @@ public class ProjectOrder implements ProjectJSONParser {
 
 
     public void addOrderCheckpoint(ProjectCheckpoint po) {
-        this.orderList.add(po);
+        if(po != null) {
+            this.checkpointList.add(po);
+            po.setProjectItem(this);
+        }
     }
 
     public void addOrderCheckpoint(List<ProjectCheckpoint> poList) {
@@ -206,21 +196,21 @@ public class ProjectOrder implements ProjectJSONParser {
         }
         for(int i=0;i<poList.size(); i++) {
             ProjectCheckpoint pi = poList.get(i);
-            this.orderList.add(pi);
+            this.checkpointList.add(pi);
             pi.setProjectItem(this);
         }
     }
 
-    public ProjectCheckpoint getItemOrderByIndex(int pos) {
-        if(pos <0 || pos >= orderList.size()) {
+    public ProjectCheckpoint getOrderCheckpointrByIndex(int pos) {
+        if(pos <0 || pos >= checkpointList.size()) {
             return null;
         }
-        return orderList.get(pos);
+        return checkpointList.get(pos);
     }
 
 
-    public int getItemOrderCount() {
-        return orderList.size();
+    public int getCheckpointCount() {
+        return checkpointList.size();
     }
 
     public Integer getnID() {
@@ -231,6 +221,29 @@ public class ProjectOrder implements ProjectJSONParser {
         this.nID = nID;
     }
 
+    public String getPhotoBigPath() {
+        return photoBigPath;
+    }
+
+    public void setPhotoBigPath(String photoBigPath) {
+        this.photoBigPath = photoBigPath;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public boolean isLoadedCheckpointFromDB() {
+        return isLoadedCheckpointFromDB;
+    }
+
+    public void setLoadedCheckpointFromDB(boolean isLoadedCheckpointFromDB) {
+        this.isLoadedCheckpointFromDB = isLoadedCheckpointFromDB;
+    }
 
 
 

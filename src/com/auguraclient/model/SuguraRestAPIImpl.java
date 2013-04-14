@@ -61,7 +61,8 @@ public class SuguraRestAPIImpl implements ISuguraRestAPI {
                     + URLEncoder.encode(restData.toString(), "UTF-8"));
             if (response != null) {
                 JSONObject resp = new JSONObject(response);
-                return Util.parserUserJson(resp);
+                User user =  Util.parserUserJson(resp);
+                return user;
             }
         } catch (UnsupportedEncodingException e) {
             throw new APIException(" can't find UTF-8 encder instance");
@@ -71,14 +72,14 @@ public class SuguraRestAPIImpl implements ISuguraRestAPI {
 
         return null;
     }
-    
-    
+
+
     public ProjectList loadProject(String name) throws APIException {
     	ProjectList pl = this.queryProjectList(name);
     	List<Project> l = pl.getList();
     	for(int i =0; i <l.size(); i++) {
     		Project p = l.get(i);
-    		List<ProjectOrder> poList = this.queryProjectOrderList(p.getId()); 
+    		List<ProjectOrder> poList = this.queryProjectOrderList(p.getId());
     		p.addProjectOrder(poList);
     		for(int j = 0; j < poList.size(); j++) {
     			ProjectOrder po = poList.get(j);

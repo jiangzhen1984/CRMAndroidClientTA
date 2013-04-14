@@ -26,6 +26,7 @@ public class AuguraDatabaseHelper extends SQLiteOpenHelper {
                 ContentDescriptor.ProjectDesc.Cols.ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
                 ContentDescriptor.ProjectDesc.Cols.PRO_ID   + " TEXT NOT NULL,  " +
                 ContentDescriptor.ProjectDesc.Cols.NAME + " TEXT NOT NULL, " +
+                ContentDescriptor.ProjectDesc.Cols.TEXT + " TEXT NOT NULL, " +
                 ContentDescriptor.ProjectDesc.Cols.SYNC_FLAG + " TEXT, " +
                 "UNIQUE (" +
                     ContentDescriptor.ProjectDesc.Cols.ID +
@@ -37,6 +38,7 @@ public class AuguraDatabaseHelper extends SQLiteOpenHelper {
                 ContentDescriptor.ProjectOrderDesc.Cols.ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
                 ContentDescriptor.ProjectOrderDesc.Cols.PRO_ID   + " TEXT NOT NULL,  " +
                 ContentDescriptor.ProjectOrderDesc.Cols.NAME + " TEXT NOT NULL, " +
+                ContentDescriptor.ProjectOrderDesc.Cols.ORD_ID + " TEXT NOT NULL, " +
                 ContentDescriptor.ProjectOrderDesc.Cols.QUANTITY + " TEXT , " +
                 ContentDescriptor.ProjectOrderDesc.Cols.QC_STATUS + " TEXT , " +
                 ContentDescriptor.ProjectOrderDesc.Cols.QUANTITY_CHECKED + " TEXT , " +
@@ -56,6 +58,7 @@ public class AuguraDatabaseHelper extends SQLiteOpenHelper {
                 ContentDescriptor.ProjectCheckpointDesc.Cols.ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
                 ContentDescriptor.ProjectCheckpointDesc.Cols.PRO_ID   + " TEXT NOT NULL,  " +
                 ContentDescriptor.ProjectCheckpointDesc.Cols.PRO_ORDER_ID + " TEXT NOT NULL, " +
+                ContentDescriptor.ProjectCheckpointDesc.Cols.CHECKPOINT_ID + " TEXT NOT NULL, " +
                 ContentDescriptor.ProjectCheckpointDesc.Cols.NAME + " TEXT NOT NULL," +
                 ContentDescriptor.ProjectCheckpointDesc.Cols.CATEGORY + " TEXT , " +
                 ContentDescriptor.ProjectCheckpointDesc.Cols.QC_STATUS + " TEXT , " +

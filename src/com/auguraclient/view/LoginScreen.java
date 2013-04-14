@@ -1,12 +1,23 @@
 
 package com.auguraclient.view;
 
+import com.auguraclient.R;
+import com.auguraclient.model.APIException;
+import com.auguraclient.model.ISuguraRestAPI;
+import com.auguraclient.model.SuguraRestAPIImpl;
+import com.auguraclient.model.User;
+import com.auguraclient.util.Constants;
+import com.auguraclient.util.GlobalHolder;
+import com.auguraclient.util.SoundEngine;
+
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
 import android.content.res.Resources;
 import android.os.Bundle;
 import android.os.Handler;
@@ -18,21 +29,12 @@ import android.util.Log;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.Window;
-import android.view.WindowManager;
 import android.view.View.OnClickListener;
 import android.view.View.OnTouchListener;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.EditText;
 import android.widget.LinearLayout;
-
-import com.auguraclient.R;
-import com.auguraclient.model.APIException;
-import com.auguraclient.model.ISuguraRestAPI;
-import com.auguraclient.model.SuguraRestAPIImpl;
-import com.auguraclient.model.User;
-import com.auguraclient.util.Constants;
-import com.auguraclient.util.GlobalHolder;
-import com.auguraclient.util.SoundEngine;
 
 public class LoginScreen extends Activity {
 
@@ -238,6 +240,12 @@ public class LoginScreen extends Activity {
                             .sendToTarget();
                         } else {
                             GlobalHolder.setCurrentUser(user);
+                            SharedPreferences sp = context.getSharedPreferences(Constants.SaveConfig.CONFIG, MODE_PRIVATE);
+                            Editor edit = sp.edit();
+                            edit.putString(Constants.SaveConfig.USER_ID, user.getUseID());
+                            edit.putString(Constants.SaveConfig.USER_NAME, user.getUserName());
+                            edit.putString(Constants.SaveConfig.SESSION, user.getmSessionID());
+                            edit.commit();
                             Message.obtain(progressHandler, PROGRESS_START_TO_LOG_IN_SUCCESSFUL)
                             .sendToTarget();
                         }

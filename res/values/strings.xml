@@ -26,4 +26,5 @@
 
 
 	<string name="error_create_pic_dir" >Can\'t create picture local directory</string>
+    <string name="error_load_project" >Load project data error</string>
 </resources>

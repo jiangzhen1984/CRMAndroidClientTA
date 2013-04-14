@@ -93,8 +93,8 @@ public class ProjectCheckpoint implements ProjectJSONParser {
 
             this.photoName = ( (JSONObject)NameValue.get("visual")).getString("value");
             if(this.photoName !=null && !this.photoName.isEmpty()) {
-                this.photoPath = Constants.PHTOT_COMPRESSED_API_URL +photoName+"&h=70&w=70";
-                Util.loadImageFromURL(new URL(Constants.PHTOT_COMPRESSED_API_URL +photoName+"&h=70&w=70"), GlobalHolder.GLOBAL_STORAGE_PATH+Constants.CommonConfig.PIC_DIR+this.photoPath);
+                this.photoPath =Constants.CommonConfig.PIC_DIR +photoName+"&h=70&w=70";
+                Util.loadImageFromURL(new URL(Constants.PHTOT_COMPRESSED_API_URL +"p_70_70_"+photoName), GlobalHolder.GLOBAL_STORAGE_PATH+this.photoPath);
             } else {
                 this.photoPath  = null;
             }

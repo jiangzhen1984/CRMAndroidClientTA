@@ -44,8 +44,10 @@ public class ContentDescriptor {
             public static final String NAME = "name";
 
             public static final String PRO_ID = "pro_id";
+            public static final String TEXT = "pro_text";
 
-            public static final String SYNC_FLAG ="sync_flag";
+            public static final String SYNC_FLAG = "sync_flag";
+            public static final String[] ALL_CLOS ={ID, NAME, PRO_ID, SYNC_FLAG,TEXT};
         }
     }
 
@@ -57,8 +59,7 @@ public class ContentDescriptor {
 
         public static final String NAME = PATH;
 
-        public static final Uri CONTENT_URI = BASE_URI.buildUpon().appendPath("project_order")
-                .build();
+        public static final Uri CONTENT_URI = BASE_URI.buildUpon().appendPath(PATH).build();
 
         public static class Cols {
             public static final String ID = BaseColumns._ID;
@@ -71,7 +72,7 @@ public class ContentDescriptor {
 
             public static final String QUANTITY = "quantity";
 
-            public static final String QC_STATUS = "qc_status;";
+            public static final String QC_STATUS = "qc_status";
 
             public static final String QUANTITY_CHECKED = " quantity_checked";
 
@@ -86,18 +87,24 @@ public class ContentDescriptor {
             public static final String PHOTO_LOCAL_BIG_PATH = "big_path";
 
             public static final String DESCRIPTION = "description";
+
+            public static final String[] ALL_COLS = {
+                    ID, NAME, PRO_ID, ORD_ID, QUANTITY, QC_STATUS, QUANTITY_CHECKED,
+                    QC_COMMENT, DATE_MODIFIED, PHOTO_NAME, PHOTO_LOCAL_SMALL_PATH,
+                    PHOTO_LOCAL_BIG_PATH, DESCRIPTION
+            };
         }
     }
 
     public static class ProjectCheckpointDesc {
 
-        public static final String PATH = "project_order_checkpoing";
+        public static final String PATH = "project_order_checkpoint";
 
         public static final int TOKEN = 3;
+
         public static final String NAME = PATH;
 
-        public static final Uri CONTENT_URI = BASE_URI.buildUpon()
-                .appendPath("project_order_checkpoing").build();
+        public static final Uri CONTENT_URI = BASE_URI.buildUpon().appendPath(PATH).build();
 
         public static class Cols {
             public static final String ID = BaseColumns._ID;
@@ -108,9 +115,11 @@ public class ContentDescriptor {
 
             public static final String PRO_ORDER_ID = ProjectOrderDesc.Cols.ORD_ID;
 
+            public static final String CHECKPOINT_ID = "checkpoint_id";
+
             public static final String CATEGORY = "category";
 
-            public static final String CHECK_TYPE = "check_type;";
+            public static final String CHECK_TYPE = "check_type";
 
             public static final String QC_STATUS = " qc_status";
 
@@ -131,6 +140,12 @@ public class ContentDescriptor {
             public static final String EXECTUED_DATE = "executed_date";
 
             public static final String LAST_DATE = "last_date";
+
+            public static final String[] ALL_COLS = {
+                    ID, NAME, PRO_ID, PRO_ORDER_ID, CHECKPOINT_ID, CATEGORY, CHECK_TYPE, QC_STATUS,
+                    NUMBER_DEFECT, QC_ACTION, PHOTO_NAME, PHOTO_LOCAL_SMALL_PATH,
+                    PHOTO_LOCAL_BIG_PATH, DESCRIPTION, QC_COMMENT, EXECTUED_DATE, LAST_DATE
+            };
 
         }
 

@@ -1,11 +1,19 @@
 package com.auguraclient.view;
 
-import java.io.File;
+import com.auguraclient.R;
+import com.auguraclient.db.ContentDescriptor;
+import com.auguraclient.model.Project;
+import com.auguraclient.model.ProjectList;
+import com.auguraclient.model.User;
+import com.auguraclient.util.Constants;
+import com.auguraclient.util.GlobalHolder;
 
 import android.app.Activity;
+import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.database.Cursor;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
@@ -14,10 +22,7 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Toast;
 
-import com.auguraclient.R;
-import com.auguraclient.model.User;
-import com.auguraclient.util.Constants;
-import com.auguraclient.util.GlobalHolder;
+import java.io.File;
 
 public class LogoView extends Activity {
 
@@ -70,13 +75,10 @@ public class LogoView extends Activity {
 						Constants.SaveConfig.CONFIG, MODE_PRIVATE);
 				String userName = sp.getString(Constants.SaveConfig.USER_NAME,
 						"");
-				String password = sp.getString(Constants.SaveConfig.PASSWORD,
-						"");
 				String session = sp.getString(Constants.SaveConfig.SESSION, "");
 				String userID = sp
 						.getString(Constants.SaveConfig.USER_NAME, "");
-				if (userName == null || userName.isEmpty() || password == null
-						|| password.isEmpty() || session == null
+				if (userName == null || userName.isEmpty() ||  session == null
 						|| session.isEmpty() || userID == null
 						|| userID.isEmpty()) {
 					i.setAction("com.auguraclient.view.login");
@@ -87,6 +89,7 @@ public class LogoView extends Activity {
 					u.setmSessionID(session);
 					u.setUseID(userID);
 					GlobalHolder.setCurrentUser(u);
+					loadProjectFromDb();
 					i.setAction("com.auguraclient.view.projectList");
 					i.addCategory("com.auguraclient.view");
 				}
@@ -96,6 +99,25 @@ public class LogoView extends Activity {
 			}
 		}
 
+	}
+
+
+	private void loadProjectFromDb() {
+	    ProjectList pl = new ProjectList();
+	    ContentResolver  cr =this.getContentResolver();
+	   Cursor c = null;
+	   c = cr.query(ContentDescriptor.ProjectDesc.CONTENT_URI, ContentDescriptor.ProjectDesc.Cols.ALL_CLOS, null, null, null);
+	   pl.setResultCount(c.getCount());
+	   while(c.moveToNext()) {
+	       Project p = new Project();
+	       p.setnID(c.getInt(c.getColumnIndexOrThrow(ContentDescriptor.ProjectDesc.Cols.ID)));
+	       p.setName(c.getString(c.getColumnIndexOrThrow(ContentDescriptor.ProjectDesc.Cols.NAME)));
+	       p.setText(c.getString(c.getColumnIndexOrThrow(ContentDescriptor.ProjectDesc.Cols.TEXT)));
+	       p.setId(c.getString(c.getColumnIndexOrThrow(ContentDescriptor.ProjectDesc.Cols.PRO_ID)));
+	       pl.addProject(p);
+	   }
+	   c.close();
+	   GlobalHolder.setPl(pl);
 	}
 
 	public void doFinish() {
