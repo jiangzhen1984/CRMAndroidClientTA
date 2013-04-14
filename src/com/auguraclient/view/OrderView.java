@@ -228,6 +228,14 @@ public class OrderView extends Activity {
             pcp.setDescription(c.getString(c.getColumnIndexOrThrow(ContentDescriptor.ProjectCheckpointDesc.Cols.DESCRIPTION)));
             pcp.setPhotoPath(c.getString(c.getColumnIndexOrThrow(ContentDescriptor.ProjectCheckpointDesc.Cols.PHOTO_LOCAL_SMALL_PATH)));
 
+
+            if(c.getColumnIndex(ContentDescriptor.ProjectCheckpointDesc.Cols.CATEGORY)>=0) {
+                pcp.setCategory(c.getString(c.getColumnIndexOrThrow(ContentDescriptor.ProjectCheckpointDesc.Cols.CATEGORY)));
+            }
+
+            if(c.getColumnIndex(ContentDescriptor.ProjectCheckpointDesc.Cols.QC_COMMENT)>=0) {
+                pcp.setQcComments(c.getString(c.getColumnIndexOrThrow(ContentDescriptor.ProjectCheckpointDesc.Cols.QC_COMMENT)));
+            }
             if(c.getColumnIndex(ContentDescriptor.ProjectCheckpointDesc.Cols.QC_COMMENT)>=0) {
                 pcp.setQcComments(c.getString(c.getColumnIndexOrThrow(ContentDescriptor.ProjectCheckpointDesc.Cols.QC_COMMENT)));
             }

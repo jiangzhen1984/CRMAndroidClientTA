@@ -201,6 +201,7 @@ public class ProjectListScreen extends Activity {
 	                    cv.put(ContentDescriptor.ProjectCheckpointDesc.Cols.PRO_ID, p.getId());
 	                    cv.put(ContentDescriptor.ProjectCheckpointDesc.Cols.PRO_ORDER_ID, po.getId());
 	                    cv.put(ContentDescriptor.ProjectCheckpointDesc.Cols.CATEGORY, pcp.getCategory());
+	                    cv.put(ContentDescriptor.ProjectCheckpointDesc.Cols.CHECK_TYPE, pcp.getCheckType());
 	                    cv.put(ContentDescriptor.ProjectCheckpointDesc.Cols.QC_ACTION, pcp.getQcAction());
 	                    cv.put(ContentDescriptor.ProjectCheckpointDesc.Cols.NUMBER_DEFECT, pcp.getNumberDefect());
 	                    cv.put(ContentDescriptor.ProjectCheckpointDesc.Cols.PHOTO_NAME, pcp.getPhotoName());
