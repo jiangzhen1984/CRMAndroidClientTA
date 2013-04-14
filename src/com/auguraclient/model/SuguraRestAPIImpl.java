@@ -61,7 +61,7 @@ public class SuguraRestAPIImpl implements ISuguraRestAPI {
                     + URLEncoder.encode(restData.toString(), "UTF-8"));
             if (response != null) {
                 JSONObject resp = new JSONObject(response);
-                User user =  Util.parserUserJson(resp);
+                User user = Util.parserUserJson(resp);
                 return user;
             }
         } catch (UnsupportedEncodingException e) {
@@ -73,20 +73,19 @@ public class SuguraRestAPIImpl implements ISuguraRestAPI {
         return null;
     }
 
-
     public ProjectList loadProject(String name) throws APIException {
-    	ProjectList pl = this.queryProjectList(name);
-    	List<Project> l = pl.getList();
-    	for(int i =0; i <l.size(); i++) {
-    		Project p = l.get(i);
-    		List<ProjectOrder> poList = this.queryProjectOrderList(p.getId());
-    		p.addProjectOrder(poList);
-    		for(int j = 0; j < poList.size(); j++) {
-    			ProjectOrder po = poList.get(j);
-    			po.addOrderCheckpoint(this.queryProjectOrderCheckpointList(po.getId()));
-    		}
-    	}
-    	return pl;
+        ProjectList pl = this.queryProjectList(name);
+        List<Project> l = pl.getList();
+        for (int i = 0; i < l.size(); i++) {
+            Project p = l.get(i);
+            List<ProjectOrder> poList = this.queryProjectOrderList(p.getId());
+            p.addProjectOrder(poList);
+            for (int j = 0; j < poList.size(); j++) {
+                ProjectOrder po = poList.get(j);
+                po.addOrderCheckpoint(this.queryProjectOrderCheckpointList(po.getId()));
+            }
+        }
+        return pl;
     }
 
     public ProjectList queryProjectList(String name) throws APIException {
@@ -133,15 +132,12 @@ public class SuguraRestAPIImpl implements ISuguraRestAPI {
         }
     }
 
-
     public List<ProjectOrder> queryProjectOrderList(String projectID) throws APIException {
         // {"session":"9467257e6ce3e29f46082b473c9e3554","module_name":"Project","module_id":"a3c3613d-cdc5-703a-55af-513945799b60","link_field_name":"agr_orderdetails_project","related_module_query":"","related_fields":["id","name","quantity","photo_c","qc_status","qc_date","quantity_checked","qc_comment","date_modified"],"deleted":"0"}
         String sessionId = GlobalHolder.getSessionId();
         if (sessionId == null || sessionId.isEmpty()) {
             return null;
         }
-
-
 
         JSONObject restData = new JSONObject();
         JSONArray selectFields = new JSONArray();
@@ -187,8 +183,9 @@ public class SuguraRestAPIImpl implements ISuguraRestAPI {
 
     }
 
-    public List<ProjectCheckpoint> queryProjectOrderCheckpointList(String orderId) throws APIException {
-        //{"session":"9467257e6ce3e29f46082b473c9e3554","module_name":"AGR_OrderDetails","module_id":"d82e0333-5e06-df53-7695-515d29c81443","link_field_name":"agr_orderdetails_agr_qccheckpoints","related_module_query":"","related_fields":["id","name","category","checktype","description","qc_status","executed_date","number_defect","qc_comment","qc_action","visual","date_modified","photo_c"],"deleted":"0"}
+    public List<ProjectCheckpoint> queryProjectOrderCheckpointList(String orderId)
+            throws APIException {
+        // {"session":"9467257e6ce3e29f46082b473c9e3554","module_name":"AGR_OrderDetails","module_id":"d82e0333-5e06-df53-7695-515d29c81443","link_field_name":"agr_orderdetails_agr_qccheckpoints","related_module_query":"","related_fields":["id","name","category","checktype","description","qc_status","executed_date","number_defect","qc_comment","qc_action","visual","date_modified","photo_c"],"deleted":"0"}
 
         String sessionId = GlobalHolder.getSessionId();
         if (sessionId == null || sessionId.isEmpty()) {
@@ -242,8 +239,41 @@ public class SuguraRestAPIImpl implements ISuguraRestAPI {
         return null;
     }
 
+    // http://crm.augura.net/service/v4_1/rest.php?method=set_entry&input_type=JSON&response_type=JSON&rest_data={"session":"XXXXXXXX","module_name":"AGR_QCCheckpoints","name_value_list":[{"name":"id","value":"48287499-7ee5-a933-e687-515e7dc74bf5"},{"name":"deleted","value":1}]}
+    public void deleteCheckpoint(String checkpointId) throws APIException {
+        String sessionId = GlobalHolder.getSessionId();
+        if (sessionId == null || sessionId.isEmpty()) {
+            return;
+        }
 
+        JSONObject restData = new JSONObject();
+        JSONArray entryArray = new JSONArray();
+        try {
+            restData.put("session", sessionId);
+            restData.put("module_name", "AGR_QCCheckpoints");
 
+            JSONObject entry = new JSONObject();
+            entry.put("name", "id");
+            entry.put("value", checkpointId);
+            entryArray.put(entry);
 
+            JSONObject delete = new JSONObject();
+            delete.put("name", "deleted");
+            delete.put("value", "1");
+            entryArray.put(delete);
+            restData.put("name_value_list", entryArray);
+
+            Log.i(Constants.TAG, restData.toString());
+            String url = Util.getDeleteCheckpointUrl();
+            String response;
+
+            response = http.sendHttpGetRequest(url + URLEncoder.encode(restData.toString()));
+            Log.i(Constants.TAG, response);
+
+        } catch (JSONException e) {
+            throw new APIException(" can't parse API response");
+        }
+
+    }
 
 }

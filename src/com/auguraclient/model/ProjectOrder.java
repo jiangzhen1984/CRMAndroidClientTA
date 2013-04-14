@@ -46,6 +46,8 @@ public class ProjectOrder implements ProjectJSONParser {
 
     private String photoBigPath;
 
+    private String originPhotoPath;
+
     private String description;
 
     private boolean isLoadedCheckpointFromDB;
@@ -87,6 +89,10 @@ public class ProjectOrder implements ProjectJSONParser {
             this.photoName = ( (JSONObject)NameValue.get("photo_c")).getString("value");
             this.photoPath = Constants.CommonConfig.PIC_DIR+"p_70_70_"+photoName ; //Constants.PHTOT_COMPRESSED_API_URL +photoName+"&h=70&w=70";
             this.photoBigPath = Constants.CommonConfig.PIC_DIR+"p_150_150_"+photoName ; // Constants.PHTOT_COMPRESSED_API_URL +photoName+"&h=150&w=150";
+
+            this.originPhotoPath = Constants.CommonConfig.PIC_DIR+photoName ;
+            Util.loadImageFromURL(new URL(Constants.PHTOT_API_URL+photoName), GlobalHolder.GLOBAL_STORAGE_PATH+this.originPhotoPath);
+
             Util.loadImageFromURL(new URL(Constants.PHTOT_COMPRESSED_API_URL +photoName+"&h=70&w=70"), GlobalHolder.GLOBAL_STORAGE_PATH+this.photoPath);
             Util.loadImageFromURL(new URL(Constants.PHTOT_COMPRESSED_API_URL +photoName+"&h=150&w=150"), GlobalHolder.GLOBAL_STORAGE_PATH+this.photoBigPath);
 
@@ -172,6 +178,7 @@ public class ProjectOrder implements ProjectJSONParser {
 
     public void setPhotoName(String photoName) {
         this.photoName = photoName;
+        this.originPhotoPath = Constants.CommonConfig.PIC_DIR+photoName;
     }
 
     public String getPhotoPath() {
@@ -245,6 +252,18 @@ public class ProjectOrder implements ProjectJSONParser {
         this.isLoadedCheckpointFromDB = isLoadedCheckpointFromDB;
     }
 
+    public String getOriginPhotoPath() {
+        return originPhotoPath;
+    }
+
+    public void setOriginPhotoPath(String originPhotoPath) {
+        this.originPhotoPath = originPhotoPath;
+    }
+
+       public void removeCheckpoint(int pos) {
+           if(pos >=0 && pos <this.checkpointList.size())
+           this.checkpointList.remove(pos);
+       }
 
 
 }

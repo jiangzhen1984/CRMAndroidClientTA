@@ -78,7 +78,7 @@ public final class R {
         public static final int projectList=0x7f090026;
         public static final int projectListItemName=0x7f090034;
         public static final int projectListItemheaderlayout=0x7f090033;
-        public static final int projectOrderList=0x7f090024;
+        public static final int projectOrderCheckpointList=0x7f090024;
         public static final int project_numc=0x7f090000;
         public static final int qcStatus=0x7f09002c;
         public static final int tab_add_project_layout=0x7f090027;
@@ -112,6 +112,10 @@ public final class R {
         public static final int add_project=0x7f08000b;
         public static final int app_name=0x7f080001;
         public static final int cancel=0x7f08000e;
+        public static final int delete_checkpoint_confirm=0x7f080012;
+        public static final int delete_checkpoint_confirm_button=0x7f080014;
+        public static final int delete_checkpoint_confirm_button_cancel=0x7f080015;
+        public static final int delete_checkpoint_confirm_title=0x7f080013;
         public static final int error_create_pic_dir=0x7f080010;
         public static final int error_load_project=0x7f080011;
         public static final int first_screen_text=0x7f080008;

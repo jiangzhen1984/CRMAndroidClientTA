@@ -189,6 +189,7 @@ public class ProjectItemView extends Activity {
            po.setDescription(c.getString(c.getColumnIndexOrThrow(ContentDescriptor.ProjectOrderDesc.Cols.DESCRIPTION)));
            po.setPhotoBigPath(c.getString(c.getColumnIndexOrThrow(ContentDescriptor.ProjectOrderDesc.Cols.PHOTO_LOCAL_BIG_PATH)));
            po.setPhotoPath(c.getString(c.getColumnIndexOrThrow(ContentDescriptor.ProjectOrderDesc.Cols.PHOTO_LOCAL_SMALL_PATH)));
+           po.setPhotoName(c.getString(c.getColumnIndexOrThrow(ContentDescriptor.ProjectOrderDesc.Cols.PHOTO_NAME)));
            if(c.getColumnIndex(ContentDescriptor.ProjectOrderDesc.Cols.QC_COMMENT)>=0) {
                po.setQcComment(c.getString(c.getColumnIndexOrThrow(ContentDescriptor.ProjectOrderDesc.Cols.QC_COMMENT)));
            }

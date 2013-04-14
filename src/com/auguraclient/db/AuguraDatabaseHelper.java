@@ -73,6 +73,7 @@ public class AuguraDatabaseHelper extends SQLiteOpenHelper {
 
                 ContentDescriptor.ProjectCheckpointDesc.Cols.PHOTO_LOCAL_BIG_PATH + " TEXT , " +
                 ContentDescriptor.ProjectCheckpointDesc.Cols.PHOTO_LOCAL_SMALL_PATH + " TEXT , " +
+                ContentDescriptor.ProjectCheckpointDesc.Cols.FLAG + " TEXT , " +
                 "UNIQUE (" +
                     ContentDescriptor.ProjectOrderDesc.Cols.ID +
                 ") ON CONFLICT REPLACE)"

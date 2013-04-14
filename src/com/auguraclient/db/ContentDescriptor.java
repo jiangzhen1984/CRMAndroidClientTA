@@ -141,10 +141,12 @@ public class ContentDescriptor {
 
             public static final String LAST_DATE = "last_date";
 
+            public static final String FLAG = "flag";
+
             public static final String[] ALL_COLS = {
                     ID, NAME, PRO_ID, PRO_ORDER_ID, CHECKPOINT_ID, CATEGORY, CHECK_TYPE, QC_STATUS,
                     NUMBER_DEFECT, QC_ACTION, PHOTO_NAME, PHOTO_LOCAL_SMALL_PATH,
-                    PHOTO_LOCAL_BIG_PATH, DESCRIPTION, QC_COMMENT, EXECTUED_DATE, LAST_DATE
+                    PHOTO_LOCAL_BIG_PATH, DESCRIPTION, QC_COMMENT, EXECTUED_DATE, LAST_DATE,FLAG
             };
 
         }
