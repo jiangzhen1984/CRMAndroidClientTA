@@ -42,9 +42,11 @@ public final class R {
     }
     public static final class id {
         public static final int actionLin=0x7f090010;
+        public static final int bottom_add_checpoint=0x7f09002d;
+        public static final int bottom_add_checpoint_layout=0x7f09002c;
         public static final int bottom_tab_add_or_update_checkpoint=0x7f090017;
         public static final int bottom_tab_add_or_update_checkpoint_layout=0x7f090016;
-        public static final int bottom_tab_add_project=0x7f09002c;
+        public static final int bottom_tab_add_project=0x7f090032;
         public static final int categoryEditText=0x7f090006;
         public static final int categoryTextView=0x7f090005;
         public static final int catetoryTextView=0x7f090004;
@@ -55,49 +57,49 @@ public final class R {
         public static final int detailTextView=0x7f09000b;
         public static final int first_screen_text=0x7f090018;
         public static final int forgot_password=0x7f09001c;
-        public static final int headerlayout=0x7f09001d;
-        public static final int images_id=0x7f090031;
-        public static final int itemName=0x7f09002e;
-        public static final int itemOrderCategoryCheckType=0x7f090033;
-        public static final int itemOrderComment=0x7f090027;
-        public static final int itemOrderDefectAlert=0x7f090034;
-        public static final int itemOrderDescription=0x7f090025;
-        public static final int itemOrderQT=0x7f090026;
-        public static final int itemOrderQcComments=0x7f090035;
-        public static final int itemOrderQuntity=0x7f090024;
-        public static final int itemQuntity=0x7f09002f;
-        public static final int itemTitle=0x7f09001e;
+        public static final int headerlayout=0x7f090022;
+        public static final int imagesOp=0x7f090033;
+        public static final int images_id=0x7f090021;
+        public static final int itemName=0x7f09001e;
+        public static final int itemOrderCategoryCheckType=0x7f090035;
+        public static final int itemOrderComment=0x7f09002b;
+        public static final int itemOrderDefectAlert=0x7f090036;
+        public static final int itemOrderDescription=0x7f090029;
+        public static final int itemOrderQT=0x7f09002a;
+        public static final int itemOrderQcComments=0x7f090037;
+        public static final int itemOrderQuntity=0x7f090028;
+        public static final int itemQuntity=0x7f09001f;
+        public static final int itemTitle=0x7f090023;
         public static final int login_text=0x7f090019;
         public static final int nameEditText=0x7f09000a;
         public static final int nameTextView=0x7f090009;
         public static final int ok_button=0x7f090002;
         public static final int ok_button_lin=0x7f090001;
         public static final int ok_button_text=0x7f09001b;
-        public static final int orderItemReturn=0x7f090022;
-        public static final int orderItemTitle=0x7f090021;
+        public static final int orderItemReturn=0x7f090027;
+        public static final int orderItemTitle=0x7f090026;
         public static final int password_text=0x7f09001a;
-        public static final int projectItemContent=0x7f09002d;
-        public static final int projectItemList=0x7f090020;
-        public static final int projectItemOrderOperation=0x7f090032;
-        public static final int projectItemOrderPhoto=0x7f090036;
-        public static final int projectItemPhoto=0x7f090023;
-        public static final int projectList=0x7f09002a;
-        public static final int projectListItemName=0x7f090038;
-        public static final int projectListItemheaderlayout=0x7f090037;
-        public static final int projectOrderCheckpointList=0x7f090028;
+        public static final int projectItemList=0x7f090025;
+        public static final int projectItemOrderOperation=0x7f090034;
+        public static final int projectItemOrderPhoto=0x7f090038;
+        public static final int projectItemPhoto=0x7f09001d;
+        public static final int projectList=0x7f090030;
+        public static final int projectListItemName=0x7f09003a;
+        public static final int projectListItemheaderlayout=0x7f090039;
+        public static final int projectOrderCheckpointList=0x7f09002e;
         public static final int project_numc=0x7f090000;
         public static final int qcCommentEditText=0x7f090015;
         public static final int qcCommentTextView=0x7f090014;
         public static final int qcDefectEditText=0x7f09000f;
         public static final int qcDefectTextView=0x7f09000e;
-        public static final int qcStatus=0x7f090030;
+        public static final int qcStatus=0x7f090020;
         public static final int qcStatusLin=0x7f090012;
-        public static final int tab_add_project_layout=0x7f09002b;
+        public static final int tab_add_project_layout=0x7f090031;
         public static final int textView6=0x7f090011;
         public static final int textView7=0x7f090013;
-        public static final int top_button=0x7f09001f;
+        public static final int top_button=0x7f090024;
         public static final int your_card_header=0x7f090003;
-        public static final int yourcard_header=0x7f090029;
+        public static final int yourcard_header=0x7f09002f;
     }
     public static final class layout {
         public static final int add_project_dialog=0x7f030000;
@@ -105,14 +107,16 @@ public final class R {
         public static final int loginscreen=0x7f030002;
         public static final int logo_view=0x7f030003;
         public static final int main=0x7f030004;
-        public static final int project_item_list=0x7f030005;
-        public static final int project_order_list=0x7f030006;
-        public static final int projectlist=0x7f030007;
+        public static final int project_item=0x7f030005;
+        public static final int project_item_list=0x7f030006;
+        public static final int project_order_list=0x7f030007;
+        public static final int projectlist=0x7f030008;
     }
     public static final class raw {
         public static final int button=0x7f060000;
     }
     public static final class string {
+        public static final int add_checkpoint=0x7f080018;
         public static final int add_project=0x7f08000b;
         public static final int app_name=0x7f080001;
         public static final int cancel=0x7f08000e;

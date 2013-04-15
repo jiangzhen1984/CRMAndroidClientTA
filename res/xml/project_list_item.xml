@@ -1,33 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:id="@+id/projectListItemheaderlayout"
-    
-     android:layout_marginLeft="7dip"
-     android:layout_marginRight="7dip"
-     android:layout_marginTop="5dip"
-     android:layout_marginBottom="5dip"
-    >
-    
-    <TextView
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:textColor="@color/login_top_header"
-        android:textSize="16sp"
-        android:textStyle="bold"
-        android:id="@+id/projectListItemName" />
-        
-        
-        <ImageView
-     android:id="@+id/images_id"
-     android:layout_width="wrap_content"
-     android:layout_height="wrap_content"
-     android:src="@drawable/project_sync"
-     android:layout_alignRight="@+id/projectListItemName"
-     />
-        
- 
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	android:layout_width="match_parent" android:layout_height="wrap_content"
+	android:id="@+id/projectListItemheaderlayout"
+
+	android:layout_marginLeft="7dip" android:layout_marginRight="7dip"
+	android:layout_marginTop="5dip" android:layout_marginBottom="5dip">
+
+	<TextView android:layout_width="fill_parent"
+		android:layout_height="wrap_content" android:textColor="@color/login_top_header"
+		android:layout_marginTop="5dip" android:layout_marginBottom="5dip"
+		android:textSize="16sp" android:textStyle="bold" android:id="@+id/projectListItemName" />
+
+
+	<ImageView android:id="@+id/images_id" android:layout_width="wrap_content"
+		android:layout_height="wrap_content" android:src="@drawable/project_ok"
+		android:layout_marginLeft="5dip" android:layout_marginRight="5dip"
+		android:layout_marginTop="5dip" android:layout_marginBottom="5dip"
+		android:layout_alignRight="@+id/projectListItemName" />
+
+
 </RelativeLayout>

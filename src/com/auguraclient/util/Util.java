@@ -79,7 +79,17 @@ public class Util {
     public static String getUpdateCheckpointUrl() {
         return Constants.API_TABLE[Constants.UPDATE_CHECK_POINT_URL_INDEX];
     }
+    
+    public static String getCreateCheckpointUrl() {
+    	return Constants.API_TABLE[Constants.CREATE_CHECK_POINT_URL_INDEX];
+    }
 
+    
+    public static String getCreateCheckpointRelUrl() {
+    	return Constants.API_TABLE[Constants.CREATE_CHECK_POINT_RELATION_SHIP_URL_INDEX];
+    }
+    
+    
 
     public static User parserUserJson(JSONObject object) {
         if (object == null) {

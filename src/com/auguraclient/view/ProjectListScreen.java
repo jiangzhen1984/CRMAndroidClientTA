@@ -65,8 +65,6 @@ public class ProjectListScreen extends Activity {
 
 	private ListAdapter projectAdapter;
 
-
-
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -94,7 +92,7 @@ public class ProjectListScreen extends Activity {
 			public void onItemClick(AdapterView<?> parent, View view,
 					int position, long id) {
 				Intent i = new Intent();
-				i.setClass(context, ProjectItemView.class);
+				i.setClass(context, ProjectOrderListView.class);
 				i.putExtra("project", position);
 				context.startActivity(i);
 			}
@@ -103,16 +101,12 @@ public class ProjectListScreen extends Activity {
 
 	}
 
-
-
 	@Override
-    protected void onResume() {
-        super.onResume();
-    }
+	protected void onResume() {
+		super.onResume();
+	}
 
-
-
-    OnClickListener addProjectListener = new OnClickListener() {
+	OnClickListener addProjectListener = new OnClickListener() {
 		public void onClick(View v) {
 			SoundEngine.sharedEngine().playEffect(getApplicationContext(),
 					R.raw.button);
@@ -138,7 +132,8 @@ public class ProjectListScreen extends Activity {
 						Message.obtain(handler, CMD_QUERY_PROJECT,
 								projectText.getText().toString())
 								.sendToTarget();
-						Message.obtain(uiHandler, UI_START_WAITING).sendToTarget();
+						Message.obtain(uiHandler, UI_START_WAITING)
+								.sendToTarget();
 
 					}
 
@@ -159,63 +154,123 @@ public class ProjectListScreen extends Activity {
 				WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 	}
 
-
-
 	private void saveToDatabase(ProjectList pl) {
-	    for(int i =0; i< pl.getList().size(); i++) {
-	        Project p = pl.getList().get(i);
-	            ContentValues cv = new ContentValues();
-	            cv.put(ContentDescriptor.ProjectDesc.Cols.PRO_ID, p.getId());
-	            cv.put(ContentDescriptor.ProjectDesc.Cols.NAME, p.getName());
-	            cv.put(ContentDescriptor.ProjectDesc.Cols.TEXT, p.getText());
-	            cv.put(ContentDescriptor.ProjectDesc.Cols.SYNC_FLAG, "1");
-	            Uri uri = this.getContentResolver().insert(ContentDescriptor.ProjectDesc.CONTENT_URI, cv);
-	            long perojectId = ContentUris.parseId(uri);
-	            p.setnID((int)perojectId);
+		for (int i = 0; i < pl.getList().size(); i++) {
+			Project p = pl.getList().get(i);
+			ContentValues cv = new ContentValues();
+			cv.put(ContentDescriptor.ProjectDesc.Cols.PRO_ID, p.getId());
+			cv.put(ContentDescriptor.ProjectDesc.Cols.NAME, p.getName());
+			cv.put(ContentDescriptor.ProjectDesc.Cols.TEXT, p.getText());
+			cv.put(ContentDescriptor.ProjectDesc.Cols.SYNC_FLAG, "1");
+			Uri uri = this.getContentResolver().insert(
+					ContentDescriptor.ProjectDesc.CONTENT_URI, cv);
+			long perojectId = ContentUris.parseId(uri);
+			p.setnID((int) perojectId);
+			p.setLoadOrderFromDB(true);
+			
+			for (int j = 0; j < p.getOrderCount(); j++) {
+				cv.clear();
+				ProjectOrder po = p.getOrder(j);
+				cv.put(ContentDescriptor.ProjectOrderDesc.Cols.NAME, po
+						.getName());
+				cv.put(ContentDescriptor.ProjectOrderDesc.Cols.DESCRIPTION, po
+						.getDescription());
+				cv.put(ContentDescriptor.ProjectOrderDesc.Cols.ORD_ID, po
+						.getId());
+				cv.put(ContentDescriptor.ProjectOrderDesc.Cols.PRO_ID, p
+						.getId());
+				cv.put(ContentDescriptor.ProjectOrderDesc.Cols.QC_COMMENT, po
+						.getQcComment());
+				cv.put(ContentDescriptor.ProjectOrderDesc.Cols.QC_STATUS, po
+						.getQcStatus());
+				cv.put(ContentDescriptor.ProjectOrderDesc.Cols.QUANTITY, po
+						.getQuantity());
+				cv
+						.put(
+								ContentDescriptor.ProjectOrderDesc.Cols.QUANTITY_CHECKED,
+								po.getQuantityChecked());
+				cv.put(ContentDescriptor.ProjectOrderDesc.Cols.PHOTO_NAME, po
+						.getPhotoName());
+				cv
+						.put(
+								ContentDescriptor.ProjectOrderDesc.Cols.PHOTO_LOCAL_SMALL_PATH,
+								po.getPhotoPath());
+				cv
+						.put(
+								ContentDescriptor.ProjectOrderDesc.Cols.PHOTO_LOCAL_BIG_PATH,
+								po.getPhotoBigPath());
+				uri = this.getContentResolver().insert(
+						ContentDescriptor.ProjectOrderDesc.CONTENT_URI, cv);
+				long projectOrderId = ContentUris.parseId(uri);
+				po.setnID((int) projectOrderId);
+				po.setLoadedCheckpointFromDB(true);
 
-	            for(int j =  0; j<p.getOrderCount(); j++) {
-	                cv.clear();
-	                ProjectOrder po = p.getOrder(j);
-	                cv.put(ContentDescriptor.ProjectOrderDesc.Cols.NAME,  po.getName());
-	                cv.put(ContentDescriptor.ProjectOrderDesc.Cols.DESCRIPTION, po.getDescription());
-	                cv.put(ContentDescriptor.ProjectOrderDesc.Cols.ORD_ID, po.getId());
-	                cv.put(ContentDescriptor.ProjectOrderDesc.Cols.PRO_ID, p.getId());
-	                cv.put(ContentDescriptor.ProjectOrderDesc.Cols.QC_COMMENT, po.getQcComment());
-	                cv.put(ContentDescriptor.ProjectOrderDesc.Cols.QC_STATUS, po.getQcStatus());
-	                cv.put(ContentDescriptor.ProjectOrderDesc.Cols.QUANTITY, po.getQuantity());
-	                cv.put(ContentDescriptor.ProjectOrderDesc.Cols.QUANTITY_CHECKED, po.getQuantityChecked());
-	                cv.put(ContentDescriptor.ProjectOrderDesc.Cols.PHOTO_NAME, po.getPhotoName());
-	                cv.put(ContentDescriptor.ProjectOrderDesc.Cols.PHOTO_LOCAL_SMALL_PATH, po.getPhotoPath());
-	                cv.put(ContentDescriptor.ProjectOrderDesc.Cols.PHOTO_LOCAL_BIG_PATH, po.getPhotoBigPath());
-	                uri =  this.getContentResolver().insert(ContentDescriptor.ProjectOrderDesc.CONTENT_URI, cv);
-	                long projectOrderId = ContentUris.parseId(uri);
-	                po.setnID((int)projectOrderId);
+				for (int z = 0; z < po.getCheckpointCount(); z++) {
+					cv.clear();
+					ProjectCheckpoint pcp = po.getOrderCheckpointrByIndex(z);
+					cv.put(ContentDescriptor.ProjectCheckpointDesc.Cols.NAME,
+							pcp.getName());
+					cv
+							.put(
+									ContentDescriptor.ProjectCheckpointDesc.Cols.DESCRIPTION,
+									pcp.getDescription());
+					cv
+							.put(
+									ContentDescriptor.ProjectCheckpointDesc.Cols.CHECKPOINT_ID,
+									pcp.getId());
+					cv
+							.put(
+									ContentDescriptor.ProjectCheckpointDesc.Cols.QC_COMMENT,
+									pcp.getQcComments());
+					cv
+							.put(
+									ContentDescriptor.ProjectCheckpointDesc.Cols.QC_STATUS,
+									pcp.getQcStatus());
+					cv.put(ContentDescriptor.ProjectCheckpointDesc.Cols.PRO_ID,
+							p.getId());
+					cv
+							.put(
+									ContentDescriptor.ProjectCheckpointDesc.Cols.PRO_ORDER_ID,
+									po.getId());
+					cv
+							.put(
+									ContentDescriptor.ProjectCheckpointDesc.Cols.CATEGORY,
+									pcp.getCategory());
+					cv
+							.put(
+									ContentDescriptor.ProjectCheckpointDesc.Cols.CHECK_TYPE,
+									pcp.getCheckType());
+					cv
+							.put(
+									ContentDescriptor.ProjectCheckpointDesc.Cols.QC_ACTION,
+									pcp.getQcAction());
+					cv
+							.put(
+									ContentDescriptor.ProjectCheckpointDesc.Cols.NUMBER_DEFECT,
+									pcp.getNumberDefect());
+					cv
+							.put(
+									ContentDescriptor.ProjectCheckpointDesc.Cols.PHOTO_NAME,
+									pcp.getPhotoName());
+					cv
+							.put(
+									ContentDescriptor.ProjectCheckpointDesc.Cols.PHOTO_LOCAL_SMALL_PATH,
+									pcp.getPhotoPath());
+					cv
+							.put(
+									ContentDescriptor.ProjectCheckpointDesc.Cols.PHOTO_LOCAL_BIG_PATH,
+									pcp.getPhotoPath());
+					uri = this
+							.getContentResolver()
+							.insert(
+									ContentDescriptor.ProjectCheckpointDesc.CONTENT_URI,
+									cv);
+					long checkpointID = ContentUris.parseId(uri);
+					pcp.setnID((int) checkpointID);
+				}
+			}
 
-
-	               for(int z = 0; z< po.getCheckpointCount(); z++) {
-	                   cv.clear();
-	                   ProjectCheckpoint pcp = po.getOrderCheckpointrByIndex(z);
-	                   cv.put(ContentDescriptor.ProjectCheckpointDesc.Cols.NAME,  pcp.getName());
-	                    cv.put(ContentDescriptor.ProjectCheckpointDesc.Cols.DESCRIPTION, pcp.getDescription());
-	                    cv.put(ContentDescriptor.ProjectCheckpointDesc.Cols.CHECKPOINT_ID, pcp.getId());
-	                    cv.put(ContentDescriptor.ProjectCheckpointDesc.Cols.QC_COMMENT, pcp.getQcComments());
-	                    cv.put(ContentDescriptor.ProjectCheckpointDesc.Cols.QC_STATUS, pcp.getQcStatus());
-	                    cv.put(ContentDescriptor.ProjectCheckpointDesc.Cols.PRO_ID, p.getId());
-	                    cv.put(ContentDescriptor.ProjectCheckpointDesc.Cols.PRO_ORDER_ID, po.getId());
-	                    cv.put(ContentDescriptor.ProjectCheckpointDesc.Cols.CATEGORY, pcp.getCategory());
-	                    cv.put(ContentDescriptor.ProjectCheckpointDesc.Cols.CHECK_TYPE, pcp.getCheckType());
-	                    cv.put(ContentDescriptor.ProjectCheckpointDesc.Cols.QC_ACTION, pcp.getQcAction());
-	                    cv.put(ContentDescriptor.ProjectCheckpointDesc.Cols.NUMBER_DEFECT, pcp.getNumberDefect());
-	                    cv.put(ContentDescriptor.ProjectCheckpointDesc.Cols.PHOTO_NAME, pcp.getPhotoName());
-	                    cv.put(ContentDescriptor.ProjectCheckpointDesc.Cols.PHOTO_LOCAL_SMALL_PATH, pcp.getPhotoPath());
-	                    cv.put(ContentDescriptor.ProjectCheckpointDesc.Cols.PHOTO_LOCAL_BIG_PATH, pcp.getPhotoPath());
-	                    uri =  this.getContentResolver().insert(ContentDescriptor.ProjectCheckpointDesc.CONTENT_URI, cv);
-	                    long checkpointID = ContentUris.parseId(uri);
-	                    pcp.setnID((int)checkpointID);
-	               }
-	            }
-
-	    }
+		}
 	}
 
 	private ProgressDialog dialog;
@@ -241,8 +296,8 @@ public class ProjectListScreen extends Activity {
 					dialog.cancel();
 					dialog.dismiss();
 				}
-				Toast.makeText(dialog.getContext(), R.string.error_load_project,
-						Toast.LENGTH_LONG).show();
+				Toast.makeText(dialog.getContext(),
+						R.string.error_load_project, Toast.LENGTH_LONG).show();
 			}
 		}
 	}
@@ -269,8 +324,9 @@ public class ProjectListScreen extends Activity {
 								.sendToTarget();
 					} else {
 						GlobalHolder.addProject(pl);
-	                    saveToDatabase(pl);
-						Message.obtain(uiHandler, UI_END_WAITING).sendToTarget();
+						saveToDatabase(pl);
+						Message.obtain(uiHandler, UI_END_WAITING)
+								.sendToTarget();
 					}
 
 				} catch (Exception e) {
@@ -281,10 +337,9 @@ public class ProjectListScreen extends Activity {
 				break;
 
 			case CMD_LOAD_PROJECT_FROM_DB:
-			    Message.obtain(uiHandler, UI_START_WAITING)
-                .sendToTarget();
-			    Message.obtain(uiHandler, UI_END_WAITING).sendToTarget();
-			    break;
+				Message.obtain(uiHandler, UI_START_WAITING).sendToTarget();
+				Message.obtain(uiHandler, UI_END_WAITING).sendToTarget();
+				break;
 			}
 		}
 

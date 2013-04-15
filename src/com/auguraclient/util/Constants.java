@@ -42,7 +42,11 @@ public class Constants {
             // http://crm.augura.net/service/v4_1/rest.php?method=set_entry&input_type=JSON&response_type=JSON&rest_data=
             API_URL + "?" + "method=set_entry&input_type=JSON&response_type=JSON&rest_data=",
             //http://crm.augura.net/service/v4_1/rest.php?method=set_entry&input_type=JSON&response_type=JSON&rest_data={"session":"de462ac5730763f6d6da584270cf40e1","module_name":"AGR_QCCheckpoints","name_value_list":[{"name":"assigned_user_id","value":"c8f9b367-ac1f-d8a2-9b10-515e788fcafb"},{"name":"name","value":"test"},{"name":"category","value":""},{"name":"checktype","value":"222"},{"name":"description","value":""},{"name":"qc_status","value":"2"},{"name":"executed_date","value":""},{"name":"number_defect","value":"22"},{"name":"qc_comment","value":"444444"},{"name":"qc_action","value":""},{"name":"visual","value":""},{"name":"id", "value":"673349f6-d189-5d9a-24cd-516bb6412204"}]}
-            API_URL + "?" + "method=set_entry&input_type=JSON&response_type=JSON&rest_data="
+            API_URL + "?" + "method=set_entry&input_type=JSON&response_type=JSON&rest_data=",
+            //http://crm.augura.net/service/v4_1/rest.php?method=set_entry&input_type=JSON&response_type=JSON&rest_data={"session":"b1d3eea667d567666e1a1e7596541f00","module_name":"AGR_QCCheckpoints","name_value_list":[{"name":"assigned_user_id","value":"c8f9b367-ac1f-d8a2-9b10-515e788fcafb"},{"name":"aurelientest","value":"test"},{"name":"category","value":""},{"name":"checktype","value":""},{"name":"description","value":""},{"name":"qc_status","value":""},{"name":"executed_date","value":""},{"name":"number_defect","value":""},{"name":"qc_comment","value":""},{"name":"qc_action","value":""},{"name":"visual","value":""}]}
+            API_URL + "?" +"method=set_entry&input_type=JSON&response_type=JSON&rest_data=",
+            //http://crm.augura.net/service/v4_1/rest.php?method=set_relationship&input_type=JSON&response_type=JSON&rest_data={"session":"b1d3eea667d567666e1a1e7596541f00","module_name":"AGR_OrderDetails","module_id":"d82e0333-5e06-df53-7695-515d29c81443","link_field_name":"agr_orderdetails_agr_qccheckpoints","related_ids":["c53ab7d0-2530-46bb-030e-515d320a730f","6fe37f88-6148-80ad-4d26-5168d0e5c8f1"]}
+            API_URL + "?" +"method=set_relationship&input_type=JSON&response_type=JSON&rest_data=",
     };
 
     public static final int LOGIN_URL_INDEX = 0;
@@ -56,6 +60,10 @@ public class Constants {
     public static final int DELETE_CHECK_POINT_URL_INDEX = 4;
 
     public static final int UPDATE_CHECK_POINT_URL_INDEX = 5;
+    
+    public static final int CREATE_CHECK_POINT_URL_INDEX = 6;
+    
+    public static final int CREATE_CHECK_POINT_RELATION_SHIP_URL_INDEX = 7;
 
     public static final int BUFFER_SIZE = 5000;
 }

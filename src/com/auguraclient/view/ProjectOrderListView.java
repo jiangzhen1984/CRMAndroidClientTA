@@ -1,14 +1,8 @@
 
 package com.auguraclient.view;
 
-import com.auguraclient.R;
-import com.auguraclient.db.ContentDescriptor;
-import com.auguraclient.model.APIException;
-import com.auguraclient.model.ISuguraRestAPI;
-import com.auguraclient.model.Project;
-import com.auguraclient.model.ProjectOrder;
-import com.auguraclient.model.SuguraRestAPIImpl;
-import com.auguraclient.util.GlobalHolder;
+import java.io.File;
+import java.util.List;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
@@ -28,18 +22,24 @@ import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.AdapterView;
-import android.widget.AdapterView.OnItemClickListener;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.AdapterView.OnItemClickListener;
 
-import java.io.File;
-import java.util.List;
+import com.auguraclient.R;
+import com.auguraclient.db.ContentDescriptor;
+import com.auguraclient.model.APIException;
+import com.auguraclient.model.ISuguraRestAPI;
+import com.auguraclient.model.Project;
+import com.auguraclient.model.ProjectOrder;
+import com.auguraclient.model.SuguraRestAPIImpl;
+import com.auguraclient.util.GlobalHolder;
 
-public class ProjectItemView extends Activity {
+public class ProjectOrderListView extends Activity {
 
     private static final int START_WAITING = 1;
 
@@ -268,6 +268,15 @@ public class ProjectItemView extends Activity {
             qcStatusTV = (TextView)this.findViewById(R.id.qcStatus);
             quantityTV = (TextView)this.findViewById(R.id.itemQuntity);
             itemPhotoIV = (ImageView)this.findViewById(R.id.projectItemPhoto);
+            itemOperationIV = (ImageView)this.findViewById(R.id.imagesOp);
+            itemOperationIV.setOnClickListener(new OnClickListener() {
+
+				@Override
+				public void onClick(View v) {
+					System.out.println("===========");
+				}
+            	
+            });
         }
 
         public void updateView(ProjectOrder pi) {
@@ -276,7 +285,6 @@ public class ProjectItemView extends Activity {
             quantityTV.setText("Quantity :" + pi.getQuantity());
             itemPhotoIV.setImageURI(Uri.fromFile(new File(GlobalHolder.GLOBAL_STORAGE_PATH
                     + pi.getPhotoPath())));
-
         }
 
     }

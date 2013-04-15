@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginLeft="7dip"
+    android:layout_marginRight="7dip"
+    android:layout_marginTop="5dip"
+    android:layout_marginBottom="5dip"
+     >
+
+
+
+
+    <ImageView
+        android:id="@+id/projectItemPhoto"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_alignParentLeft="true" 
+        android:layout_marginLeft="7dip"
+        android:src="@drawable/app_icon"
+        />
+
+
+
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="ssssss"
+            android:textSize="8sp"
+            android:textStyle="bold"
+            android:id="@+id/itemName"             
+            android:layout_toRightOf="@+id/projectItemPhoto"
+            
+            />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="8sp"
+            android:text="bbbb"
+            android:textStyle="bold"
+            android:id="@+id/itemQuntity" 
+            android:layout_toRightOf="@+id/projectItemPhoto"
+            
+            android:layout_below="@+id/itemName"
+            />
+
+        <TextView
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:textSize="8sp"
+            android:text="ccccc"
+            android:textStyle="bold"
+            android:id="@+id/qcStatus"
+            android:layout_toRightOf="@+id/projectItemPhoto"
+            android:layout_below="@+id/itemQuntity"
+             />
+
+   
+
+   
+
+
+        <ImageView
+            android:id="@+id/images_id"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/project_sync"
+            android:layout_centerVertical="true"
+        android:layout_alignParentRight="true"
+             />
+
+
+</RelativeLayout>

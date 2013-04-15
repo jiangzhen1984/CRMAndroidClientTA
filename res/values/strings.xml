@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 	<string name="hello">Hello World, AuguraClient!</string>
-	<string name="app_name">AuguraClient</string>
+	<string name="app_name">Asiaction Mobile</string>
 	<string name="login_error_1">Please enter valid username.</string>
 	<string name="login_error_3">Username must be valid email address.</string>
 	<string name="login_error_2">Please enter valid password.</string>
@@ -14,7 +14,7 @@
 		website access.</string>
 
 	<string name="login_screen_ok">OK</string>
-	<string name="title">Augura Client</string>
+	<string name="title">Asiaction Mobile</string>
 
 	<string name="add_project">Add Project</string>
 	<string name="yourcard_client">CLIENT</string>
@@ -34,4 +34,6 @@
     
     <string name="create_checkpoint">Create</string>
     <string name="update_checkpoint">Update</string>
+    
+    <string name="add_checkpoint">Add Checkpoint</string>
 </resources>

@@ -151,7 +151,7 @@
                 android:id="@+id/detailEditText"
                 android:layout_below="@+id/detailTextView"
 
-                android:minLines="6"
+                android:minLines="3"
                 android:inputType="text|textMultiLine|textEmailAddress"
                 android:layout_marginLeft="10dip"
                 android:layout_marginRight="10dip"
@@ -263,7 +263,7 @@
                 android:layout_centerHorizontal="true"
                 android:id="@+id/qcCommentEditText"
                 android:inputType="textMultiLine|textEmailAddress"
-                android:minLines="6"
+                android:minLines="3"
                 android:layout_marginLeft="10dip"
                 android:layout_marginRight="10dip"
                 android:layout_marginTop="5dip"
@@ -273,12 +273,11 @@
         </RelativeLayout>
 
         <LinearLayout
-            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:background="@drawable/login_screen_bottom1"
             android:gravity="center"
-            android:id="@+id/bottom_tab_add_or_update_checkpoint_layout">
+            android:id="@+id/bottom_tab_add_or_update_checkpoint_layout" android:layout_width="match_parent">
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"

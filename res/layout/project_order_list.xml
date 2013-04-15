@@ -78,9 +78,6 @@
             android:id="@+id/itemOrderDescription" />
 
 
-   
-
-
 
         <TextView
             android:layout_width="fill_parent"
@@ -102,15 +99,32 @@
             android:id="@+id/itemOrderComment" />
             
             
+              
+        <LinearLayout
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@drawable/login_screen_bottom1"
+            android:gravity="center"
+            android:layout_below="@+id/itemOrderComment"
+            android:id="@+id/bottom_add_checpoint_layout" android:layout_width="match_parent">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/selected_tab"              
+                android:textSize="14sp"
+                android:text="@string/add_checkpoint"
+                android:textStyle="bold"
+                android:id="@+id/bottom_add_checpoint" />
+        </LinearLayout>
             
             
              <ListView
         android:id="@+id/projectOrderCheckpointList"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/itemOrderComment"
+        android:layout_below="@+id/bottom_add_checpoint_layout"
         android:cacheColorHint="#00000000" />
-
+      
 
 
     </RelativeLayout>
