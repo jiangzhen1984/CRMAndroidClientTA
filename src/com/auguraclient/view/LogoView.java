@@ -77,7 +77,7 @@ public class LogoView extends Activity {
 						"");
 				String session = sp.getString(Constants.SaveConfig.SESSION, "");
 				String userID = sp
-						.getString(Constants.SaveConfig.USER_NAME, "");
+						.getString(Constants.SaveConfig.USER_ID, "");
 				if (userName == null || userName.isEmpty() ||  session == null
 						|| session.isEmpty() || userID == null
 						|| userID.isEmpty()) {

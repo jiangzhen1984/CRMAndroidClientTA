@@ -16,6 +16,8 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.ContentResolver;
+import android.content.ContentUris;
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -33,6 +35,8 @@ import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.AbsListView;
+import android.widget.AbsListView.OnScrollListener;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.BaseAdapter;
@@ -43,6 +47,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
 
 public class OrderView extends Activity {
@@ -90,6 +95,10 @@ public class OrderView extends Activity {
 
     private int currentSelectedCheckpointIdx;
 
+    private int currentFistItemInScrollView;
+
+    private View[] tView;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -115,11 +124,9 @@ public class OrderView extends Activity {
         project = GlobalHolder.getProject(position);
 
         projectItem = project.getOrder(itemPosition);
+        initAdapterView();
 
         mContext = this;
-
-        adapter = new ListAdapter(this);
-        projectOrderCheckpointList.setAdapter(adapter);
 
         api = new SuguraRestAPIImpl();
 
@@ -132,21 +139,52 @@ public class OrderView extends Activity {
         projectOrderCheckpointList.setOnItemClickListener(new OnItemClickListener() {
 
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Message.obtain(uiHandler, CONFIRM_DELETE, position).sendToTarget();
+                Intent i = new Intent();
+                i.putExtra("create", false);
+                i.putExtra("projectOrder", projectItem);
+                i.putExtra("projectCheckpoint", (ProjectCheckpoint)
+
+                        adapter.getItem(position));
+                i.setClass(mContext, CreateUpdateCheckpoint.class);
+                startActivityForResult(i, 100);
             }
 
         });
+
+        projectOrderCheckpointList.setOnScrollListener( new OnScrollListener() {
+
+            public void onScrollStateChanged(AbsListView view, int scrollState) {
+
+
+            }
+
+            public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount,
+                    int totalItemCount) {
+                currentFistItemInScrollView = firstVisibleItem;
+                if(tView.length>0) {
+                    if(currentFistItemInScrollView>=tView.length) {
+                        currentFistItemInScrollView=tView.length-1;
+                    }
+                } else {
+                    currentFistItemInScrollView =0;
+                }
+
+            }
+
+        });
+
     }
 
     @Override
     protected void onResume() {
+
         super.onResume();
         orderItemTitleTV.setText(projectItem.getName());
         itemOrderQuntityTV.setText(" Quantity: " + projectItem.getQuantity());
         itemOrderDescriptionTV.setText(projectItem.getDescription());
         itemOrderCommentTV.setText("QC Comments:\n" + projectItem.getQcComment() == null ? ""
                 : projectItem.getQcComment());
-        itemOrderQTTV.setText("Q777C Date:     " + "Quantity Checked:"
+        itemOrderQTTV.setText("QC Date:     " + "Quantity Checked:"
                 + projectItem.getQuantityChecked() + "  QC Status:" + projectItem.getQcStatus());
 
         projectItemPhotoIV.setImageURI(Uri.fromFile(new File(GlobalHolder.GLOBAL_STORAGE_PATH
@@ -165,6 +203,18 @@ public class OrderView extends Activity {
         });
 
     }
+
+
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+    }
+
+
+
+
+
 
     public void setfullScreen() {
         requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -189,6 +239,9 @@ public class OrderView extends Activity {
                         dialog.cancel();
                         dialog.dismiss();
                     }
+                    initAdapterView();
+                    adapter = new ListAdapter(mContext);
+                    projectOrderCheckpointList.setAdapter(adapter);
                     adapter.notifyDataSetChanged();
 
                     break;
@@ -197,8 +250,7 @@ public class OrderView extends Activity {
                         dialog.cancel();
                         dialog.dismiss();
                     }
-                    // TODO show toast
-                    Toast.makeText(dialog.getContext(), "errorr ---------------",
+                    Toast.makeText(dialog.getContext(), (String)msg.obj,
                             Toast.LENGTH_SHORT).show();
                     break;
 
@@ -206,6 +258,16 @@ public class OrderView extends Activity {
                     currentSelectedCheckpointIdx = (Integer)msg.obj;
                     showConfirmDialog();
             }
+        }
+    }
+
+
+    private void initAdapterView() {
+        tView = new View[projectItem.getCheckpointCount()];
+        for(int i=0;i<tView.length;i ++) {
+            ItemView appView = new ItemView(mContext);
+            appView.updateView(projectItem.getOrderCheckpointrByIndex(i));
+            tView[i] = appView;
         }
     }
 
@@ -254,23 +316,22 @@ public class OrderView extends Activity {
                         if (projectItem.getCheckpointCount() <= 0) {
                             l = api.queryProjectOrderCheckpointList(projectItem.getId());
                             projectItem.addOrderCheckpoint(l);
+                            saveDataToDB();
                         }
                         Message.obtain(uiHandler, END_WAITING).sendToTarget();
                     } catch (APIException e) {
                         Log.e(Constants.TAG, e.getMessage(), e);
-                        Message.obtain(uiHandler, END_WAITING_WITH_ERROR).sendToTarget();
+                        Message.obtain(uiHandler, END_WAITING_WITH_ERROR, e.getMessage()).sendToTarget();
                     }
                     break;
                 case DELETE_CHECKPOINT:
                     Message.obtain(uiHandler, START_WAITING).sendToTarget();
                     try {
-                        // TODO delete checkpoint from database and globalholder
-                        // and api
                         doDeleteCheckpoint();
                         Message.obtain(uiHandler, END_WAITING).sendToTarget();
                     } catch (Exception e) {
                         Log.e(Constants.TAG, e.getMessage(), e);
-                        Message.obtain(uiHandler, END_WAITING_WITH_ERROR).sendToTarget();
+                        Message.obtain(uiHandler, END_WAITING_WITH_ERROR, e.getMessage()).sendToTarget();
                     }
                     break;
             }
@@ -278,11 +339,41 @@ public class OrderView extends Activity {
 
     }
 
+
+
+    private void saveDataToDB() {
+        ContentValues cv = new ContentValues();
+        for(int z = 0; z< projectItem.getCheckpointCount(); z++) {
+            cv.clear();
+            ProjectCheckpoint pcp = projectItem.getOrderCheckpointrByIndex(z);
+            cv.put(ContentDescriptor.ProjectCheckpointDesc.Cols.NAME,  pcp.getName());
+             cv.put(ContentDescriptor.ProjectCheckpointDesc.Cols.DESCRIPTION, pcp.getDescription());
+             cv.put(ContentDescriptor.ProjectCheckpointDesc.Cols.CHECKPOINT_ID, pcp.getId());
+             cv.put(ContentDescriptor.ProjectCheckpointDesc.Cols.QC_COMMENT, pcp.getQcComments());
+             cv.put(ContentDescriptor.ProjectCheckpointDesc.Cols.QC_STATUS, pcp.getQcStatus());
+             cv.put(ContentDescriptor.ProjectCheckpointDesc.Cols.PRO_ID, projectItem.getProject().getId());
+             cv.put(ContentDescriptor.ProjectCheckpointDesc.Cols.PRO_ORDER_ID, projectItem.getId());
+             cv.put(ContentDescriptor.ProjectCheckpointDesc.Cols.CATEGORY, pcp.getCategory());
+             cv.put(ContentDescriptor.ProjectCheckpointDesc.Cols.CHECK_TYPE, pcp.getCheckType());
+             cv.put(ContentDescriptor.ProjectCheckpointDesc.Cols.QC_ACTION, pcp.getQcAction());
+             cv.put(ContentDescriptor.ProjectCheckpointDesc.Cols.NUMBER_DEFECT, pcp.getNumberDefect());
+             cv.put(ContentDescriptor.ProjectCheckpointDesc.Cols.PHOTO_NAME, pcp.getPhotoName());
+             cv.put(ContentDescriptor.ProjectCheckpointDesc.Cols.PHOTO_LOCAL_SMALL_PATH, pcp.getPhotoPath());
+             cv.put(ContentDescriptor.ProjectCheckpointDesc.Cols.PHOTO_LOCAL_BIG_PATH, pcp.getPhotoPath());
+             Uri uri =  this.getContentResolver().insert(ContentDescriptor.ProjectCheckpointDesc.CONTENT_URI, cv);
+             long checkpointID = ContentUris.parseId(uri);
+             pcp.setnID((int)checkpointID);
+        }
+    }
+
+
     private void doDeleteCheckpoint() throws APIException {
         ProjectCheckpoint pcp = projectItem
                 .getOrderCheckpointrByIndex(currentSelectedCheckpointIdx);
-        // TODO update
+        //FIXM if no network should not do this
         api.deleteCheckpoint(pcp.getId());
+        ContentResolver cr = this.getContentResolver();
+        cr.delete(ContentDescriptor.ProjectCheckpointDesc.CONTENT_URI, ContentDescriptor.ProjectCheckpointDesc.Cols.CHECKPOINT_ID+"=?", new String[]{pcp.getId()});
         projectItem.removeCheckpoint(this.currentSelectedCheckpointIdx);
     }
 
@@ -299,12 +390,22 @@ public class OrderView extends Activity {
             ProjectCheckpoint pcp = new ProjectCheckpoint();
             pcp.setnID(c.getInt(c
                     .getColumnIndexOrThrow(ContentDescriptor.ProjectCheckpointDesc.Cols.ID)));
+            pcp.setId(c.getString(c
+                    .getColumnIndexOrThrow(ContentDescriptor.ProjectCheckpointDesc.Cols.CHECKPOINT_ID)));
             pcp.setName(c.getString(c
                     .getColumnIndexOrThrow(ContentDescriptor.ProjectCheckpointDesc.Cols.NAME)));
-            pcp.setDescription(c.getString(c
-                    .getColumnIndexOrThrow(ContentDescriptor.ProjectCheckpointDesc.Cols.DESCRIPTION)));
+
             pcp.setPhotoPath(c.getString(c
                     .getColumnIndexOrThrow(ContentDescriptor.ProjectCheckpointDesc.Cols.PHOTO_LOCAL_SMALL_PATH)));
+
+            pcp.setPhotoName(c.getString(c
+                    .getColumnIndexOrThrow(ContentDescriptor.ProjectCheckpointDesc.Cols.PHOTO_NAME)));
+
+            if (c.getColumnIndex(ContentDescriptor.ProjectCheckpointDesc.Cols.DESCRIPTION) > 0) {
+                pcp.setDescription(c.getString(c
+                        .getColumnIndexOrThrow(ContentDescriptor.ProjectCheckpointDesc.Cols.DESCRIPTION)));
+            }
+
             if (c.getColumnIndex(ContentDescriptor.ProjectCheckpointDesc.Cols.CATEGORY) >= 0) {
                 pcp.setCategory(c.getString(c
                         .getColumnIndexOrThrow(ContentDescriptor.ProjectCheckpointDesc.Cols.CATEGORY)));
@@ -366,12 +467,27 @@ public class OrderView extends Activity {
         }
 
         public View getView(int position, View convertView, ViewGroup parent) {
-            if (convertView == null) {
-                ItemView appView = new ItemView(context);
-                appView.updateView(projectItem.getOrderCheckpointrByIndex(position));
-                convertView = appView;
+            int pos = position+currentFistItemInScrollView;
+            if(tView.length>0) {
+                if(pos>=tView.length) {
+                    pos=tView.length-1;
+                }
+            } else {
+                pos =0;
             }
-            return convertView;
+
+            return tView[pos];
+//                System.out.println(tView +"    "+currentFistItemInScrollView +"   "+position);
+//                if(tView[position+currentFistItemInScrollView] == null) {
+//                    ItemView appView = new ItemView(context);
+//                    appView.updateView(projectItem.getOrderCheckpointrByIndex(position+currentFistItemInScrollView));
+//                    convertView = appView;
+//                    tView[position+currentFistItemInScrollView] = appView;
+//                }
+//                if(convertView ==null) {
+//                    convertView =   tView[position+currentFistItemInScrollView] ;
+//                }
+//                return convertView;
         }
 
     }
@@ -398,7 +514,7 @@ public class OrderView extends Activity {
 
         public void initilize(Context c) {
             this.mContext = c;
-            View view = LayoutInflater.from(this.mContext).inflate(R.xml.project_item_order, null);
+            View view = LayoutInflater.from(this.mContext).inflate(R.xml.project_item_order, null,false);
             addView(view);
             itemOrderCategoryCheckType = (TextView)this
                     .findViewById(R.id.itemOrderCategoryCheckType);

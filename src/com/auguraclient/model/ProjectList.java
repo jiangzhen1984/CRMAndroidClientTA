@@ -1,5 +1,6 @@
 package com.auguraclient.model;
 
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
@@ -61,6 +62,10 @@ public class ProjectList implements ProjectJSONParser {
     public void parser(JSONObject jsonObject) throws JSONParserException {
         // TODO Auto-generated method stub
 
+    }
+
+    public JSONArray toJSONArray()  throws JSONParserException {
+        return null;
     }
 
 

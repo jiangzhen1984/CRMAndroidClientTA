@@ -1,6 +1,15 @@
 package com.auguraclient.model;
 
+import com.auguraclient.util.Constants;
+import com.auguraclient.util.GlobalHolder;
+import com.auguraclient.util.Util;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.IOException;
+import java.io.Serializable;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.text.DateFormat;
@@ -10,14 +19,13 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import org.json.JSONException;
-import org.json.JSONObject;
+public class ProjectOrder implements ProjectJSONParser, Serializable {
 
-import com.auguraclient.util.Constants;
-import com.auguraclient.util.GlobalHolder;
-import com.auguraclient.util.Util;
+    /**
+     *
+     */
+    private static final long serialVersionUID = -5566642847333773076L;
 
-public class ProjectOrder implements ProjectJSONParser {
 
     private Integer nID;
 
@@ -266,4 +274,7 @@ public class ProjectOrder implements ProjectJSONParser {
        }
 
 
+       public JSONArray toJSONArray()  throws JSONParserException {
+           return null;
+       }
 }

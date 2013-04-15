@@ -40,6 +40,8 @@ public class Constants {
             API_URL + "?"
                     + "method=get_relationships&input_type=JSON&response_type=JSON&rest_data=",
             // http://crm.augura.net/service/v4_1/rest.php?method=set_entry&input_type=JSON&response_type=JSON&rest_data=
+            API_URL + "?" + "method=set_entry&input_type=JSON&response_type=JSON&rest_data=",
+            //http://crm.augura.net/service/v4_1/rest.php?method=set_entry&input_type=JSON&response_type=JSON&rest_data={"session":"de462ac5730763f6d6da584270cf40e1","module_name":"AGR_QCCheckpoints","name_value_list":[{"name":"assigned_user_id","value":"c8f9b367-ac1f-d8a2-9b10-515e788fcafb"},{"name":"name","value":"test"},{"name":"category","value":""},{"name":"checktype","value":"222"},{"name":"description","value":""},{"name":"qc_status","value":"2"},{"name":"executed_date","value":""},{"name":"number_defect","value":"22"},{"name":"qc_comment","value":"444444"},{"name":"qc_action","value":""},{"name":"visual","value":""},{"name":"id", "value":"673349f6-d189-5d9a-24cd-516bb6412204"}]}
             API_URL + "?" + "method=set_entry&input_type=JSON&response_type=JSON&rest_data="
     };
 
@@ -52,6 +54,8 @@ public class Constants {
     public static final int QUERY_PROJECT_ORDER_URL_INDEX = 3;
 
     public static final int DELETE_CHECK_POINT_URL_INDEX = 4;
+
+    public static final int UPDATE_CHECK_POINT_URL_INDEX = 5;
 
     public static final int BUFFER_SIZE = 5000;
 }

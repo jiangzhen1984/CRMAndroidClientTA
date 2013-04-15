@@ -60,8 +60,7 @@ public class SuguraRestAPIImpl implements ISuguraRestAPI {
             response = http.sendHttpGetRequest(url
                     + URLEncoder.encode(restData.toString(), "UTF-8"));
             if (response != null) {
-                JSONObject resp = new JSONObject(response);
-                User user = Util.parserUserJson(resp);
+                User user = Util.parserUserJson(parseResponseError(response));
                 return user;
             }
         } catch (UnsupportedEncodingException e) {
@@ -122,8 +121,7 @@ public class SuguraRestAPIImpl implements ISuguraRestAPI {
         try {
             response = http.sendHttpGetRequest(url + URLEncoder.encode(restData.toString()));
             if (response != null) {
-                JSONObject resp = new JSONObject(response);
-                return Util.parserProjectListJson(resp);
+                return Util.parserProjectListJson(parseResponseError(response));
             } else {
                 return null;
             }
@@ -172,8 +170,7 @@ public class SuguraRestAPIImpl implements ISuguraRestAPI {
         try {
             response = http.sendHttpGetRequest(url + URLEncoder.encode(restData.toString()));
             if (response != null) {
-                JSONObject resp = new JSONObject(response);
-                return Util.parserProjectItemListJson(resp);
+                return Util.parserProjectItemListJson(parseResponseError(response));
             }
         } catch (JSONException e) {
             throw new APIException(" can't parse API response");
@@ -229,8 +226,7 @@ public class SuguraRestAPIImpl implements ISuguraRestAPI {
         try {
             response = http.sendHttpGetRequest(url + URLEncoder.encode(restData.toString()));
             if (response != null) {
-                JSONObject resp = new JSONObject(response);
-                return Util.parserProjectItemOrderListJson(resp);
+                return Util.parserProjectItemOrderListJson(parseResponseError(response));
             }
         } catch (JSONException e) {
             throw new APIException(" can't parse API response");
@@ -268,6 +264,7 @@ public class SuguraRestAPIImpl implements ISuguraRestAPI {
             String response;
 
             response = http.sendHttpGetRequest(url + URLEncoder.encode(restData.toString()));
+            parseResponseError(response);
             Log.i(Constants.TAG, response);
 
         } catch (JSONException e) {
@@ -275,5 +272,131 @@ public class SuguraRestAPIImpl implements ISuguraRestAPI {
         }
 
     }
+
+
+
+    public void createCheckpoint(ProjectOrder order, ProjectCheckpoint checkpoint) throws APIException {
+
+    }
+
+
+    public void updateCheckpoint(ProjectCheckpoint checkpoint) throws APIException {
+        String sessionId = GlobalHolder.getSessionId();
+        if (sessionId == null || sessionId.isEmpty()) {
+            return;
+        }
+
+        //"name_value_list":[{"name":"visual","value":""},{"name":"id", "value":"673349f6-d189-5d9a-24cd-516bb6412204"}]}
+
+        JSONObject restData = new JSONObject();
+        JSONArray entryArray = new JSONArray();
+        try {
+            restData.put("session", sessionId);
+            restData.put("module_name", "AGR_QCCheckpoints");
+
+            JSONObject entry = new JSONObject();
+            entry.put("name", "assigned_user_id");
+            entry.put("value", GlobalHolder.getCrrentUser().getUseID());
+            entryArray.put(entry);
+
+            JSONObject visual = new JSONObject();
+            visual.put("name", "visual");
+            visual.put("value", "");
+            entryArray.put(visual);
+
+            JSONObject id = new JSONObject();
+            id.put("name", "agr_orderda734details_ida");
+            id.put("value", checkpoint.getId());
+            entryArray.put(id);
+
+            JSONObject name = new JSONObject();
+            name.put("name", "name");
+            name.put("value", checkpoint.getName());
+            entryArray.put(name);
+
+            JSONObject category = new JSONObject();
+            category.put("name", "category");
+            category.put("value", checkpoint.getCategory());
+            entryArray.put(category);
+
+            JSONObject checktype = new JSONObject();
+            checktype.put("name", "checktype");
+            checktype.put("value", checkpoint.getCheckType());
+            entryArray.put(checktype);
+
+            JSONObject description = new JSONObject();
+            description.put("name", "description");
+            description.put("value", checkpoint.getDescription());
+            entryArray.put(description);
+
+            JSONObject qc_status = new JSONObject();
+            qc_status.put("name", "qc_status");
+            qc_status.put("value", checkpoint.getQcStatus());
+            entryArray.put(qc_status);
+
+            JSONObject number_defect = new JSONObject();
+            number_defect.put("name", "number_defect");
+            number_defect.put("value", checkpoint.getNumberDefect());
+            entryArray.put(number_defect);
+
+            JSONObject qc_comment = new JSONObject();
+            qc_comment.put("name", "qc_comment");
+            qc_comment.put("value", checkpoint.getQcComments());
+            entryArray.put(qc_comment);
+
+            JSONObject qc_action = new JSONObject();
+            qc_action.put("name", "qc_action");
+            qc_action.put("value", checkpoint.getQcAction());
+            entryArray.put(qc_action);
+
+//            JSONObject executed_date = new JSONObject();
+//            executed_date.put("name", "executed_date");
+//            executed_date.put("value", checkpoint.get);
+//            entryArray.put(executed_date.put);
+
+
+            restData.put("name_value_list", entryArray);
+
+            Log.i(Constants.TAG, restData.toString());
+            String url = Util.getUpdateCheckpointUrl();
+            String response;
+
+            response = http.sendHttpGetRequest(url + URLEncoder.encode(restData.toString()));
+            parseResponseError(response);
+            Log.i(Constants.TAG, response);
+
+        } catch (JSONException e) {
+            throw new APIException(" can't parse API response");
+        }
+
+
+    }
+
+
+    private JSONObject parseResponseError(String response)  throws JSONException, APIException{
+
+       JSONObject object = new JSONObject(response);
+
+       if(object.has("name") && object.has("number")) {
+           Object errorName = object.get("name");
+           int errorNumber= object.getInt("number");
+
+           if(errorName != null && errorName.toString().equalsIgnoreCase("Invalid Session ID") &&errorNumber ==  11) {
+               throw new APIException(" Invalid session, please re-log in");
+           }
+
+           if(errorName != null && errorName.toString().equalsIgnoreCase("Access Denied") &&errorNumber ==  40) {
+               throw new APIException(" No permission to do!");
+           }
+       }
+
+       return object;
+    }
+
+
+
+
+
+
 
 }

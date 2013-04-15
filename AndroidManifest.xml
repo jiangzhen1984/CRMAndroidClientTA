@@ -37,7 +37,7 @@
 		<activity android:name=".view.ProjectItemView" android:label="@string/app_name">
 		</activity>
 
-
+        <activity android:name=".view.CreateUpdateCheckpoint" />
 		<activity android:name=".view.OrderView" android:label="@string/app_name">
 		</activity>
 

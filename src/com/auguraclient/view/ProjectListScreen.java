@@ -65,6 +65,8 @@ public class ProjectListScreen extends Activity {
 
 	private ListAdapter projectAdapter;
 
+
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);

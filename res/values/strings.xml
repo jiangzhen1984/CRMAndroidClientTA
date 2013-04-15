@@ -31,4 +31,7 @@
     <string name="delete_checkpoint_confirm_title">Confirmation</string>
     <string name="delete_checkpoint_confirm_button">Confirm</string>
     <string name="delete_checkpoint_confirm_button_cancel">Cancel</string>
+    
+    <string name="create_checkpoint">Create</string>
+    <string name="update_checkpoint">Update</string>
 </resources>

@@ -21,4 +21,9 @@ public interface ISuguraRestAPI {
 
     public void deleteCheckpoint(String checkpointId) throws APIException;
 
+    public void createCheckpoint(ProjectOrder order, ProjectCheckpoint checkpoint) throws APIException;
+
+
+    public void updateCheckpoint(ProjectCheckpoint checkpoint) throws APIException;
+
 }

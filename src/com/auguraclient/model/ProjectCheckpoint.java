@@ -4,10 +4,12 @@ import com.auguraclient.util.Constants;
 import com.auguraclient.util.GlobalHolder;
 import com.auguraclient.util.Util;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.io.Serializable;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.text.DateFormat;
@@ -15,7 +17,12 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-public class ProjectCheckpoint implements ProjectJSONParser {
+public class ProjectCheckpoint implements ProjectJSONParser,Serializable {
+
+    /**
+     *
+     */
+    private static final long serialVersionUID = -4928950133984734211L;
 
     private Integer nID;
 
@@ -93,8 +100,8 @@ public class ProjectCheckpoint implements ProjectJSONParser {
 
             this.photoName = ( (JSONObject)NameValue.get("visual")).getString("value");
             if(this.photoName !=null && !this.photoName.isEmpty()) {
-                this.photoPath =Constants.CommonConfig.PIC_DIR +photoName+"&h=70&w=70";
-                Util.loadImageFromURL(new URL(Constants.PHTOT_COMPRESSED_API_URL +"p_70_70_"+photoName), GlobalHolder.GLOBAL_STORAGE_PATH+this.photoPath);
+                this.photoPath =Constants.CommonConfig.PIC_DIR +photoName;
+                Util.loadImageFromURL(new URL(Constants.PHTOT_API_URL +photoName), GlobalHolder.GLOBAL_STORAGE_PATH+this.photoPath);
             } else {
                 this.photoPath  = null;
             }
@@ -108,6 +115,11 @@ public class ProjectCheckpoint implements ProjectJSONParser {
 		} catch (IOException e) {
 			throw new JSONParserException(e);
 		}
+    }
+
+
+    public JSONArray toJSONArray()  throws JSONParserException {
+        return null;
     }
 
     public String getPhotoPath() {

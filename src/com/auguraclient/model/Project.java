@@ -1,11 +1,13 @@
 package com.auguraclient.model;
 
+import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Project implements ProjectJSONParser {
+public class Project implements ProjectJSONParser,Serializable {
 
     private Integer nID;
 
@@ -102,5 +104,9 @@ public class Project implements ProjectJSONParser {
         this.isLoadOrderFromDB = isLoadOrderFromDB;
     }
 
+
+    public JSONArray toJSONArray()  throws JSONParserException {
+        return null;
+    }
 
 }

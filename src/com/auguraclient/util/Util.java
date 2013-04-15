@@ -76,6 +76,10 @@ public class Util {
         return Constants.API_TABLE[Constants.DELETE_CHECK_POINT_URL_INDEX];
     }
 
+    public static String getUpdateCheckpointUrl() {
+        return Constants.API_TABLE[Constants.UPDATE_CHECK_POINT_URL_INDEX];
+    }
+
 
     public static User parserUserJson(JSONObject object) {
         if (object == null) {

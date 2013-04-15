@@ -1,5 +1,6 @@
 package com.auguraclient.model;
 
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 public class User implements ProjectJSONParser {
@@ -46,6 +47,10 @@ public class User implements ProjectJSONParser {
 
     public void parser(JSONObject jsonObject) throws JSONParserException {
 
+    }
+
+    public JSONArray toJSONArray() throws JSONParserException {
+        return null;
     }
 
 
