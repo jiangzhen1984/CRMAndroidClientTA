@@ -1,27 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/main_background"
-    android:orientation="vertical"
-    android:gravity="top">
-
+    android:background="@color/content_background"
+    android:gravity="top"
+    android:orientation="vertical" >
 
     <RelativeLayout
+        android:id="@+id/headerlayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@drawable/login_screen_top1"
-        android:id="@+id/headerlayout">
+        android:background="@color/title_background" >
+
         <TextView
+            android:id="@+id/itemTitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="@color/login_top_header"
-            android:text="@string/title"
             android:layout_centerInParent="true"
+            android:text="@string/title"
+            android:textColor="@color/font_color"
             android:textSize="24sp"
-            android:textStyle="bold"
-            android:id="@+id/itemTitle" />
+            android:textStyle="bold" />
+
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -31,29 +31,33 @@
             android:layout_alignParentLeft="true"
             android:layout_marginLeft="10dip"
             android:id="@+id/order_list_return_button">
+
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textColor="@color/login_text"
                 android:text="@string/return_sy"
+                android:textColor="@color/font_color"
                 android:textSize="16sp"
                 android:textStyle="bold" />
+
         </LinearLayout>
     </RelativeLayout>
 
-  
-
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:gravity="top"
+        android:layout_height="match_parent"
         android:layout_weight="1"
-        android:orientation="vertical">
+        android:gravity="top"
+        android:orientation="vertical" >
 
         <ListView
             android:id="@+id/projectItemList"
             android:layout_width="fill_parent"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:background="@color/content_background"
+            android:paddingRight="10dp"
+            android:paddingTop="10dp" />
+
     </LinearLayout>
 
 </LinearLayout>

@@ -11,4 +11,19 @@
     
     <color name="checkpoint_component_background_speration_line">#ffffff</color>
     
+    <color name="title_background">#1f354f</color>
+    
+    <color name="content_background">#c9d9fd</color>
+    
+    <color name="add_project_background">#087502</color>
+    
+    <color name="project_background">#ffffff</color>
+    
+    <color name="order_background">#ffffff</color>
+     <color name="blank_background">#ffffff</color>
+     
+     <color name="font_color">#ffffff</color>
+     
+     <color name="menu_background">#cb201f</color>
+    
 </resources>

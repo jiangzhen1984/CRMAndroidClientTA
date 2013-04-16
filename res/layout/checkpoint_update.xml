@@ -14,7 +14,7 @@
         <RelativeLayout
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:background="@drawable/login_screen_top1" >
+            android:background="@color/title_background" >
 
             <TextView
                 android:id="@+id/update_checkpoint_header"
@@ -22,27 +22,28 @@
                 android:layout_height="wrap_content"
                 android:layout_centerInParent="true"
                 android:text="@string/title"
-                android:textColor="@color/login_top_header"
+                android:textColor="@color/font_color"
                 android:textSize="20sp"
                 android:textStyle="bold" />
 
-
                 <TextView
+                    android:id="@+id/updateCheckpointReturn"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
                     android:layout_marginLeft="10dip"
                     android:text="@string/return_sy"
-                    android:textColor="@color/login_text"
+                    android:textColor="@color/font_color"
                     android:textSize="16sp"
-                    android:textStyle="bold"
-                    android:layout_centerVertical="true"
-                     android:id="@+id/updateCheckpointReturn" />
+                    android:textStyle="bold" />
+
         </RelativeLayout>
 
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1"
+            android:background="@color/content_background"
             android:gravity="top"
             android:orientation="vertical"
             android:paddingTop="10dip" >
@@ -206,7 +207,7 @@
                 android:layout_below="@+id/qcDefectEditText"
                 android:layout_marginTop="15dip"
                 android:baselineAligned="false"
-                android:gravity="left"
+                android:gravity="left|center_vertical"
                 android:orientation="horizontal" >
 
                 <TextView
@@ -279,7 +280,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
             android:layout_weight="1"
-            android:background="@drawable/login_screen_bottom1"
+            android:background="@color/add_project_background"
             android:gravity="center" >
 
             <TextView

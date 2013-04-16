@@ -1,8 +1,13 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-	xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
-	android:layout_height="match_parent" tools:context=".SplashScreen"
-	android:orientation="horizontal" android:gravity="center"
-	android:background="@color/main_background" android:padding="15dip">
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/content_background"
+    android:gravity="center"
+    android:orientation="horizontal"
+    android:padding="15dip"
+    tools:context=".SplashScreen" >
+
 	<ImageView android:layout_width="wrap_content"
 		android:layout_height="wrap_content" android:layout_gravity="center"
 		android:background="@color/main_background" android:src="@drawable/logo_asiaction"

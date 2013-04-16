@@ -5,7 +5,12 @@
     android:layout_marginBottom="5dip"
     android:layout_marginLeft="7dip"
     android:layout_marginRight="7dip"
-    android:layout_marginTop="5dip" >
+    android:layout_marginTop="5dip"
+    android:background="@color/order_background"
+    android:paddingBottom="10dp"
+    android:paddingLeft="5dp"
+    android:paddingRight="4dp"
+    android:paddingTop="10dp" >
 
     <ImageView
         android:id="@+id/projectItemPhoto"

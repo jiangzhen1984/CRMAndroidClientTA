@@ -12,6 +12,7 @@ import android.os.Handler;
 import android.os.HandlerThread;
 import android.os.Looper;
 import android.os.Message;
+import android.text.Editable;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.Window;
@@ -171,6 +172,11 @@ public class CreateUpdateCheckpoint extends Activity {
 	private OnClickListener submitListener = new OnClickListener() {
 
 		public void onClick(View v) {
+			Editable nameText = nameEditText.getText();
+			if(nameText == null || nameText.toString() == null || nameText.toString().equals("")) {
+				Toast.makeText(mContext, "Name can't be empty", Toast.LENGTH_LONG).show();
+				return;
+			}
 			projectCheckpoint
 					.setCategory(categoryEditText.getText().toString());
 			projectCheckpoint.setCheckType(checkpointEditText.getText()
@@ -228,6 +234,7 @@ public class CreateUpdateCheckpoint extends Activity {
 				Message.obtain(uiHandler, UI_START_SUBMIT).sendToTarget();
 				try {
 					submit();
+					Toast.makeText(mContext, "Sumit successfully ", Toast.LENGTH_LONG).show();
 				} catch (APIException e) {
 					e.printStackTrace();
 					Toast.makeText(mContext, e.getMessage(), Toast.LENGTH_LONG)

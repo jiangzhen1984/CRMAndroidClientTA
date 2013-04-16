@@ -53,7 +53,9 @@ public class GlobalHolder {
 			pl = pList;
 		} else {
 			for (int i = 0; i < pList.getList().size(); i++) {
-				pl.addProject(pList.getList().get(i));
+				Project newP = pList.getList().get(i);
+				pl.removeProject(newP);
+				pl.addProject(newP);
 			}
 		}
 	}

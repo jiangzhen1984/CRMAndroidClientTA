@@ -41,4 +41,9 @@
     <string name="order_photo_tips">Press to show full screen</string>
     
     <string name="return_sy"> &#60;&#60;</string>
+    
+    <string name="menu_quit"> Quit</string>
+    <string name="menu_setting"> Setting</string>
+    <string name="menu_delete"> Delete</string>
+    <string name="show_menu"> bb </string>
 </resources>

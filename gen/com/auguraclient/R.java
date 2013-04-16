@@ -15,14 +15,22 @@ public final class R {
     public static final class attr {
     }
     public static final class color {
+        public static final int add_project_background=0x7f06000a;
+        public static final int blank_background=0x7f06000d;
         public static final int checkpoint_component_background=0x7f060006;
         public static final int checkpoint_component_background_speration_line=0x7f060007;
+        public static final int content_background=0x7f060009;
+        public static final int font_color=0x7f06000e;
         public static final int login_header=0x7f060001;
         public static final int login_text=0x7f060003;
         public static final int login_text_color=0x7f060004;
         public static final int login_top_header=0x7f060005;
         public static final int main_background=0x7f060000;
+        public static final int menu_background=0x7f06000f;
+        public static final int order_background=0x7f06000c;
+        public static final int project_background=0x7f06000b;
         public static final int selected_tab=0x7f060002;
+        public static final int title_background=0x7f060008;
     }
     public static final class drawable {
         public static final int alert_icon=0x7f020000;
@@ -48,7 +56,7 @@ public final class R {
         public static final int bottom_add_checpoint_layout=0x7f080034;
         public static final int bottom_tab_add_or_update_checkpoint=0x7f080017;
         public static final int bottom_tab_add_or_update_checkpoint_layout=0x7f080016;
-        public static final int bottom_tab_add_project=0x7f08003c;
+        public static final int bottom_tab_add_project=0x7f08003d;
         public static final int categoryEditText=0x7f080006;
         public static final int catetoryTextView=0x7f080005;
         public static final int checkpointEditText=0x7f080008;
@@ -73,6 +81,9 @@ public final class R {
         public static final int itemQuntity=0x7f08001f;
         public static final int itemTitle=0x7f080036;
         public static final int login_text=0x7f080027;
+        public static final int menu=0x7f08003a;
+        public static final int menu_quit=0x7f08003f;
+        public static final int menu_setting=0x7f08003e;
         public static final int nameEditText=0x7f08000a;
         public static final int nameTextView=0x7f080009;
         public static final int ok_button=0x7f080002;
@@ -85,7 +96,7 @@ public final class R {
         public static final int projectItemOrderOperation=0x7f080018;
         public static final int projectItemOrderPhoto=0x7f08001c;
         public static final int projectItemPhoto=0x7f08001d;
-        public static final int projectList=0x7f08003a;
+        public static final int projectList=0x7f08003b;
         public static final int projectListItemName=0x7f080023;
         public static final int projectListItemheaderlayout=0x7f080022;
         public static final int projectOrderCheckpointList=0x7f080033;
@@ -97,7 +108,7 @@ public final class R {
         public static final int qcStatus=0x7f080020;
         public static final int qcStatusLin=0x7f080012;
         public static final int scroll=0x7f08002b;
-        public static final int tab_add_project_layout=0x7f08003b;
+        public static final int tab_add_project_layout=0x7f08003c;
         public static final int textView6=0x7f080011;
         public static final int textView7=0x7f080013;
         public static final int updateCheckpointReturn=0x7f080004;
@@ -117,6 +128,7 @@ public final class R {
         public static final int order_list=0x7f030008;
         public static final int order_list_with_whole_scroll=0x7f030009;
         public static final int projectlist=0x7f03000a;
+        public static final int title_menu=0x7f03000b;
     }
     public static final class raw {
         public static final int button=0x7f050000;
@@ -142,11 +154,15 @@ public final class R {
         public static final int login_error_header=0x7f070006;
         public static final int login_screen_ok=0x7f070009;
         public static final int login_waiting_login=0x7f070007;
+        public static final int menu_delete=0x7f07001e;
+        public static final int menu_quit=0x7f07001c;
+        public static final int menu_setting=0x7f07001d;
         public static final int not_null_query=0x7f07000f;
         public static final int order_information_required=0x7f070019;
         public static final int order_photo_tips=0x7f07001a;
         public static final int query=0x7f07000d;
         public static final int return_sy=0x7f07001b;
+        public static final int show_menu=0x7f07001f;
         public static final int title=0x7f07000a;
         public static final int update_checkpoint=0x7f070017;
         public static final int yourcard_client=0x7f07000c;

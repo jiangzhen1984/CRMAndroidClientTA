@@ -1,19 +1,10 @@
 package com.auguraclient.view;
 
-import com.auguraclient.R;
-import com.auguraclient.db.ContentDescriptor;
-import com.auguraclient.model.ISuguraRestAPI;
-import com.auguraclient.model.Project;
-import com.auguraclient.model.ProjectCheckpoint;
-import com.auguraclient.model.ProjectList;
-import com.auguraclient.model.ProjectOrder;
-import com.auguraclient.model.SuguraRestAPIImpl;
-import com.auguraclient.util.GlobalHolder;
-import com.auguraclient.util.SoundEngine;
-
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.Dialog;
 import android.app.ProgressDialog;
+import android.content.ContentResolver;
 import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.Context;
@@ -24,7 +15,9 @@ import android.os.Handler;
 import android.os.HandlerThread;
 import android.os.Looper;
 import android.os.Message;
+import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
@@ -36,8 +29,21 @@ import android.widget.BaseAdapter;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.PopupMenu;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.auguraclient.R;
+import com.auguraclient.db.ContentDescriptor;
+import com.auguraclient.model.ISuguraRestAPI;
+import com.auguraclient.model.Project;
+import com.auguraclient.model.ProjectCheckpoint;
+import com.auguraclient.model.ProjectList;
+import com.auguraclient.model.ProjectOrder;
+import com.auguraclient.model.SuguraRestAPIImpl;
+import com.auguraclient.util.Constants;
+import com.auguraclient.util.GlobalHolder;
+import com.auguraclient.util.SoundEngine;
 
 public class ProjectListScreen extends Activity {
 
@@ -64,7 +70,10 @@ public class ProjectListScreen extends Activity {
 	private ListView projectList;
 
 	private ListAdapter projectAdapter;
+	
+	private TextView showMenuButton;
 
+	@SuppressLint("NewApi")
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -75,7 +84,32 @@ public class ProjectListScreen extends Activity {
 
 		addProjectLayout = (LinearLayout) findViewById(R.id.tab_add_project_layout);
 		addProjectLayout.setOnClickListener(addProjectListener);
+		showMenuButton = (TextView)findViewById(R.id.menu);
+		
+		showMenuButton.setOnClickListener(new OnClickListener(){
 
+			@SuppressLint("NewApi")
+			public void onClick(View arg0) {
+				
+				PopupMenu popupMenu = new PopupMenu(context, showMenuButton);
+			    popupMenu.inflate(R.layout.title_menu);
+			    popupMenu
+			            .setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+
+			            	public boolean onMenuItemClick(MenuItem item) {
+			            		if(item.getItemId() == R.id.menu_quit) {
+			            			finish();
+			            		} else if(item.getItemId() == R.id.menu_setting) {
+			            			//
+			            		}
+			                   return true;
+			                }
+			            });
+			    popupMenu.show();
+			}
+			
+		});
+		
 		context = this;
 		api = new SuguraRestAPIImpl();
 		HandlerThread th = new HandlerThread("project");
@@ -125,8 +159,8 @@ public class ProjectListScreen extends Activity {
 					if (projectText.getText() == null
 							|| projectText.getText().toString() == null
 							|| projectText.getText().toString().equals("")) {
-						Toast.makeText(dialog.getContext(), context
-								.getText(R.string.not_null_query),
+						Toast.makeText(dialog.getContext(),
+								context.getText(R.string.not_null_query),
 								Toast.LENGTH_LONG).show();
 					} else {
 						Message.obtain(handler, CMD_QUERY_PROJECT,
@@ -167,38 +201,32 @@ public class ProjectListScreen extends Activity {
 			long perojectId = ContentUris.parseId(uri);
 			p.setnID((int) perojectId);
 			p.setLoadOrderFromDB(true);
-			
+
 			for (int j = 0; j < p.getOrderCount(); j++) {
 				cv.clear();
 				ProjectOrder po = p.getOrder(j);
-				cv.put(ContentDescriptor.ProjectOrderDesc.Cols.NAME, po
-						.getName());
-				cv.put(ContentDescriptor.ProjectOrderDesc.Cols.DESCRIPTION, po
-						.getDescription());
-				cv.put(ContentDescriptor.ProjectOrderDesc.Cols.ORD_ID, po
-						.getId());
-				cv.put(ContentDescriptor.ProjectOrderDesc.Cols.PRO_ID, p
-						.getId());
-				cv.put(ContentDescriptor.ProjectOrderDesc.Cols.QC_COMMENT, po
-						.getQcComment());
-				cv.put(ContentDescriptor.ProjectOrderDesc.Cols.QC_STATUS, po
-						.getQcStatus());
-				cv.put(ContentDescriptor.ProjectOrderDesc.Cols.QUANTITY, po
-						.getQuantity());
-				cv
-						.put(
-								ContentDescriptor.ProjectOrderDesc.Cols.QUANTITY_CHECKED,
-								po.getQuantityChecked());
-				cv.put(ContentDescriptor.ProjectOrderDesc.Cols.PHOTO_NAME, po
-						.getPhotoName());
-				cv
-						.put(
-								ContentDescriptor.ProjectOrderDesc.Cols.PHOTO_LOCAL_SMALL_PATH,
-								po.getPhotoPath());
-				cv
-						.put(
-								ContentDescriptor.ProjectOrderDesc.Cols.PHOTO_LOCAL_BIG_PATH,
-								po.getPhotoBigPath());
+				cv.put(ContentDescriptor.ProjectOrderDesc.Cols.NAME,
+						po.getName());
+				cv.put(ContentDescriptor.ProjectOrderDesc.Cols.DESCRIPTION,
+						po.getDescription());
+				cv.put(ContentDescriptor.ProjectOrderDesc.Cols.ORD_ID,
+						po.getId());
+				cv.put(ContentDescriptor.ProjectOrderDesc.Cols.PRO_ID,
+						p.getId());
+				cv.put(ContentDescriptor.ProjectOrderDesc.Cols.QC_COMMENT,
+						po.getQcComment());
+				cv.put(ContentDescriptor.ProjectOrderDesc.Cols.QC_STATUS,
+						po.getQcStatus());
+				cv.put(ContentDescriptor.ProjectOrderDesc.Cols.QUANTITY,
+						po.getQuantity());
+				cv.put(ContentDescriptor.ProjectOrderDesc.Cols.QUANTITY_CHECKED,
+						po.getQuantityChecked());
+				cv.put(ContentDescriptor.ProjectOrderDesc.Cols.PHOTO_NAME,
+						po.getPhotoName());
+				cv.put(ContentDescriptor.ProjectOrderDesc.Cols.PHOTO_LOCAL_SMALL_PATH,
+						po.getPhotoPath());
+				cv.put(ContentDescriptor.ProjectOrderDesc.Cols.PHOTO_LOCAL_BIG_PATH,
+						po.getPhotoBigPath());
 				uri = this.getContentResolver().insert(
 						ContentDescriptor.ProjectOrderDesc.CONTENT_URI, cv);
 				long projectOrderId = ContentUris.parseId(uri);
@@ -210,66 +238,61 @@ public class ProjectListScreen extends Activity {
 					ProjectCheckpoint pcp = po.getOrderCheckpointrByIndex(z);
 					cv.put(ContentDescriptor.ProjectCheckpointDesc.Cols.NAME,
 							pcp.getName());
-					cv
-							.put(
-									ContentDescriptor.ProjectCheckpointDesc.Cols.DESCRIPTION,
-									pcp.getDescription());
-					cv
-							.put(
-									ContentDescriptor.ProjectCheckpointDesc.Cols.CHECKPOINT_ID,
-									pcp.getId());
-					cv
-							.put(
-									ContentDescriptor.ProjectCheckpointDesc.Cols.QC_COMMENT,
-									pcp.getQcComments());
-					cv
-							.put(
-									ContentDescriptor.ProjectCheckpointDesc.Cols.QC_STATUS,
-									pcp.getQcStatus());
+					cv.put(ContentDescriptor.ProjectCheckpointDesc.Cols.DESCRIPTION,
+							pcp.getDescription());
+					cv.put(ContentDescriptor.ProjectCheckpointDesc.Cols.CHECKPOINT_ID,
+							pcp.getId());
+					cv.put(ContentDescriptor.ProjectCheckpointDesc.Cols.QC_COMMENT,
+							pcp.getQcComments());
+					cv.put(ContentDescriptor.ProjectCheckpointDesc.Cols.QC_STATUS,
+							pcp.getQcStatus());
 					cv.put(ContentDescriptor.ProjectCheckpointDesc.Cols.PRO_ID,
 							p.getId());
-					cv
-							.put(
-									ContentDescriptor.ProjectCheckpointDesc.Cols.PRO_ORDER_ID,
-									po.getId());
-					cv
-							.put(
-									ContentDescriptor.ProjectCheckpointDesc.Cols.CATEGORY,
-									pcp.getCategory());
-					cv
-							.put(
-									ContentDescriptor.ProjectCheckpointDesc.Cols.CHECK_TYPE,
-									pcp.getCheckType());
-					cv
-							.put(
-									ContentDescriptor.ProjectCheckpointDesc.Cols.QC_ACTION,
-									pcp.getQcAction());
-					cv
-							.put(
-									ContentDescriptor.ProjectCheckpointDesc.Cols.NUMBER_DEFECT,
-									pcp.getNumberDefect());
-					cv
-							.put(
-									ContentDescriptor.ProjectCheckpointDesc.Cols.PHOTO_NAME,
-									pcp.getPhotoName());
-					cv
-							.put(
-									ContentDescriptor.ProjectCheckpointDesc.Cols.PHOTO_LOCAL_SMALL_PATH,
-									pcp.getPhotoPath());
-					cv
-							.put(
-									ContentDescriptor.ProjectCheckpointDesc.Cols.PHOTO_LOCAL_BIG_PATH,
-									pcp.getPhotoPath());
+					cv.put(ContentDescriptor.ProjectCheckpointDesc.Cols.PRO_ORDER_ID,
+							po.getId());
+					cv.put(ContentDescriptor.ProjectCheckpointDesc.Cols.CATEGORY,
+							pcp.getCategory());
+					cv.put(ContentDescriptor.ProjectCheckpointDesc.Cols.CHECK_TYPE,
+							pcp.getCheckType());
+					cv.put(ContentDescriptor.ProjectCheckpointDesc.Cols.QC_ACTION,
+							pcp.getQcAction());
+					cv.put(ContentDescriptor.ProjectCheckpointDesc.Cols.NUMBER_DEFECT,
+							pcp.getNumberDefect());
+					cv.put(ContentDescriptor.ProjectCheckpointDesc.Cols.PHOTO_NAME,
+							pcp.getPhotoName());
+					cv.put(ContentDescriptor.ProjectCheckpointDesc.Cols.PHOTO_LOCAL_SMALL_PATH,
+							pcp.getPhotoPath());
+					cv.put(ContentDescriptor.ProjectCheckpointDesc.Cols.PHOTO_LOCAL_BIG_PATH,
+							pcp.getPhotoPath());
 					uri = this
 							.getContentResolver()
-							.insert(
-									ContentDescriptor.ProjectCheckpointDesc.CONTENT_URI,
+							.insert(ContentDescriptor.ProjectCheckpointDesc.CONTENT_URI,
 									cv);
 					long checkpointID = ContentUris.parseId(uri);
 					pcp.setnID((int) checkpointID);
 				}
 			}
 
+		}
+	}
+
+	private void removeProjectFromDB(ProjectList pl) {
+		ContentResolver cr = this.getContentResolver();
+		for (int i = 0; i < pl.getList().size(); i++) {
+			Project p = pl.getList().get(i);
+			//delete project_order_checkpoint table records
+			int ret = cr.delete(ContentDescriptor.ProjectCheckpointDesc.CONTENT_URI,
+					ContentDescriptor.ProjectCheckpointDesc.Cols.PRO_ID + "=?",
+					new String[] { p.getId() });
+			Log.i(Constants.TAG, "-------delete "+ret);
+			ret = cr.delete(ContentDescriptor.ProjectOrderDesc.CONTENT_URI,
+					ContentDescriptor.ProjectOrderDesc.Cols.PRO_ID + "=?",
+					new String[] { p.getId() });
+			Log.i(Constants.TAG, "-------delete "+ret);
+			ret = cr.delete(ContentDescriptor.ProjectDesc.CONTENT_URI,
+					ContentDescriptor.ProjectOrderDesc.Cols.PRO_ID + "=?",
+					new String[] { p.getId() });
+			Log.i(Constants.TAG, "-------delete "+ret);
 		}
 	}
 
@@ -323,6 +346,8 @@ public class ProjectListScreen extends Activity {
 						Message.obtain(uiHandler, UI_END_WAITING_WITH_ERROR)
 								.sendToTarget();
 					} else {
+						// FIXME remove project from cache and database
+						removeProjectFromDB(pl);
 						GlobalHolder.addProject(pl);
 						saveToDatabase(pl);
 						Message.obtain(uiHandler, UI_END_WAITING)

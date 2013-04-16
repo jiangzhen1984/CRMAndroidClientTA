@@ -6,7 +6,7 @@
     android:layout_marginLeft="7dip"
     android:layout_marginRight="7dip"
     android:layout_marginTop="5dip"
-    android:background="@color/checkpoint_component_background" >
+    android:background="@color/blank_background" >
 
     <ImageView
         android:id="@+id/projectItemOrderOperation"
@@ -52,9 +52,9 @@
     
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="1dp"
+        android:layout_height="15dp"
         android:layout_below="@id/itemOrderQcComments"
-        android:background="@color/checkpoint_component_background_speration_line" />
+        android:background="@color/content_background" />
 
     <ImageView
         android:id="@+id/projectItemOrderPhoto"
