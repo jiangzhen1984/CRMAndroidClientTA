@@ -49,7 +49,7 @@ public class LogoView extends Activity {
 	protected void onResume() {
 		super.onResume();
 		Message m = Message.obtain(handler, INIT);
-		handler.sendMessageDelayed(m, 3000);
+		handler.sendMessageDelayed(m, 1000);
 		GlobalHolder.GLOBAL_STORAGE_PATH = Environment
 				.getExternalStorageDirectory().getAbsolutePath();
 		String path = GlobalHolder.GLOBAL_STORAGE_PATH
@@ -78,9 +78,9 @@ public class LogoView extends Activity {
 				String session = sp.getString(Constants.SaveConfig.SESSION, "");
 				String userID = sp
 						.getString(Constants.SaveConfig.USER_ID, "");
-				if (userName == null || userName.isEmpty() ||  session == null
-						|| session.isEmpty() || userID == null
-						|| userID.isEmpty()) {
+				if (userName == null || userName.equals("") ||  session == null
+						|| session.equals("") || userID == null
+						|| userID.equals("")) {
 					i.setAction("com.auguraclient.view.login");
 					i.addCategory("com.auguraclient.view");
 				} else {

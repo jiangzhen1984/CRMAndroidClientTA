@@ -124,10 +124,10 @@ public class ProjectListScreen extends Activity {
 							.findViewById(R.id.project_numc);
 					if (projectText.getText() == null
 							|| projectText.getText().toString() == null
-							|| projectText.getText().toString().isEmpty()) {
+							|| projectText.getText().toString().equals("")) {
 						Toast.makeText(dialog.getContext(), context
 								.getText(R.string.not_null_query),
-								Toast.LENGTH_LONG);
+								Toast.LENGTH_LONG).show();
 					} else {
 						Message.obtain(handler, CMD_QUERY_PROJECT,
 								projectText.getText().toString())
@@ -392,7 +392,7 @@ public class ProjectListScreen extends Activity {
 		public void initilize(Context c) {
 			this.mContext = c;
 			View view = LayoutInflater.from(this.mContext).inflate(
-					R.xml.project_list_item, null);
+					R.layout.component_project, null);
 			addView(view);
 			tv = (TextView) this.findViewById(R.id.projectListItemName);
 		}

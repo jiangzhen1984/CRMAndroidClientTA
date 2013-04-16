@@ -25,19 +25,18 @@
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="@drawable/recover_top"
             android:orientation="horizontal"
             android:gravity="center"
             android:layout_centerVertical="true"
             android:layout_alignParentLeft="true"
-            android:layout_marginLeft="2dip"
-            android:id="@+id/top_button">
+            android:layout_marginLeft="10dip"
+            android:id="@+id/order_list_return_button">
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textColor="@color/login_text"
-                android:text="@string/yourcard_client"
-                android:textSize="12sp"
+                android:text="@string/return_sy"
+                android:textSize="16sp"
                 android:textStyle="bold" />
         </LinearLayout>
     </RelativeLayout>

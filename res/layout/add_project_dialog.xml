@@ -13,18 +13,20 @@
     android:paddingBottom="10dip"
     android:orientation="vertical">
 
-<EditText android:layout_width="fill_parent"
+<EditText
+    android:id="@+id/project_numc"
+    android:layout_width="fill_parent"
     android:layout_height="wrap_content"
-     android:layout_marginLeft="40dip"
-     android:layout_marginRight="40dip"
-     android:layout_marginTop="5dip"
-     android:textSize="12sp"
-     android:textColor="@color/login_text_color"
-     android:inputType="textEmailAddress"
-     android:gravity="center"
-     android:background="@drawable/login_screen_button"
-     android:layout_centerHorizontal="true"
-	 android:id="@+id/project_numc"/>
+    android:layout_centerHorizontal="true"
+    android:layout_marginLeft="40dip"
+    android:layout_marginRight="40dip"
+    android:layout_marginTop="5dip"
+    android:background="@drawable/login_screen_button"
+    android:gravity="center"
+    android:inputType="number"
+    android:textColor="@color/login_text_color"
+    android:textSize="12sp" />
+
 <LinearLayout android:layout_width="wrap_content"
     android:layout_height="wrap_content"
      android:layout_marginLeft="40dip"

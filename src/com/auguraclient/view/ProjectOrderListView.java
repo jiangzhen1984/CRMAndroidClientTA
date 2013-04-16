@@ -18,17 +18,18 @@ import android.os.Looper;
 import android.os.Message;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.widget.AdapterView.OnItemClickListener;
 
 import com.auguraclient.R;
 import com.auguraclient.db.ContentDescriptor;
@@ -53,8 +54,6 @@ public class ProjectOrderListView extends Activity {
 
     private Project project;
 
-    private ListAdapter adapter;
-
     private ISuguraRestAPI api;
 
     private static final int LOAD_PROJECT_ITEM = 1;
@@ -66,12 +65,17 @@ public class ProjectOrderListView extends Activity {
     private int currentProjectPosition;
 
     private TextView itemTitleTV;
+    
+    private LinearLayout returnButton;
+    
+    private ListAdapter adapter;
+    
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setfullScreen();
-        this.setContentView(R.layout.project_item_list);
+        this.setContentView(R.layout.order_list);
         projectItemList = (ListView)this.findViewById(R.id.projectItemList);
         currentProjectPosition = (Integer)this.getIntent().getExtras().get("project");
         project = GlobalHolder.getProject(currentProjectPosition);
@@ -81,7 +85,8 @@ public class ProjectOrderListView extends Activity {
         projectItemList.setAdapter(adapter);
 
         itemTitleTV = (TextView)this.findViewById(R.id.itemTitle);
-
+        returnButton = (LinearLayout) this.findViewById(R.id.order_list_return_button);
+        returnButton.setOnClickListener(returnButtonListener);
         api = new SuguraRestAPIImpl();
 
         HandlerThread ht = new HandlerThread("it");
@@ -107,6 +112,16 @@ public class ProjectOrderListView extends Activity {
         super.onResume();
         itemTitleTV.setText(this.project.getName());
     }
+    
+    private OnClickListener returnButtonListener = new OnClickListener() {
+
+		public void onClick(View arg0) {
+			finish();
+		}
+    	
+    };
+    
+    
 
     public void setfullScreen() {
         requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -115,6 +130,8 @@ public class ProjectOrderListView extends Activity {
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON,
                 WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
     }
+    
+    
 
     private ProgressDialog dialog;
 
@@ -253,6 +270,8 @@ public class ProjectOrderListView extends Activity {
         private ImageView itemPhotoIV;
 
         private ImageView itemOperationIV;
+        
+        private String photoPath;
 
         public ItemView(Context context) {
             super(context);
@@ -262,16 +281,15 @@ public class ProjectOrderListView extends Activity {
 
         public void initilize(Context c) {
             this.mContext = c;
-            View view = LayoutInflater.from(this.mContext).inflate(R.xml.project_item, null);
+            View view = LayoutInflater.from(this.mContext).inflate(R.layout.component_order, null);
             addView(view);
             itemNameTV = (TextView)this.findViewById(R.id.itemName);
             qcStatusTV = (TextView)this.findViewById(R.id.qcStatus);
             quantityTV = (TextView)this.findViewById(R.id.itemQuntity);
-            itemPhotoIV = (ImageView)this.findViewById(R.id.projectItemPhoto);
+            itemPhotoIV = (ImageView)this.findViewById(R.id.projectItemPhoto);            
             itemOperationIV = (ImageView)this.findViewById(R.id.imagesOp);
             itemOperationIV.setOnClickListener(new OnClickListener() {
 
-				@Override
 				public void onClick(View v) {
 					System.out.println("===========");
 				}
@@ -285,7 +303,23 @@ public class ProjectOrderListView extends Activity {
             quantityTV.setText("Quantity :" + pi.getQuantity());
             itemPhotoIV.setImageURI(Uri.fromFile(new File(GlobalHolder.GLOBAL_STORAGE_PATH
                     + pi.getPhotoPath())));
+            itemPhotoIV.setOnClickListener(orderPhotoClickListener);
+            photoPath = pi.getOriginPhotoPath();
         }
+        
+        private OnClickListener orderPhotoClickListener = new OnClickListener() {
+
+    		public void onClick(View arg0) {
+    			Intent intent = new Intent(Intent.ACTION_VIEW);
+    			intent
+    					.setDataAndType(Uri.fromFile(new File(
+    							GlobalHolder.GLOBAL_STORAGE_PATH
+    									+ photoPath)),
+    							"image/*");
+    			intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+    			startActivity(Intent.createChooser(intent, "Select Picture"));
+    		}
+        };
 
     }
 

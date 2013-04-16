@@ -7,4 +7,8 @@
     <color name="login_text_color">#a7a9ac</color>
     <color name="login_top_header">#961a2b</color>
     
+    <color name="checkpoint_component_background">#96063b</color>
+    
+    <color name="checkpoint_component_background_speration_line">#ffffff</color>
+    
 </resources>

@@ -22,20 +22,13 @@ import android.os.Message;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
+import android.view.View.OnClickListener;
 import android.view.Window;
 import android.view.WindowManager;
-import android.view.View.OnClickListener;
-import android.widget.AbsListView;
-import android.widget.AdapterView;
-import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.widget.AbsListView.OnScrollListener;
-import android.widget.AdapterView.OnItemClickListener;
 
 import com.auguraclient.R;
 import com.auguraclient.db.ContentDescriptor;
@@ -64,12 +57,9 @@ public class OrderView extends Activity {
 
 	private Context mContext;
 
-	//
-	private ListView projectOrderCheckpointList;
+	private LinearLayout projectOrderCheckpointList;
 
 	private Project project;
-
-	private ListAdapter adapter;
 
 	private ISuguraRestAPI api;
 
@@ -93,6 +83,8 @@ public class OrderView extends Activity {
 
 	private LinearLayout addCheckpointButton;
 
+	private LinearLayout checkpointReturn;
+
 	private int currentSelectedCheckpointIdx;
 
 	private int currentFistItemInScrollView;
@@ -103,8 +95,8 @@ public class OrderView extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setfullScreen();
-		this.setContentView(R.layout.project_order_list);
-		projectOrderCheckpointList = (ListView) this
+		this.setContentView(R.layout.order_detail);
+		projectOrderCheckpointList = (LinearLayout) this
 				.findViewById(R.id.projectOrderCheckpointList);
 
 		projectItemPhotoIV = (ImageView) this
@@ -126,28 +118,20 @@ public class OrderView extends Activity {
 		addCheckpointButton = (LinearLayout) this
 				.findViewById(R.id.bottom_add_checpoint_layout);
 
-		addCheckpointButton.setOnClickListener(new OnClickListener() {
+		checkpointReturn = (LinearLayout) this
+				.findViewById(R.id.checkpointReturn);
 
-			@Override
-			public void onClick(View v) {
-				Intent i = new Intent();
-				i.putExtra("create", true);
-				i.putExtra("projectOrder", projectItem);
-				i.setClass(mContext, CreateUpdateCheckpoint.class);
-				startActivityForResult(i, 200);
-			}
-
-		});
+		// set listener
+		initListener();
 
 		Integer position = (Integer) this.getIntent().getExtras()
 				.get("project");
-		Integer itemPosition = (Integer) this.getIntent().getExtras().get(
-				"itemPosition");
+		Integer itemPosition = (Integer) this.getIntent().getExtras()
+				.get("itemPosition");
 
 		project = GlobalHolder.getProject(position);
 
 		projectItem = project.getOrder(itemPosition);
-		initAdapterView();
 
 		mContext = this;
 
@@ -158,44 +142,6 @@ public class OrderView extends Activity {
 		handler = new LoaderHandler(ht.getLooper());
 		uiHandler = new UIHandler();
 		Message.obtain(handler, LOAD_PROJECT_ITEM_ORDER).sendToTarget();
-
-		projectOrderCheckpointList
-				.setOnItemClickListener(new OnItemClickListener() {
-
-					public void onItemClick(AdapterView<?> parent, View view,
-							int position, long id) {
-						Intent i = new Intent();
-						i.putExtra("create", false);
-						i.putExtra("projectOrder", projectItem);
-						i.putExtra("projectCheckpoint", (ProjectCheckpoint)
-
-						adapter.getItem(position));
-						i.setClass(mContext, CreateUpdateCheckpoint.class);
-						startActivityForResult(i, 100);
-					}
-
-				});
-
-		projectOrderCheckpointList.setOnScrollListener(new OnScrollListener() {
-
-			public void onScrollStateChanged(AbsListView view, int scrollState) {
-
-			}
-
-			public void onScroll(AbsListView view, int firstVisibleItem,
-					int visibleItemCount, int totalItemCount) {
-				currentFistItemInScrollView = firstVisibleItem;
-				if (tView.length > 0) {
-					if (currentFistItemInScrollView >= tView.length) {
-						currentFistItemInScrollView = tView.length - 1;
-					}
-				} else {
-					currentFistItemInScrollView = 0;
-				}
-
-			}
-
-		});
 
 	}
 
@@ -216,22 +162,48 @@ public class OrderView extends Activity {
 		projectItemPhotoIV.setImageURI(Uri.fromFile(new File(
 				GlobalHolder.GLOBAL_STORAGE_PATH
 						+ projectItem.getPhotoBigPath())));
-		projectItemPhotoIV.setOnClickListener(new OnClickListener() {
-
-			public void onClick(View v) {
-				Intent intent = new Intent(Intent.ACTION_VIEW);
-				intent
-						.setDataAndType(Uri.fromFile(new File(
-								GlobalHolder.GLOBAL_STORAGE_PATH
-										+ projectItem.getOriginPhotoPath())),
-								"image/*");
-				intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-				startActivity(Intent.createChooser(intent, "Select Picture"));
-			}
-
-		});
 
 	}
+
+	private void initListener() {
+		checkpointReturn.setOnClickListener(returnButtonListener);
+
+		addCheckpointButton.setOnClickListener(addCheckpointListener);
+		projectItemPhotoIV.setOnClickListener(onOrderPhotoClickListener);
+	}
+
+	private OnClickListener returnButtonListener = new OnClickListener() {
+
+		public void onClick(View arg0) {
+			finish();
+		}
+
+	};
+
+	private OnClickListener addCheckpointListener = new OnClickListener() {
+
+		public void onClick(View v) {
+			Intent i = new Intent();
+			i.putExtra("create", true);
+			i.putExtra("projectOrder", projectItem);
+			i.setClass(mContext, CreateUpdateCheckpoint.class);
+			startActivityForResult(i, 200);
+		}
+
+	};
+
+	private OnClickListener onOrderPhotoClickListener = new OnClickListener() {
+
+		public void onClick(View v) {
+			Intent intent = new Intent(Intent.ACTION_VIEW);
+			intent.setDataAndType(
+					Uri.fromFile(new File(GlobalHolder.GLOBAL_STORAGE_PATH
+							+ projectItem.getOriginPhotoPath())), "image/*");
+			intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+			startActivity(Intent.createChooser(intent, "Select Picture"));
+		}
+
+	};
 
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -263,10 +235,6 @@ public class OrderView extends Activity {
 					dialog.dismiss();
 				}
 				initAdapterView();
-				adapter = new ListAdapter(mContext);
-				projectOrderCheckpointList.setAdapter(adapter);
-				adapter.notifyDataSetChanged();
-
 				break;
 			case END_WAITING_WITH_ERROR:
 				if (dialog != null) {
@@ -289,6 +257,10 @@ public class OrderView extends Activity {
 		for (int i = 0; i < tView.length; i++) {
 			ItemView appView = new ItemView(mContext);
 			appView.updateView(projectItem.getOrderCheckpointrByIndex(i));
+			projectOrderCheckpointList.addView(appView,
+					new LinearLayout.LayoutParams(
+							LinearLayout.LayoutParams.WRAP_CONTENT,
+							LinearLayout.LayoutParams.WRAP_CONTENT));
 			tView[i] = appView;
 		}
 	}
@@ -373,38 +345,34 @@ public class OrderView extends Activity {
 		for (int z = 0; z < projectItem.getCheckpointCount(); z++) {
 			cv.clear();
 			ProjectCheckpoint pcp = projectItem.getOrderCheckpointrByIndex(z);
-			cv.put(ContentDescriptor.ProjectCheckpointDesc.Cols.NAME, pcp
-					.getName());
+			cv.put(ContentDescriptor.ProjectCheckpointDesc.Cols.NAME,
+					pcp.getName());
 			cv.put(ContentDescriptor.ProjectCheckpointDesc.Cols.DESCRIPTION,
 					pcp.getDescription());
 			cv.put(ContentDescriptor.ProjectCheckpointDesc.Cols.CHECKPOINT_ID,
 					pcp.getId());
-			cv.put(ContentDescriptor.ProjectCheckpointDesc.Cols.QC_COMMENT, pcp
-					.getQcComments());
-			cv.put(ContentDescriptor.ProjectCheckpointDesc.Cols.QC_STATUS, pcp
-					.getQcStatus());
+			cv.put(ContentDescriptor.ProjectCheckpointDesc.Cols.QC_COMMENT,
+					pcp.getQcComments());
+			cv.put(ContentDescriptor.ProjectCheckpointDesc.Cols.QC_STATUS,
+					pcp.getQcStatus());
 			cv.put(ContentDescriptor.ProjectCheckpointDesc.Cols.PRO_ID,
 					projectItem.getProject().getId());
 			cv.put(ContentDescriptor.ProjectCheckpointDesc.Cols.PRO_ORDER_ID,
 					projectItem.getId());
-			cv.put(ContentDescriptor.ProjectCheckpointDesc.Cols.CATEGORY, pcp
-					.getCategory());
-			cv.put(ContentDescriptor.ProjectCheckpointDesc.Cols.CHECK_TYPE, pcp
-					.getCheckType());
-			cv.put(ContentDescriptor.ProjectCheckpointDesc.Cols.QC_ACTION, pcp
-					.getQcAction());
+			cv.put(ContentDescriptor.ProjectCheckpointDesc.Cols.CATEGORY,
+					pcp.getCategory());
+			cv.put(ContentDescriptor.ProjectCheckpointDesc.Cols.CHECK_TYPE,
+					pcp.getCheckType());
+			cv.put(ContentDescriptor.ProjectCheckpointDesc.Cols.QC_ACTION,
+					pcp.getQcAction());
 			cv.put(ContentDescriptor.ProjectCheckpointDesc.Cols.NUMBER_DEFECT,
 					pcp.getNumberDefect());
-			cv.put(ContentDescriptor.ProjectCheckpointDesc.Cols.PHOTO_NAME, pcp
-					.getPhotoName());
-			cv
-					.put(
-							ContentDescriptor.ProjectCheckpointDesc.Cols.PHOTO_LOCAL_SMALL_PATH,
-							pcp.getPhotoPath());
-			cv
-					.put(
-							ContentDescriptor.ProjectCheckpointDesc.Cols.PHOTO_LOCAL_BIG_PATH,
-							pcp.getPhotoPath());
+			cv.put(ContentDescriptor.ProjectCheckpointDesc.Cols.PHOTO_NAME,
+					pcp.getPhotoName());
+			cv.put(ContentDescriptor.ProjectCheckpointDesc.Cols.PHOTO_LOCAL_SMALL_PATH,
+					pcp.getPhotoPath());
+			cv.put(ContentDescriptor.ProjectCheckpointDesc.Cols.PHOTO_LOCAL_BIG_PATH,
+					pcp.getPhotoPath());
 			Uri uri = this.getContentResolver().insert(
 					ContentDescriptor.ProjectCheckpointDesc.CONTENT_URI, cv);
 			long checkpointID = ContentUris.parseId(uri);
@@ -427,156 +395,69 @@ public class OrderView extends Activity {
 	private void loadCheckpointFromDB() {
 		ContentResolver cr = this.getContentResolver();
 		Cursor c = null;
-		c = cr
-				.query(
-						ContentDescriptor.ProjectCheckpointDesc.CONTENT_URI,
-						ContentDescriptor.ProjectCheckpointDesc.Cols.ALL_COLS,
-						ContentDescriptor.ProjectCheckpointDesc.Cols.PRO_ORDER_ID
-								+ "=?",
-						new String[] { this.projectItem.getId() }, null);
+		c = cr.query(ContentDescriptor.ProjectCheckpointDesc.CONTENT_URI,
+				ContentDescriptor.ProjectCheckpointDesc.Cols.ALL_COLS,
+				ContentDescriptor.ProjectCheckpointDesc.Cols.PRO_ORDER_ID
+						+ "=?", new String[] { this.projectItem.getId() }, null);
 
 		while (c.moveToNext()) {
 			ProjectCheckpoint pcp = new ProjectCheckpoint();
-			pcp
-					.setnID(c
-							.getInt(c
-									.getColumnIndexOrThrow(ContentDescriptor.ProjectCheckpointDesc.Cols.ID)));
-			pcp
-					.setId(c
-							.getString(c
-									.getColumnIndexOrThrow(ContentDescriptor.ProjectCheckpointDesc.Cols.CHECKPOINT_ID)));
-			pcp
-					.setName(c
-							.getString(c
-									.getColumnIndexOrThrow(ContentDescriptor.ProjectCheckpointDesc.Cols.NAME)));
+			pcp.setnID(c.getInt(c
+					.getColumnIndexOrThrow(ContentDescriptor.ProjectCheckpointDesc.Cols.ID)));
+			pcp.setId(c.getString(c
+					.getColumnIndexOrThrow(ContentDescriptor.ProjectCheckpointDesc.Cols.CHECKPOINT_ID)));
+			pcp.setName(c.getString(c
+					.getColumnIndexOrThrow(ContentDescriptor.ProjectCheckpointDesc.Cols.NAME)));
 
-			pcp
-					.setPhotoPath(c
-							.getString(c
-									.getColumnIndexOrThrow(ContentDescriptor.ProjectCheckpointDesc.Cols.PHOTO_LOCAL_SMALL_PATH)));
+			pcp.setPhotoPath(c.getString(c
+					.getColumnIndexOrThrow(ContentDescriptor.ProjectCheckpointDesc.Cols.PHOTO_LOCAL_SMALL_PATH)));
 
-			pcp
-					.setPhotoName(c
-							.getString(c
-									.getColumnIndexOrThrow(ContentDescriptor.ProjectCheckpointDesc.Cols.PHOTO_NAME)));
+			pcp.setPhotoName(c.getString(c
+					.getColumnIndexOrThrow(ContentDescriptor.ProjectCheckpointDesc.Cols.PHOTO_NAME)));
 
-			if (c
-					.getColumnIndex(ContentDescriptor.ProjectCheckpointDesc.Cols.DESCRIPTION) > 0) {
-				pcp
-						.setDescription(c
-								.getString(c
-										.getColumnIndexOrThrow(ContentDescriptor.ProjectCheckpointDesc.Cols.DESCRIPTION)));
+			if (c.getColumnIndex(ContentDescriptor.ProjectCheckpointDesc.Cols.DESCRIPTION) > 0) {
+				pcp.setDescription(c.getString(c
+						.getColumnIndexOrThrow(ContentDescriptor.ProjectCheckpointDesc.Cols.DESCRIPTION)));
 			}
 
-			if (c
-					.getColumnIndex(ContentDescriptor.ProjectCheckpointDesc.Cols.CATEGORY) >= 0) {
-				pcp
-						.setCategory(c
-								.getString(c
-										.getColumnIndexOrThrow(ContentDescriptor.ProjectCheckpointDesc.Cols.CATEGORY)));
+			if (c.getColumnIndex(ContentDescriptor.ProjectCheckpointDesc.Cols.CATEGORY) >= 0) {
+				pcp.setCategory(c.getString(c
+						.getColumnIndexOrThrow(ContentDescriptor.ProjectCheckpointDesc.Cols.CATEGORY)));
 			}
 
-			if (c
-					.getColumnIndex(ContentDescriptor.ProjectCheckpointDesc.Cols.QC_COMMENT) >= 0) {
-				pcp
-						.setQcComments(c
-								.getString(c
-										.getColumnIndexOrThrow(ContentDescriptor.ProjectCheckpointDesc.Cols.QC_COMMENT)));
+			if (c.getColumnIndex(ContentDescriptor.ProjectCheckpointDesc.Cols.QC_COMMENT) >= 0) {
+				pcp.setQcComments(c.getString(c
+						.getColumnIndexOrThrow(ContentDescriptor.ProjectCheckpointDesc.Cols.QC_COMMENT)));
 			}
-			if (c
-					.getColumnIndex(ContentDescriptor.ProjectCheckpointDesc.Cols.QC_COMMENT) >= 0) {
-				pcp
-						.setQcComments(c
-								.getString(c
-										.getColumnIndexOrThrow(ContentDescriptor.ProjectCheckpointDesc.Cols.QC_COMMENT)));
+			if (c.getColumnIndex(ContentDescriptor.ProjectCheckpointDesc.Cols.QC_COMMENT) >= 0) {
+				pcp.setQcComments(c.getString(c
+						.getColumnIndexOrThrow(ContentDescriptor.ProjectCheckpointDesc.Cols.QC_COMMENT)));
 			}
-			if (c
-					.getColumnIndex(ContentDescriptor.ProjectCheckpointDesc.Cols.QC_STATUS) >= 0) {
-				pcp
-						.setQcStatus(c
-								.getString(c
-										.getColumnIndexOrThrow(ContentDescriptor.ProjectCheckpointDesc.Cols.QC_STATUS)));
+			if (c.getColumnIndex(ContentDescriptor.ProjectCheckpointDesc.Cols.QC_STATUS) >= 0) {
+				pcp.setQcStatus(c.getString(c
+						.getColumnIndexOrThrow(ContentDescriptor.ProjectCheckpointDesc.Cols.QC_STATUS)));
 			}
-			if (c
-					.getColumnIndex(ContentDescriptor.ProjectCheckpointDesc.Cols.DESCRIPTION) >= 0) {
-				pcp
-						.setDescription(c
-								.getString(c
-										.getColumnIndexOrThrow(ContentDescriptor.ProjectCheckpointDesc.Cols.DESCRIPTION)));
+			if (c.getColumnIndex(ContentDescriptor.ProjectCheckpointDesc.Cols.DESCRIPTION) >= 0) {
+				pcp.setDescription(c.getString(c
+						.getColumnIndexOrThrow(ContentDescriptor.ProjectCheckpointDesc.Cols.DESCRIPTION)));
 			}
-			if (c
-					.getColumnIndex(ContentDescriptor.ProjectCheckpointDesc.Cols.NUMBER_DEFECT) >= 0) {
-				pcp
-						.setNumberDefect(c
-								.getString(c
-										.getColumnIndexOrThrow(ContentDescriptor.ProjectCheckpointDesc.Cols.NUMBER_DEFECT)));
+			if (c.getColumnIndex(ContentDescriptor.ProjectCheckpointDesc.Cols.NUMBER_DEFECT) >= 0) {
+				pcp.setNumberDefect(c.getString(c
+						.getColumnIndexOrThrow(ContentDescriptor.ProjectCheckpointDesc.Cols.NUMBER_DEFECT)));
 			}
-			if (c
-					.getColumnIndex(ContentDescriptor.ProjectCheckpointDesc.Cols.CHECK_TYPE) >= 0) {
-				pcp
-						.setCheckType(c
-								.getString(c
-										.getColumnIndexOrThrow(ContentDescriptor.ProjectCheckpointDesc.Cols.CHECK_TYPE)));
+			if (c.getColumnIndex(ContentDescriptor.ProjectCheckpointDesc.Cols.CHECK_TYPE) >= 0) {
+				pcp.setCheckType(c.getString(c
+						.getColumnIndexOrThrow(ContentDescriptor.ProjectCheckpointDesc.Cols.CHECK_TYPE)));
 			}
-			if (c
-					.getColumnIndex(ContentDescriptor.ProjectCheckpointDesc.Cols.QC_ACTION) >= 0) {
-				pcp
-						.setQcAction(c
-								.getString(c
-										.getColumnIndexOrThrow(ContentDescriptor.ProjectCheckpointDesc.Cols.QC_ACTION)));
+			if (c.getColumnIndex(ContentDescriptor.ProjectCheckpointDesc.Cols.QC_ACTION) >= 0) {
+				pcp.setQcAction(c.getString(c
+						.getColumnIndexOrThrow(ContentDescriptor.ProjectCheckpointDesc.Cols.QC_ACTION)));
 			}
 			projectItem.addOrderCheckpoint(pcp);
 		}
 
 		projectItem.setLoadedCheckpointFromDB(true);
 		c.close();
-	}
-
-	class ListAdapter extends BaseAdapter {
-
-		private Context context;
-
-		public ListAdapter(Context context) {
-			this.context = context;
-		}
-
-		public int getCount() {
-			return projectItem.getCheckpointCount();
-		}
-
-		public Object getItem(int position) {
-			return projectItem.getOrderCheckpointrByIndex(position);
-		}
-
-		public long getItemId(int position) {
-			return 0;
-		}
-
-		public View getView(int position, View convertView, ViewGroup parent) {
-			int pos = position + currentFistItemInScrollView;
-			if (tView.length > 0) {
-				if (pos >= tView.length) {
-					pos = tView.length - 1;
-				}
-			} else {
-				pos = 0;
-			}
-
-			return tView[pos];
-			// System.out.println(tView +"    "+currentFistItemInScrollView
-			// +"   "+position);
-			// if(tView[position+currentFistItemInScrollView] == null) {
-			// ItemView appView = new ItemView(context);
-			// appView.updateView(projectItem.getOrderCheckpointrByIndex(position+currentFistItemInScrollView));
-			// convertView = appView;
-			// tView[position+currentFistItemInScrollView] = appView;
-			// }
-			// if(convertView ==null) {
-			// convertView = tView[position+currentFistItemInScrollView] ;
-			// }
-			// return convertView;
-		}
-
 	}
 
 	class ItemView extends LinearLayout {
@@ -602,7 +483,7 @@ public class OrderView extends Activity {
 		public void initilize(Context c) {
 			this.mContext = c;
 			View view = LayoutInflater.from(this.mContext).inflate(
-					R.xml.project_item_order, null, false);
+					R.layout.component_checkpoint, null, false);
 			addView(view);
 			itemOrderCategoryCheckType = (TextView) this
 					.findViewById(R.id.itemOrderCategoryCheckType);
@@ -616,25 +497,38 @@ public class OrderView extends Activity {
 					.findViewById(R.id.projectItemOrderOperation);
 		}
 
-		public void updateView(ProjectCheckpoint pi) {
+		public void updateView(final ProjectCheckpoint pi) {
 			if (pi == null) {
-				Log
-						.e(Constants.TAG,
-								" can't update view for order view ProjectItemOrder is null");
+				Log.e(Constants.TAG,
+						" can't update view for order view ProjectItemOrder is null");
 				return;
 			}
-			itemOrderCategoryCheckType.setText(pi.getCategory() + "   >> "
-					+ pi.getCheckType() + "   >>" + pi.getName());
-			itemOrderDefectAlert.setText(pi.getNumberDefect() + "   "
-					+ pi.getQcAction());
+			itemOrderCategoryCheckType.setText(pi.getCategory() + "   > "
+					+ pi.getCheckType() + "   >" + pi.getName());
+			itemOrderDefectAlert.setText(pi.getQcAction() == null ? "" : pi
+					.getQcAction() + pi.getNumberDefect() == null ? "   " : pi
+					.getNumberDefect());
 			itemOrderQcComments.setText(pi.getQcComments() == null ? "" : pi
 					.getQcComments());
-			if (pi.getPhotoPath() != null && !pi.getPhotoPath().isEmpty()) {
+			if (pi.getPhotoPath() != null && !pi.getPhotoPath().equals("")) {
 				final Uri photo = Uri.fromFile(new File(
 						GlobalHolder.GLOBAL_STORAGE_PATH + pi.getPhotoPath()));
 				projectItemOrderPhoto.setImageURI(photo);
 
 			}
+			this.setOnClickListener(new OnClickListener() {
+
+				public void onClick(View arg0) {
+					Intent i = new Intent();
+					i.putExtra("create", false);
+					i.putExtra("projectOrder", projectItem);
+					i.putExtra("projectCheckpoint", pi);
+					i.setClass(mContext, CreateUpdateCheckpoint.class);
+					startActivityForResult(i, 100);
+
+				}
+
+			});
 		}
 
 	}

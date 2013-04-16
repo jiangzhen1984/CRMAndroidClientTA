@@ -1,17 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-
-<RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:layout_marginBottom="5dip"
     android:layout_marginLeft="7dip"
     android:layout_marginRight="7dip"
-    android:layout_marginTop="5dip"
-    android:layout_marginBottom="5dip"
-     >
-
-
-
+    android:layout_marginTop="5dip" >
 
     <ImageView
         android:id="@+id/projectItemPhoto"
@@ -21,7 +15,7 @@
         android:layout_alignParentLeft="true" 
         android:layout_marginLeft="7dip"
         android:src="@drawable/app_icon"
-        />
+        android:contentDescription="@string/order_photo_tips"/>
 
 
 
@@ -29,8 +23,9 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="ssssss"
-            android:textSize="8sp"
+            android:text="Order Name"
+            android:textSize="12sp"
+            android:layout_marginLeft="7dip"
             android:textStyle="bold"
             android:id="@+id/itemName"             
             android:layout_toRightOf="@+id/projectItemPhoto"
@@ -40,8 +35,9 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="8sp"
-            android:text="bbbb"
+            android:textSize="12sp"
+            android:layout_marginLeft="7dip"
+            android:text="Quantity"
             android:textStyle="bold"
             android:id="@+id/itemQuntity" 
             android:layout_toRightOf="@+id/projectItemPhoto"
@@ -52,8 +48,9 @@
         <TextView
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:textSize="8sp"
-            android:text="ccccc"
+            android:textSize="12sp"
+            android:layout_marginLeft="7dip"
+            android:text="QC Status"
             android:textStyle="bold"
             android:id="@+id/qcStatus"
             android:layout_toRightOf="@+id/projectItemPhoto"
@@ -66,13 +63,14 @@
 
 
         <ImageView
-            android:id="@+id/images_id"
+            android:id="@+id/imagesOp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:src="@drawable/project_sync"
             android:layout_centerVertical="true"
         android:layout_alignParentRight="true"
-             />
+        android:layout_marginRight="7dip"
+             android:contentDescription="@string/order_information_required"/>
 
 
 </RelativeLayout>

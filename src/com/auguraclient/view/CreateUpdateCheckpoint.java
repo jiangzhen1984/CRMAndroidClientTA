@@ -5,6 +5,7 @@ import java.io.File;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
@@ -12,9 +13,9 @@ import android.os.HandlerThread;
 import android.os.Looper;
 import android.os.Message;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.Window;
 import android.view.WindowManager;
-import android.view.View.OnClickListener;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -27,6 +28,7 @@ import com.auguraclient.model.ISuguraRestAPI;
 import com.auguraclient.model.ProjectCheckpoint;
 import com.auguraclient.model.ProjectOrder;
 import com.auguraclient.model.SuguraRestAPIImpl;
+import com.auguraclient.util.GlobalHolder;
 
 public class CreateUpdateCheckpoint extends Activity {
 
@@ -57,8 +59,10 @@ public class CreateUpdateCheckpoint extends Activity {
 	private ISuguraRestAPI api;
 
 	private UiHandler uiHandler;
-	
+
 	private CmdHanlder cmdHandler;
+
+	private TextView returnButton;
 
 	private boolean createFlag = true;
 
@@ -73,24 +77,9 @@ public class CreateUpdateCheckpoint extends Activity {
 				WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 
 		this.setContentView(R.layout.checkpoint_update);
-
-		categoryEditText = (EditText) this.findViewById(R.id.categoryEditText);
-		checkpointEditText = (EditText) this
-				.findViewById(R.id.checkpointEditText);
-		nameEditText = (EditText) this.findViewById(R.id.nameEditText);
-		detailEditText = (EditText) this.findViewById(R.id.detailEditText);
-		qcCommentEditText = (EditText) this
-				.findViewById(R.id.qcCommentEditText);
-		checkpointPhoto = (ImageView) this.findViewById(R.id.checkpointPhoto);
-		qcDefectEditText = (EditText) this.findViewById(R.id.qcDefectEditText);
-
-		addOrUpdateTextView = (TextView) this
-				.findViewById(R.id.bottom_tab_add_or_update_checkpoint);
-
-		submitButton = (LinearLayout) findViewById(R.id.bottom_tab_add_or_update_checkpoint_layout);
-
-		submitButton.setOnClickListener(submitListener);
-
+		initView();
+		initListener();
+		
 		createFlag = this.getIntent().getBooleanExtra("create", true);
 		mContext = this;
 		projectOrder = (ProjectOrder) this.getIntent().getSerializableExtra(
@@ -108,7 +97,7 @@ public class CreateUpdateCheckpoint extends Activity {
 		api = new SuguraRestAPIImpl();
 
 		uiHandler = new UiHandler();
-		
+
 		HandlerThread ut = new HandlerThread("ut");
 		ut.start();
 		cmdHandler = new CmdHanlder(ut.getLooper());
@@ -124,11 +113,60 @@ public class CreateUpdateCheckpoint extends Activity {
 		qcCommentEditText.setText(projectCheckpoint.getQcComments());
 		qcDefectEditText.setText(projectCheckpoint.getNumberDefect());
 		if (projectCheckpoint.getPhotoPath() != null) {
-			checkpointPhoto.setImageURI(Uri.fromFile(new File(projectCheckpoint
+			checkpointPhoto.setImageURI(Uri.fromFile(new File(GlobalHolder.GLOBAL_STORAGE_PATH+ projectCheckpoint
 					.getPhotoPath())));
+			checkpointPhoto.setOnClickListener(onOpenPhotoClickListener);
 		}
 
 	}
+	
+	
+	private void initListener() {
+		returnButton.setOnClickListener(returnButtonListener);
+		submitButton.setOnClickListener(submitListener);
+	}
+
+	private void initView() {
+		categoryEditText = (EditText) this.findViewById(R.id.categoryEditText);
+		checkpointEditText = (EditText) this
+				.findViewById(R.id.checkpointEditText);
+		nameEditText = (EditText) this.findViewById(R.id.nameEditText);
+		detailEditText = (EditText) this.findViewById(R.id.detailEditText);
+		qcCommentEditText = (EditText) this
+				.findViewById(R.id.qcCommentEditText);
+		checkpointPhoto = (ImageView) this.findViewById(R.id.checkpointPhoto);
+		qcDefectEditText = (EditText) this.findViewById(R.id.qcDefectEditText);
+
+		addOrUpdateTextView = (TextView) this
+				.findViewById(R.id.bottom_tab_add_or_update_checkpoint);
+
+		submitButton = (LinearLayout) findViewById(R.id.bottom_tab_add_or_update_checkpoint_layout);
+
+		returnButton = (TextView) this
+				.findViewById(R.id.updateCheckpointReturn);
+	}
+	
+	
+	private OnClickListener onOpenPhotoClickListener = new OnClickListener() {
+
+		public void onClick(View v) {
+			Intent intent = new Intent(Intent.ACTION_VIEW);
+			intent.setDataAndType(
+					Uri.fromFile(new File(GlobalHolder.GLOBAL_STORAGE_PATH+ projectCheckpoint
+							.getPhotoPath())), "image/*");
+			intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+			startActivity(Intent.createChooser(intent, "Select Picture"));
+		}
+
+	};
+
+	private OnClickListener returnButtonListener = new OnClickListener() {
+
+		public void onClick(View arg0) {
+			finish();
+		}
+
+	};
 
 	private OnClickListener submitListener = new OnClickListener() {
 
