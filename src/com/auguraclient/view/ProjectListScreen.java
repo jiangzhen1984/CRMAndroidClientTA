@@ -1,6 +1,5 @@
 package com.auguraclient.view;
 
-import android.annotation.SuppressLint;
 import android.app.ActionBar;
 import android.app.Activity;
 import android.app.Dialog;
@@ -10,6 +9,8 @@ import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
@@ -18,15 +19,13 @@ import android.os.Looper;
 import android.os.Message;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
+import android.view.View.OnClickListener;
 import android.widget.AdapterView;
-import android.widget.AdapterView.OnItemClickListener;
 import android.widget.BaseAdapter;
 import android.widget.EditText;
 import android.widget.LinearLayout;
@@ -34,6 +33,7 @@ import android.widget.ListView;
 import android.widget.PopupMenu;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.AdapterView.OnItemClickListener;
 
 import com.auguraclient.R;
 import com.auguraclient.db.ContentDescriptor;
@@ -75,7 +75,6 @@ public class ProjectListScreen extends Activity {
 
 	private TextView showMenuButton;
 
-	@SuppressLint("NewApi")
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -96,7 +95,7 @@ public class ProjectListScreen extends Activity {
 
 			public void onClick(View arg0) {
 				PopupMenu popupMenu = new PopupMenu(context, showMenuButton);
-				popupMenu.inflate(R.layout.project_list_title_menu);
+				popupMenu.getMenuInflater().inflate(R.layout.project_list_title_menu, popupMenu.getMenu());
 				popupMenu
 						.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
 
@@ -105,7 +104,7 @@ public class ProjectListScreen extends Activity {
 								if (item.getItemId() == R.id.menu_quit) {
 									finish();
 								} else if (item.getItemId() == R.id.menu_setting) {
-									//
+									showSettingDialg();
 								}
 								return true;
 							}
@@ -145,6 +144,52 @@ public class ProjectListScreen extends Activity {
 	@Override
 	protected void onResume() {
 		super.onResume();
+	}
+	
+	private void showSettingDialg() {
+		final Dialog settingDlg = new Dialog(this);
+		settingDlg.requestWindowFeature(Window.FEATURE_NO_TITLE);
+		settingDlg.setCanceledOnTouchOutside(false);
+		settingDlg.setContentView(R.layout.setting_dialog);
+		final EditText etName = (EditText)settingDlg.findViewById(R.id.ed_name);
+		final EditText etPwd = (EditText)settingDlg.findViewById(R.id.ed_pwd);
+		final EditText etAPI = (EditText)settingDlg.findViewById(R.id.ed_api);
+		LinearLayout setButton = (LinearLayout)settingDlg.findViewById(R.id.ok_button_lin);
+		final SharedPreferences sp =this.context.getSharedPreferences(Constants.SaveConfig.CONFIG, MODE_PRIVATE);
+		etName.setText(sp.getString(Constants.SaveConfig.USER_NAME, ""));
+		etPwd.setText(sp.getString(Constants.SaveConfig.PASSWORD, ""));
+		etAPI.setText(sp.getString(Constants.SaveConfig.API, Constants.API_URL));
+		setButton.setOnClickListener(new OnClickListener(){
+			@Override
+			public void onClick(View v) {
+				if(etName.getText() == null || etName.getText().toString().equals("")) {
+					Toast.makeText(context, " Name can't be empty", Toast.LENGTH_SHORT).show();
+					return;
+				}
+				if(etPwd.getText() == null || etPwd.getText().toString().equals("")) {
+					Toast.makeText(context, " Password can't be empty", Toast.LENGTH_SHORT).show();
+					return;
+				}
+				if(etAPI.getText() == null || etAPI.getText().toString().equals("")) {
+					Toast.makeText(context, " API can't be empty", Toast.LENGTH_SHORT).show();
+					return;
+				}
+				Editor ed = sp.edit();
+				ed.putString(Constants.SaveConfig.USER_NAME, etName.getText().toString());
+				ed.putString(Constants.SaveConfig.PASSWORD, etPwd.getText().toString());
+				ed.putString(Constants.SaveConfig.API, etAPI.getText().toString());
+				ed.commit();
+				showRestartDialog();
+				settingDlg.cancel();
+				settingDlg.dismiss();
+			}
+			
+		});
+		settingDlg.show();
+	}
+	
+	private void showRestartDialog() {
+		
 	}
 
 

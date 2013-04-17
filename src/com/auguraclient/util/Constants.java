@@ -17,6 +17,8 @@ public class Constants {
         public static final String SESSION = "session";
 
         public static final String USER_ID = "user_id";
+        
+        public static final String API = "api";
     }
 
     public static final String TAG = "AUGURACLIENT";

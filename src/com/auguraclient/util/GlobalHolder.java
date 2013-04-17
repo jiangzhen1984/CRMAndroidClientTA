@@ -5,6 +5,7 @@ import com.auguraclient.model.ProjectList;
 import com.auguraclient.model.User;
 
 public class GlobalHolder {
+	
 
 	private static User currentLogInedUser;
 

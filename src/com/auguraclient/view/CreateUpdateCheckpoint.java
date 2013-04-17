@@ -2,7 +2,6 @@ package com.auguraclient.view;
 
 import java.io.File;
 
-import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.ContentResolver;
@@ -37,7 +36,6 @@ import com.auguraclient.model.ProjectOrder;
 import com.auguraclient.model.SuguraRestAPIImpl;
 import com.auguraclient.util.GlobalHolder;
 
-@SuppressLint("NewApi")
 public class CreateUpdateCheckpoint extends Activity {
 
 	private EditText categoryEditText;
@@ -173,7 +171,7 @@ public class CreateUpdateCheckpoint extends Activity {
 
 		public void onClick(View arg0) {
 			final PopupMenu popupMenu = new PopupMenu(mContext, showMenuButton);
-			popupMenu.inflate(R.layout.update_checkpoint_title_menu);
+			popupMenu.getMenuInflater().inflate(R.layout.update_checkpoint_title_menu,popupMenu.getMenu());
 			popupMenu
 					.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
 

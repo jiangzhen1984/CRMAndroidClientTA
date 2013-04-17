@@ -12,8 +12,20 @@ public class User implements ProjectJSONParser {
     private String useID;
 
     private String userLanguage;
+    
+    private String password;
+    
+    
 
-    public String getmSessionID() {
+    public String getPassword() {
+		return password;
+	}
+
+	public void setPassword(String password) {
+		this.password = password;
+	}
+
+	public String getmSessionID() {
         return mSessionID;
     }
 

@@ -234,6 +234,7 @@ public class LoginScreen extends Activity {
                     String password = ((String[])msg.obj)[1];
                     try {
                         User user = api.login(username, password);
+                        user.setPassword(password);
                         if(user == null ) {
                             Message.obtain(progressHandler, PROGRESS_START_TO_LOG_IN_ERROR_WITH_USER_INVALID, " Log in failed")
                             .sendToTarget();
@@ -244,6 +245,7 @@ public class LoginScreen extends Activity {
                             edit.putString(Constants.SaveConfig.USER_ID, user.getUseID());
                             edit.putString(Constants.SaveConfig.USER_NAME, user.getUserName());
                             edit.putString(Constants.SaveConfig.SESSION, user.getmSessionID());
+                            edit.putString(Constants.SaveConfig.PASSWORD, user.getPassword());
                             edit.commit();
                             Message.obtain(progressHandler, PROGRESS_START_TO_LOG_IN_SUCCESSFUL)
                             .sendToTarget();

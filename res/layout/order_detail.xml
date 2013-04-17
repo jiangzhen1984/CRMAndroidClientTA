@@ -119,7 +119,8 @@
                 android:background="@color/add_project_background"
                 android:text="@string/add_checkpoint"
                 android:textColor="@color/selected_tab"
-                android:textSize="14sp"
+                android:padding="4dp"
+                android:textSize="24dp"
                 android:textStyle="bold" />
             </LinearLayout>
 
