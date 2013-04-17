@@ -4,6 +4,7 @@ package com.auguraclient.view;
 import java.io.File;
 import java.util.List;
 
+import android.app.ActionBar;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.ContentResolver;
@@ -74,8 +75,8 @@ public class ProjectOrderListView extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setfullScreen();
         this.setContentView(R.layout.order_list);
+	    
         projectItemList = (ListView)this.findViewById(R.id.projectItemList);
         currentProjectPosition = (Integer)this.getIntent().getExtras().get("project");
         project = GlobalHolder.getProject(currentProjectPosition);

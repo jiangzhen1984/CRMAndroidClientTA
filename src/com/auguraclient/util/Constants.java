@@ -22,6 +22,8 @@ public class Constants {
     public static final String TAG = "AUGURACLIENT";
 
     public static final String API_URL = "http://crm.augura.net/service/v4_1/rest.php";
+    
+    public static final String UPLOAD_PHOTO_URL = "http://crm.augura.net/AuguraClasses/AsiactionMobile/loadphoto.php";
 
     public static final String PHTOT_API_URL = "http://crm.augura.net/Augura/photos/";
 

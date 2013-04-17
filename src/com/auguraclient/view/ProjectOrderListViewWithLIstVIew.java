@@ -74,7 +74,6 @@ public class ProjectOrderListViewWithLIstVIew extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setfullScreen();
         this.setContentView(R.layout.order_list);
         projectItemList = (ListView)this.findViewById(R.id.projectItemList);
         currentProjectPosition = (Integer)this.getIntent().getExtras().get("project");

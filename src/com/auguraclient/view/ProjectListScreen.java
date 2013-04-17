@@ -1,6 +1,7 @@
 package com.auguraclient.view;
 
 import android.annotation.SuppressLint;
+import android.app.ActionBar;
 import android.app.Activity;
 import android.app.Dialog;
 import android.app.ProgressDialog;
@@ -17,6 +18,7 @@ import android.os.Looper;
 import android.os.Message;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -70,46 +72,51 @@ public class ProjectListScreen extends Activity {
 	private ListView projectList;
 
 	private ListAdapter projectAdapter;
-	
+
 	private TextView showMenuButton;
 
 	@SuppressLint("NewApi")
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setfullScreen();
+		//setfullScreen();
 		setContentView(R.layout.projectlist);
 
 		projectList = (ListView) findViewById(R.id.projectList);
 
 		addProjectLayout = (LinearLayout) findViewById(R.id.tab_add_project_layout);
 		addProjectLayout.setOnClickListener(addProjectListener);
-		showMenuButton = (TextView)findViewById(R.id.menu);
+		showMenuButton = (TextView) findViewById(R.id.menu);
 		
-		showMenuButton.setOnClickListener(new OnClickListener(){
+		ActionBar bar = getActionBar();
+		if(bar != null)
+			bar.hide();
 
-			@SuppressLint("NewApi")
+		showMenuButton.setOnClickListener(new OnClickListener() {
+
 			public void onClick(View arg0) {
-				
 				PopupMenu popupMenu = new PopupMenu(context, showMenuButton);
-			    popupMenu.inflate(R.layout.title_menu);
-			    popupMenu
-			            .setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+				popupMenu.inflate(R.layout.project_list_title_menu);
+				popupMenu
+						.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
 
-			            	public boolean onMenuItemClick(MenuItem item) {
-			            		if(item.getItemId() == R.id.menu_quit) {
-			            			finish();
-			            		} else if(item.getItemId() == R.id.menu_setting) {
-			            			//
-			            		}
-			                   return true;
-			                }
-			            });
-			    popupMenu.show();
+							public boolean onMenuItemClick(MenuItem item) {
+
+								if (item.getItemId() == R.id.menu_quit) {
+									finish();
+								} else if (item.getItemId() == R.id.menu_setting) {
+									//
+								}
+								return true;
+							}
+						});
+				
+				
+				popupMenu.show();
 			}
-			
+
 		});
-		
+
 		context = this;
 		api = new SuguraRestAPIImpl();
 		HandlerThread th = new HandlerThread("project");
@@ -139,6 +146,7 @@ public class ProjectListScreen extends Activity {
 	protected void onResume() {
 		super.onResume();
 	}
+
 
 	OnClickListener addProjectListener = new OnClickListener() {
 		public void onClick(View v) {
@@ -280,19 +288,20 @@ public class ProjectListScreen extends Activity {
 		ContentResolver cr = this.getContentResolver();
 		for (int i = 0; i < pl.getList().size(); i++) {
 			Project p = pl.getList().get(i);
-			//delete project_order_checkpoint table records
-			int ret = cr.delete(ContentDescriptor.ProjectCheckpointDesc.CONTENT_URI,
+			// delete project_order_checkpoint table records
+			int ret = cr.delete(
+					ContentDescriptor.ProjectCheckpointDesc.CONTENT_URI,
 					ContentDescriptor.ProjectCheckpointDesc.Cols.PRO_ID + "=?",
 					new String[] { p.getId() });
-			Log.i(Constants.TAG, "-------delete "+ret);
+			Log.i(Constants.TAG, "-------delete " + ret);
 			ret = cr.delete(ContentDescriptor.ProjectOrderDesc.CONTENT_URI,
 					ContentDescriptor.ProjectOrderDesc.Cols.PRO_ID + "=?",
 					new String[] { p.getId() });
-			Log.i(Constants.TAG, "-------delete "+ret);
+			Log.i(Constants.TAG, "-------delete " + ret);
 			ret = cr.delete(ContentDescriptor.ProjectDesc.CONTENT_URI,
 					ContentDescriptor.ProjectOrderDesc.Cols.PRO_ID + "=?",
 					new String[] { p.getId() });
-			Log.i(Constants.TAG, "-------delete "+ret);
+			Log.i(Constants.TAG, "-------delete " + ret);
 		}
 	}
 

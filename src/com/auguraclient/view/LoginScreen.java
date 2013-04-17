@@ -68,7 +68,6 @@ public class LoginScreen extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         // TODO Auto-generated method stub
         super.onCreate(savedInstanceState);
-        setfullScreen();
         setContentView(R.layout.loginscreen);
         overridePendingTransition(R.anim.fadein, R.anim.fadeout);
 

@@ -26,17 +26,29 @@
                 android:textSize="20sp"
                 android:textStyle="bold" />
 
-                <TextView
-                    android:id="@+id/updateCheckpointReturn"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_centerVertical="true"
-                    android:layout_marginLeft="10dip"
-                    android:text="@string/return_sy"
-                    android:textColor="@color/font_color"
-                    android:textSize="16sp"
-                    android:textStyle="bold" />
+            <TextView
+                android:id="@+id/updateCheckpointReturn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="10dip"
+                android:text="@string/return_sy"
+                android:textColor="@color/font_color"
+                android:textSize="16sp"
+                android:textStyle="bold" />
 
+            <TextView
+                android:id="@+id/showUpdateCheckpointMenu"
+                android:layout_width="wrap_content"
+                android:layout_height="fill_parent"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentTop="true"
+                android:gravity="right"
+                android:text="@string/show_menu"
+                android:textColor="@color/font_color"
+                android:textSize="24sp"
+                android:textStyle="bold"
+                 />
         </RelativeLayout>
 
         <RelativeLayout
@@ -44,7 +56,7 @@
             android:layout_height="0dp"
             android:layout_weight="1"
             android:background="@color/content_background"
-            android:gravity="top"
+            android:gravity="center"
             android:orientation="vertical"
             android:paddingTop="10dip" >
 
@@ -57,7 +69,6 @@
                 android:height="20dp"
                 android:text="Category:"
                 android:textSize="14sp" >
-
             </TextView>
 
             <EditText
@@ -86,7 +97,6 @@
                 android:height="20dp"
                 android:text="Checkpoint:"
                 android:textSize="14sp" >
-
             </TextView>
 
             <EditText
@@ -116,7 +126,6 @@
                 android:height="20dp"
                 android:text="Name"
                 android:textSize="14sp" >
-
             </TextView>
 
             <EditText
@@ -145,7 +154,6 @@
                 android:layout_marginTop="18dip"
                 android:text="Detail:"
                 android:textSize="14sp" >
-
             </TextView>
 
             <EditText
@@ -166,17 +174,32 @@
 
             <ImageView
                 android:id="@+id/checkpointPhoto"
-                android:layout_width="fill_parent"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/detailEditText"
-                android:src="@drawable/logo_asiaction"
-                android:layout_margin="10dip" />
+                android:layout_centerInParent="true"
+                android:layout_margin="10dip"
+                android:src="@drawable/logo_asiaction" />
 
+            <TextView
+                android:id="@+id/selectPhoto"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/checkpointPhoto"
+                android:layout_centerHorizontal="true"
+                android:layout_centerInParent="true"
+                android:layout_marginLeft="10dp"
+                android:layout_marginTop="10dip"
+                android:text="@string/select_photo"
+                android:textSize="14sp" >
+
+            </TextView>
+            
             <TextView
                 android:id="@+id/qcDefectTextView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/checkpointPhoto"
+                android:layout_below="@+id/selectPhoto"
                 android:layout_marginLeft="10dp"
                 android:layout_marginTop="10dip"
                 android:text="Quantity Defect:"
@@ -187,7 +210,7 @@
                 android:id="@+id/qcDefectEditText"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/checkpointPhoto"
+                android:layout_below="@+id/selectPhoto"
                 android:layout_centerHorizontal="true"
                 android:layout_marginLeft="20dip"
                 android:layout_marginRight="30dip"
@@ -271,7 +294,6 @@
                 android:text="android"
                 android:textColor="@color/login_text_color"
                 android:textSize="12sp" />
-
         </RelativeLayout>
 
         <LinearLayout

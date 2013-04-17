@@ -288,6 +288,9 @@ public class SuguraRestAPIImpl implements ISuguraRestAPI {
 			return;
 		}
 
+		String photoPath = checkpoint.getUploadPhotoAbsPath();
+		http.sendUploadPhotoRequest(Constants.UPLOAD_PHOTO_URL, photoPath);
+		
 		JSONObject restData = new JSONObject();
 		JSONArray entryArray = new JSONArray();
 		try {

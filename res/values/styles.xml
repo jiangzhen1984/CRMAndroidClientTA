@@ -1,0 +1,12 @@
+<resources>
+
+    <style name="AppTheme"   parent="android:Theme.Holo.Light" >
+        <item name="android:listPopupWindowStyle">@color/menu_background</item>
+        <item name="android:popupBackground">@color/menu_background</item>
+         <item name="android:windowActionBar">true</item>
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowFullscreen">true</item>
+        <item name="android:popupMenuStyle">@color/menu_background</item>
+    </style>
+
+</resources>

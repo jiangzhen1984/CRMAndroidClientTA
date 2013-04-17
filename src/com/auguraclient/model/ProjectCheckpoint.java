@@ -55,6 +55,8 @@ public class ProjectCheckpoint implements ProjectJSONParser,Serializable {
     private Date lastDate;
 
     private ProjectOrder projectItem;
+    
+    private String uploadPhotoAbsPath;
 
 
 
@@ -241,6 +243,14 @@ public class ProjectCheckpoint implements ProjectJSONParser,Serializable {
     public void setnID(Integer nID) {
         this.nID = nID;
     }
+
+	public String getUploadPhotoAbsPath() {
+		return uploadPhotoAbsPath;
+	}
+
+	public void setUploadPhotoAbsPath(String uploadPhotoAbsPath) {
+		this.uploadPhotoAbsPath = uploadPhotoAbsPath;
+	}
 
 
 

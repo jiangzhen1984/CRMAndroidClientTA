@@ -1,13 +1,8 @@
 package com.auguraclient.view;
 
-import com.auguraclient.R;
-import com.auguraclient.db.ContentDescriptor;
-import com.auguraclient.model.Project;
-import com.auguraclient.model.ProjectList;
-import com.auguraclient.model.User;
-import com.auguraclient.util.Constants;
-import com.auguraclient.util.GlobalHolder;
+import java.io.File;
 
+import android.app.ActionBar;
 import android.app.Activity;
 import android.content.ContentResolver;
 import android.content.Context;
@@ -18,11 +13,15 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
-import android.view.Window;
-import android.view.WindowManager;
 import android.widget.Toast;
 
-import java.io.File;
+import com.auguraclient.R;
+import com.auguraclient.db.ContentDescriptor;
+import com.auguraclient.model.Project;
+import com.auguraclient.model.ProjectList;
+import com.auguraclient.model.User;
+import com.auguraclient.util.Constants;
+import com.auguraclient.util.GlobalHolder;
 
 public class LogoView extends Activity {
 
@@ -35,11 +34,6 @@ public class LogoView extends Activity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		requestWindowFeature(Window.FEATURE_NO_TITLE);
-		getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
-				WindowManager.LayoutParams.FLAG_FULLSCREEN);
-		getWindow().setFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON,
-				WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 		this.setContentView(R.layout.logo_view);
 		handler = new LogoHandler();
 		mContext = this;

@@ -21,260 +21,277 @@ import java.util.List;
 
 public class ProjectOrder implements ProjectJSONParser, Serializable {
 
-    /**
+	/**
      *
      */
-    private static final long serialVersionUID = -5566642847333773076L;
+	private static final long serialVersionUID = -5566642847333773076L;
 
+	private Integer nID;
 
-    private Integer nID;
+	private String id;
 
+	private String name;
 
-    private String id;
+	private String quantity;
 
-    private String name;
+	private String qcStatus;
 
-    private String quantity;
+	private String quantityChecked;
 
-    private String qcStatus;
+	private String qcComment;
 
-    private String quantityChecked;
+	private Date dateDodified;
 
-    private String qcComment;
+	private JSONObject jsonObject;
 
-    private Date dateDodified;
+	private Project project;
 
-    private JSONObject jsonObject;
+	private String photoName;
 
-    private Project project;
+	private String photoPath;
 
-    private String photoName;
+	private String photoBigPath;
 
-    private String photoPath;
+	private String originPhotoPath;
 
-    private String photoBigPath;
+	private String description;
 
-    private String originPhotoPath;
+	private boolean isLoadedCheckpointFromDB;
 
-    private String description;
+	private List<ProjectCheckpoint> checkpointList;
 
-    private boolean isLoadedCheckpointFromDB;
+	public ProjectOrder() {
+		checkpointList = new ArrayList<ProjectCheckpoint>();
+	}
 
+	public ProjectOrder(JSONObject jsonObject) {
+		this.jsonObject = jsonObject;
+		checkpointList = new ArrayList<ProjectCheckpoint>();
+	}
 
+	public void parser(JSONObject jsonObject) throws JSONParserException {
+		try {
+			this.id = jsonObject.getString("id");
 
-    private List<ProjectCheckpoint> checkpointList;
+			JSONObject NameValue = (JSONObject) jsonObject
+					.getJSONObject("name_value_list");
+			this.name = ((JSONObject) NameValue.get("name")).getString("value");
+			this.quantity = ((JSONObject) NameValue.get("quantity"))
+					.getString("value");
 
-    public ProjectOrder() {
-        checkpointList =new ArrayList<ProjectCheckpoint>();
-    }
+			this.qcStatus = ((JSONObject) NameValue.get("qc_status"))
+					.getString("value");
 
-    public ProjectOrder(JSONObject jsonObject) {
-        this.jsonObject = jsonObject;
-        checkpointList =new ArrayList<ProjectCheckpoint>();
-    }
+			this.quantityChecked = ((JSONObject) NameValue
+					.get("quantity_checked")).getString("value");
 
+			String lastDate = ((JSONObject) NameValue.get("date_modified"))
+					.getString("value");
+			if (lastDate != null && !lastDate.isEmpty()) {
+				DateFormat da = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+				this.dateDodified = da.parse(lastDate);
+			}
 
-    public void parser(JSONObject jsonObject) throws JSONParserException {
-        try {
-            this.id = jsonObject.getString("id");
+			this.photoName = ((JSONObject) NameValue.get("photo_c"))
+					.getString("value");
+			this.photoPath = Constants.CommonConfig.PIC_DIR + "p_70_70_"
+					+ photoName; // Constants.PHTOT_COMPRESSED_API_URL
+									// +photoName+"&h=70&w=70";
+			this.photoBigPath = Constants.CommonConfig.PIC_DIR + "p_150_150_"
+					+ photoName; // Constants.PHTOT_COMPRESSED_API_URL
+									// +photoName+"&h=150&w=150";
 
-            JSONObject NameValue = (JSONObject) jsonObject.getJSONObject("name_value_list");
-            this.name =((JSONObject) NameValue.get("name")).getString("value");
-            this.quantity =( (JSONObject)NameValue.get("quantity")).getString("value");
+			this.originPhotoPath = Constants.CommonConfig.PIC_DIR + photoName;
+			Util.loadImageFromURL(new URL(Constants.PHTOT_API_URL + photoName),
+					GlobalHolder.GLOBAL_STORAGE_PATH + this.originPhotoPath);
 
-            this.qcStatus =( (JSONObject)NameValue.get("qc_status")).getString("value");
+			Util.loadImageFromURL(new URL(Constants.PHTOT_COMPRESSED_API_URL
+					+ photoName + "&h=70&w=70"),
+					GlobalHolder.GLOBAL_STORAGE_PATH + this.photoPath);
+			Util.loadImageFromURL(new URL(Constants.PHTOT_COMPRESSED_API_URL
+					+ photoName + "&h=150&w=150"),
+					GlobalHolder.GLOBAL_STORAGE_PATH + this.photoBigPath);
 
-
-
-            this.quantityChecked =( (JSONObject)NameValue.get("quantity_checked")).getString("value");
-
-            String lastDate =( (JSONObject)NameValue.get("date_modified")).getString("value");
-            if (lastDate !=null && !lastDate.isEmpty()) {
-                DateFormat da = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-                this.dateDodified  = da.parse(lastDate);
-            }
-
-            this.photoName = ( (JSONObject)NameValue.get("photo_c")).getString("value");
-            this.photoPath = Constants.CommonConfig.PIC_DIR+"p_70_70_"+photoName ; //Constants.PHTOT_COMPRESSED_API_URL +photoName+"&h=70&w=70";
-            this.photoBigPath = Constants.CommonConfig.PIC_DIR+"p_150_150_"+photoName ; // Constants.PHTOT_COMPRESSED_API_URL +photoName+"&h=150&w=150";
-
-            this.originPhotoPath = Constants.CommonConfig.PIC_DIR+photoName ;
-            Util.loadImageFromURL(new URL(Constants.PHTOT_API_URL+photoName), GlobalHolder.GLOBAL_STORAGE_PATH+this.originPhotoPath);
-
-            Util.loadImageFromURL(new URL(Constants.PHTOT_COMPRESSED_API_URL +photoName+"&h=70&w=70"), GlobalHolder.GLOBAL_STORAGE_PATH+this.photoPath);
-            Util.loadImageFromURL(new URL(Constants.PHTOT_COMPRESSED_API_URL +photoName+"&h=150&w=150"), GlobalHolder.GLOBAL_STORAGE_PATH+this.photoBigPath);
-
-
-        } catch (JSONException e) {
-            throw new JSONParserException(e);
-        } catch (ParseException e) {
-        	throw new JSONParserException(e);
-        } catch (MalformedURLException e) {
-        	throw new JSONParserException(e);
+		} catch (JSONException e) {
+			throw new JSONParserException(e);
+		} catch (ParseException e) {
+			throw new JSONParserException(e);
+		} catch (MalformedURLException e) {
+			throw new JSONParserException(e);
 		} catch (IOException e) {
 			throw new JSONParserException(e);
 		}
-    }
+	}
 
-    public String getId() {
-        return id;
-    }
+	public String getId() {
+		return id;
+	}
 
-    public void setId(String id) {
-        this.id = id;
-    }
+	public void setId(String id) {
+		this.id = id;
+	}
 
-    public String getName() {
-        return name;
-    }
+	public String getName() {
+		return name;
+	}
 
-    public void setName(String name) {
-        this.name = name;
-    }
+	public void setName(String name) {
+		this.name = name;
+	}
 
-    public String getQuantity() {
-        return quantity;
-    }
+	public String getQuantity() {
+		return quantity;
+	}
 
-    public void setQuantity(String quantity) {
-        this.quantity = quantity;
-    }
+	public void setQuantity(String quantity) {
+		this.quantity = quantity;
+	}
 
-    public String getQcStatus() {
-        return qcStatus;
-    }
+	public String getQcStatus() {
+		return qcStatus;
+	}
 
-    public void setQcStatus(String qcStatus) {
-        this.qcStatus = qcStatus;
-    }
+	public void setQcStatus(String qcStatus) {
+		this.qcStatus = qcStatus;
+	}
 
-    public String getQuantityChecked() {
-        return quantityChecked;
-    }
+	public String getQuantityChecked() {
+		return quantityChecked;
+	}
 
-    public void setQuantityChecked(String quantityChecked) {
-        this.quantityChecked = quantityChecked;
-    }
+	public void setQuantityChecked(String quantityChecked) {
+		this.quantityChecked = quantityChecked;
+	}
 
-    public String getQcComment() {
-        return qcComment;
-    }
+	public String getQcComment() {
+		return qcComment;
+	}
 
-    public void setQcComment(String qcComment) {
-        this.qcComment = qcComment;
-    }
+	public void setQcComment(String qcComment) {
+		this.qcComment = qcComment;
+	}
 
-    public Date getDateDodified() {
-        return dateDodified;
-    }
+	public Date getDateDodified() {
+		return dateDodified;
+	}
 
-    public void setDateDodified(Date dateDodified) {
-        this.dateDodified = dateDodified;
-    }
+	public void setDateDodified(Date dateDodified) {
+		this.dateDodified = dateDodified;
+	}
 
-    public Project getProject() {
-        return project;
-    }
+	public Project getProject() {
+		return project;
+	}
 
-    public void setProject(Project project) {
-        this.project = project;
-    }
+	public void setProject(Project project) {
+		this.project = project;
+	}
 
-    public String getPhotoName() {
-        return photoName;
-    }
+	public String getPhotoName() {
+		return photoName;
+	}
 
-    public void setPhotoName(String photoName) {
-        this.photoName = photoName;
-        this.originPhotoPath = Constants.CommonConfig.PIC_DIR+photoName;
-    }
+	public void setPhotoName(String photoName) {
+		this.photoName = photoName;
+		this.originPhotoPath = Constants.CommonConfig.PIC_DIR + photoName;
+	}
 
-    public String getPhotoPath() {
-        return photoPath;
-    }
+	public String getPhotoPath() {
+		return photoPath;
+	}
 
-    public void setPhotoPath(String photoPath) {
-        this.photoPath = photoPath;
-    }
+	public void setPhotoPath(String photoPath) {
+		this.photoPath = photoPath;
+	}
 
+	public void addOrderCheckpoint(ProjectCheckpoint po) {
+		if (po != null) {
+			this.checkpointList.add(po);
+			po.setProjectItem(this);
+		}
+	}
 
-    public void addOrderCheckpoint(ProjectCheckpoint po) {
-        if(po != null) {
-            this.checkpointList.add(po);
-            po.setProjectItem(this);
-        }
-    }
+	public void addOrderCheckpoint(List<ProjectCheckpoint> poList) {
+		if (poList == null) {
+			return;
+		}
+		for (int i = 0; i < poList.size(); i++) {
+			ProjectCheckpoint pi = poList.get(i);
+			this.checkpointList.add(pi);
+			pi.setProjectItem(this);
+		}
+	}
 
-    public void addOrderCheckpoint(List<ProjectCheckpoint> poList) {
-        if (poList == null ) {
-            return;
-        }
-        for(int i=0;i<poList.size(); i++) {
-            ProjectCheckpoint pi = poList.get(i);
-            this.checkpointList.add(pi);
-            pi.setProjectItem(this);
-        }
-    }
+	public ProjectCheckpoint getOrderCheckpointrByIndex(int pos) {
+		if (pos < 0 || pos >= checkpointList.size()) {
+			return null;
+		}
+		return checkpointList.get(pos);
+	}
 
-    public ProjectCheckpoint getOrderCheckpointrByIndex(int pos) {
-        if(pos <0 || pos >= checkpointList.size()) {
-            return null;
-        }
-        return checkpointList.get(pos);
-    }
+	public int getCheckpointCount() {
+		return checkpointList.size();
+	}
 
+	public Integer getnID() {
+		return nID;
+	}
 
-    public int getCheckpointCount() {
-        return checkpointList.size();
-    }
+	public void setnID(Integer nID) {
+		this.nID = nID;
+	}
 
-    public Integer getnID() {
-        return nID;
-    }
+	public String getPhotoBigPath() {
+		return photoBigPath;
+	}
 
-    public void setnID(Integer nID) {
-        this.nID = nID;
-    }
+	public void setPhotoBigPath(String photoBigPath) {
+		this.photoBigPath = photoBigPath;
+	}
 
-    public String getPhotoBigPath() {
-        return photoBigPath;
-    }
+	public String getDescription() {
+		return description;
+	}
 
-    public void setPhotoBigPath(String photoBigPath) {
-        this.photoBigPath = photoBigPath;
-    }
+	public void setDescription(String description) {
+		this.description = description;
+	}
 
-    public String getDescription() {
-        return description;
-    }
+	public boolean isLoadedCheckpointFromDB() {
+		return isLoadedCheckpointFromDB;
+	}
 
-    public void setDescription(String description) {
-        this.description = description;
-    }
+	public void setLoadedCheckpointFromDB(boolean isLoadedCheckpointFromDB) {
+		this.isLoadedCheckpointFromDB = isLoadedCheckpointFromDB;
+	}
 
-    public boolean isLoadedCheckpointFromDB() {
-        return isLoadedCheckpointFromDB;
-    }
+	public String getOriginPhotoPath() {
+		return originPhotoPath;
+	}
 
-    public void setLoadedCheckpointFromDB(boolean isLoadedCheckpointFromDB) {
-        this.isLoadedCheckpointFromDB = isLoadedCheckpointFromDB;
-    }
+	public void setOriginPhotoPath(String originPhotoPath) {
+		this.originPhotoPath = originPhotoPath;
+	}
 
-    public String getOriginPhotoPath() {
-        return originPhotoPath;
-    }
+	public void removeCheckpoint(int pos) {
+		if (pos >= 0 && pos < this.checkpointList.size())
+			this.checkpointList.remove(pos);
+	}
+	
+	public void removeCheckpoint(ProjectCheckpoint p) {
+		if (p == null || p.getId()==null || p.getId().equals("")) {
+			return;
+		}
+		for(int i=0;i<this.checkpointList.size(); i++) {
+			
+			if(this.checkpointList.get(i).getId().equals(p.getId())) {
+				this.checkpointList.remove(i);
+			}
+		}
+		
+	}
 
-    public void setOriginPhotoPath(String originPhotoPath) {
-        this.originPhotoPath = originPhotoPath;
-    }
-
-       public void removeCheckpoint(int pos) {
-           if(pos >=0 && pos <this.checkpointList.size())
-           this.checkpointList.remove(pos);
-       }
-
-
-       public JSONArray toJSONArray()  throws JSONParserException {
-           return null;
-       }
+	public JSONArray toJSONArray() throws JSONParserException {
+		return null;
+	}
 }

@@ -49,8 +49,6 @@ public class OrderView extends Activity {
 
 	private static final int END_WAITING_WITH_ERROR = 3;
 
-	private static final int CONFIRM_DELETE = 4;
-
 	private static final int LOAD_PROJECT_ITEM_ORDER = 1;
 
 	private static final int DELETE_CHECKPOINT = 2;
@@ -85,16 +83,14 @@ public class OrderView extends Activity {
 
 	private LinearLayout checkpointReturn;
 
-	private int currentSelectedCheckpointIdx;
 
-	private int currentFistItemInScrollView;
 
 	private View[] tView;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setfullScreen();
+		//setfullScreen();
 		this.setContentView(R.layout.order_detail);
 		projectOrderCheckpointList = (LinearLayout) this
 				.findViewById(R.id.projectOrderCheckpointList);
@@ -156,8 +152,9 @@ public class OrderView extends Activity {
 				+ projectItem.getQcComment() == null ? "" : projectItem
 				.getQcComment());
 		itemOrderQTTV.setText("QC Date:     " + "Quantity Checked:"
-				+ projectItem.getQuantityChecked() + "  QC Status:"
-				+ projectItem.getQcStatus());
+				+ (projectItem.getQuantityChecked() ==null?"":projectItem.getQuantityChecked()) + "  QC Status:"
+				+ (projectItem.getQcStatus() ==null?"":projectItem.getQcStatus())
+						);
 
 		projectItemPhotoIV.setImageURI(Uri.fromFile(new File(
 				GlobalHolder.GLOBAL_STORAGE_PATH
@@ -207,7 +204,17 @@ public class OrderView extends Activity {
 
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-		super.onActivityResult(requestCode, resultCode, data);
+		if(resultCode == 3) {
+			boolean b=data.getBooleanExtra("delete", false);
+			if(b) {
+				ProjectCheckpoint pc = (ProjectCheckpoint)data.getSerializableExtra("checkpoint");
+				projectItem.removeCheckpoint(pc);
+				for(int i =0;i <tView.length; i++) {
+					if(((ItemView)tView[i]).getCheckpointId().equals(pc.getId()))
+					projectOrderCheckpointList.removeView(tView[i]);
+				}
+			}
+		}
 	}
 
 	public void setfullScreen() {
@@ -245,9 +252,6 @@ public class OrderView extends Activity {
 						Toast.LENGTH_SHORT).show();
 				break;
 
-			case CONFIRM_DELETE:
-				currentSelectedCheckpointIdx = (Integer) msg.obj;
-				showConfirmDialog();
 			}
 		}
 	}
@@ -324,17 +328,6 @@ public class OrderView extends Activity {
 							e.getMessage()).sendToTarget();
 				}
 				break;
-			case DELETE_CHECKPOINT:
-				Message.obtain(uiHandler, START_WAITING).sendToTarget();
-				try {
-					doDeleteCheckpoint();
-					Message.obtain(uiHandler, END_WAITING).sendToTarget();
-				} catch (Exception e) {
-					Log.e(Constants.TAG, e.getMessage(), e);
-					Message.obtain(uiHandler, END_WAITING_WITH_ERROR,
-							e.getMessage()).sendToTarget();
-				}
-				break;
 			}
 		}
 
@@ -380,17 +373,7 @@ public class OrderView extends Activity {
 		}
 	}
 
-	private void doDeleteCheckpoint() throws APIException {
-		ProjectCheckpoint pcp = projectItem
-				.getOrderCheckpointrByIndex(currentSelectedCheckpointIdx);
-		// FIXM if no network should not do this
-		api.deleteCheckpoint(pcp.getId());
-		ContentResolver cr = this.getContentResolver();
-		cr.delete(ContentDescriptor.ProjectCheckpointDesc.CONTENT_URI,
-				ContentDescriptor.ProjectCheckpointDesc.Cols.CHECKPOINT_ID
-						+ "=?", new String[] { pcp.getId() });
-		projectItem.removeCheckpoint(this.currentSelectedCheckpointIdx);
-	}
+	
 
 	private void loadCheckpointFromDB() {
 		ContentResolver cr = this.getContentResolver();
@@ -473,6 +456,8 @@ public class OrderView extends Activity {
 		private ImageView projectItemOrderPhoto;
 
 		private ImageView itemOperationIV;
+		
+		private String id;
 
 		public ItemView(Context context) {
 			super(context);
@@ -496,6 +481,10 @@ public class OrderView extends Activity {
 			itemOperationIV = (ImageView) this
 					.findViewById(R.id.projectItemOrderOperation);
 		}
+		
+		public String getCheckpointId() {
+			return this.id;
+		}
 
 		public void updateView(final ProjectCheckpoint pi) {
 			if (pi == null) {
@@ -503,6 +492,7 @@ public class OrderView extends Activity {
 						" can't update view for order view ProjectItemOrder is null");
 				return;
 			}
+			id = pi.getId();
 			itemOrderCategoryCheckType.setText(pi.getCategory() + "   > "
 					+ pi.getCheckType() + "   >" + pi.getName());
 			itemOrderDefectAlert.setText(pi.getQcAction() == null ? "" : pi
