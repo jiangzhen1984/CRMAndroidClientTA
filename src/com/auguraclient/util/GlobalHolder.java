@@ -5,13 +5,19 @@ import com.auguraclient.model.ProjectList;
 import com.auguraclient.model.User;
 
 public class GlobalHolder {
-	
 
 	private static User currentLogInedUser;
 
 	private static ProjectList pl;
-	
+
 	public static String GLOBAL_STORAGE_PATH;
+
+	public static String[] CATEGORY_ENUM = { "Accessory", "Appearance",
+			"Dimension Weight", "Functioning", "Marking", "Material",
+			"Packaging", "Resistance", "Wrapping", "Other" };
+
+	public static String[] CHECK_TYPE_ENUM = { "Visual", "Manual Test",
+			"Ruler", "Scale", "Caliper", "Pulling Tool" };
 
 	public synchronized static void setCurrentUser(User user) {
 		currentLogInedUser = user;

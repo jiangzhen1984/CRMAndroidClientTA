@@ -20,10 +20,12 @@ import android.text.Editable;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.PopupMenu;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -38,9 +40,13 @@ import com.auguraclient.util.GlobalHolder;
 
 public class CreateUpdateCheckpoint extends Activity {
 
-	private EditText categoryEditText;
+	//private EditText categoryEditText;
 
-	private EditText checkpointEditText;
+	//private EditText checkpointEditText;
+	
+	private Spinner categorySpinner;
+	
+	private Spinner checkTypeSpinner;
 
 	private EditText nameEditText;
 
@@ -73,6 +79,8 @@ public class CreateUpdateCheckpoint extends Activity {
 	private TextView showMenuButton;
 
 	private TextView selectPhotoBUtton;
+	
+	private TextView[] qcStatusValue;
 
 	private boolean createFlag = true;
 
@@ -110,8 +118,8 @@ public class CreateUpdateCheckpoint extends Activity {
 	@Override
 	protected void onResume() {
 		super.onResume();
-		categoryEditText.setText(projectCheckpoint.getCategory());
-		checkpointEditText.setText(projectCheckpoint.getCheckType());
+	//	categoryEditText.setText(projectCheckpoint.getCategory());
+	//	checkpointEditText.setText(projectCheckpoint.getCheckType());
 		nameEditText.setText(projectCheckpoint.getName());
 		detailEditText.setText(projectCheckpoint.getDescription());
 		qcCommentEditText.setText(projectCheckpoint.getQcComments());
@@ -122,6 +130,10 @@ public class CreateUpdateCheckpoint extends Activity {
 							+ projectCheckpoint.getPhotoPath())));
 			checkpointPhoto.setOnClickListener(onOpenPhotoClickListener);
 		}
+		setQcStatus();
+		
+		categorySpinner.setAdapter(new ArrayAdapter(this, R.layout.spinner_ite, GlobalHolder.CATEGORY_ENUM));
+		checkTypeSpinner.setAdapter(new ArrayAdapter(this, R.layout.spinner_ite, GlobalHolder.CHECK_TYPE_ENUM));
 
 	}
 
@@ -133,8 +145,8 @@ public class CreateUpdateCheckpoint extends Activity {
 	}
 
 	private void initView() {
-		categoryEditText = (EditText) this.findViewById(R.id.categoryEditText);
-		checkpointEditText = (EditText) this
+		categorySpinner = (Spinner) this.findViewById(R.id.categoryEditText);
+		checkTypeSpinner = (Spinner) this
 				.findViewById(R.id.checkpointEditText);
 		nameEditText = (EditText) this.findViewById(R.id.nameEditText);
 		detailEditText = (EditText) this.findViewById(R.id.detailEditText);
@@ -155,7 +167,42 @@ public class CreateUpdateCheckpoint extends Activity {
 				.findViewById(R.id.showUpdateCheckpointMenu);
 
 		selectPhotoBUtton = (TextView) this.findViewById(R.id.selectPhoto);
+		
+		qcStatusValue = new TextView[]{(TextView) this.findViewById(R.id.acStatusEFailed),
+				(TextView) this.findViewById(R.id.tvStatusEAlert),
+				(TextView) this.findViewById(R.id.tvStatusEPassed),
+				(TextView) this.findViewById(R.id.tvStatusEReady)
+		};
+		for(int i=0; i < qcStatusValue.length;i++) {
+			qcStatusValue[i].setOnClickListener(selectQcStatusListener);
+		}
 	}
+	
+	private void setQcStatus() {
+		for(int i=0;i<qcStatusValue.length;i++) {
+			String qcStatus =this.projectCheckpoint.getQcStatus();
+			if (qcStatus == null) {
+				return;
+			}
+			if(qcStatus.equalsIgnoreCase(qcStatusValue[i].getText().toString())) {
+			//	qcStatusValue[i].setTextColor(R.color.white_background);
+				qcStatusValue[i].setBackgroundResource(R.color.red_background);
+			} else {
+				//qcStatusValue[i].setTextColor(R.color.blank_background);
+				qcStatusValue[i].setBackgroundResource(R.color.content_background);
+			}
+		}
+	}
+	
+	
+	private OnClickListener selectQcStatusListener = new OnClickListener() {
+
+		public void onClick(View view) {
+			projectCheckpoint.setQcStatus(((TextView)view).getText().toString());
+			setQcStatus();
+		}
+		
+	};
 
 	private OnClickListener selectPhotoListener = new OnClickListener() {
 
@@ -228,8 +275,8 @@ public class CreateUpdateCheckpoint extends Activity {
 	};
 
 	private void recordData() {
-		projectCheckpoint.setCategory(categoryEditText.getText().toString());
-		projectCheckpoint.setCheckType(checkpointEditText.getText().toString());
+		projectCheckpoint.setCategory(((TextView)categorySpinner.getSelectedView()).getText().toString());
+		projectCheckpoint.setCheckType(((TextView)checkTypeSpinner.getSelectedView()).getText().toString());
 		projectCheckpoint.setName(nameEditText.getText().toString());
 		projectCheckpoint.setDescription(detailEditText.getText().toString());
 		projectCheckpoint.setQcComments(qcCommentEditText.getText().toString());

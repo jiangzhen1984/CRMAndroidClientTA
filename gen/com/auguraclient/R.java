@@ -16,21 +16,23 @@ public final class R {
     }
     public static final class color {
         public static final int add_project_background=0x7f06000a;
-        public static final int blank_background=0x7f06000d;
+        public static final int blank_background=0x7f06000e;
         public static final int checkpoint_component_background=0x7f060006;
         public static final int checkpoint_component_background_speration_line=0x7f060007;
         public static final int content_background=0x7f060009;
-        public static final int font_color=0x7f06000e;
+        public static final int font_color=0x7f06000f;
         public static final int login_header=0x7f060001;
         public static final int login_text=0x7f060003;
         public static final int login_text_color=0x7f060004;
         public static final int login_top_header=0x7f060005;
         public static final int main_background=0x7f060000;
-        public static final int menu_background=0x7f06000f;
+        public static final int menu_background=0x7f060010;
         public static final int order_background=0x7f06000c;
         public static final int project_background=0x7f06000b;
+        public static final int red_background=0x7f060011;
         public static final int selected_tab=0x7f060002;
         public static final int title_background=0x7f060008;
+        public static final int white_background=0x7f06000d;
     }
     public static final class drawable {
         public static final int alert_icon=0x7f020000;
@@ -64,7 +66,7 @@ public final class R {
         public static final int checkpointPhoto=0x7f09000e;
         public static final int checkpointReturn=0x7f090037;
         public static final int checkpointTextView=0x7f090008;
-        public static final int delete_checkpoint=0x7f090053;
+        public static final int delete_checkpoint=0x7f090054;
         public static final int detailEditText=0x7f09000d;
         public static final int detailTextView=0x7f09000c;
         public static final int ed_api=0x7f090051;
@@ -118,6 +120,7 @@ public final class R {
         public static final int selectPhoto=0x7f09000f;
         public static final int setting_button=0x7f090052;
         public static final int showUpdateCheckpointMenu=0x7f090005;
+        public static final int spinner_item=0x7f090053;
         public static final int statusLin=0x7f090013;
         public static final int tab_add_project_layout=0x7f090047;
         public static final int tvAction=0x7f090018;
@@ -150,7 +153,9 @@ public final class R {
         public static final int project_list_title_menu=0x7f03000a;
         public static final int projectlist=0x7f03000b;
         public static final int setting_dialog=0x7f03000c;
-        public static final int update_checkpoint_title_menu=0x7f03000d;
+        public static final int spinner_ite=0x7f03000d;
+        public static final int title_menu=0x7f03000e;
+        public static final int update_checkpoint_title_menu=0x7f03000f;
     }
     public static final class raw {
         public static final int button=0x7f050000;

@@ -1,9 +1,9 @@
 package com.auguraclient.model;
 
-import com.auguraclient.http.HttpWrapper;
-import com.auguraclient.util.Constants;
-import com.auguraclient.util.GlobalHolder;
-import com.auguraclient.util.Util;
+import java.io.File;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
+import java.util.List;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -11,9 +11,10 @@ import org.json.JSONObject;
 
 import android.util.Log;
 
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
-import java.util.List;
+import com.auguraclient.http.HttpWrapper;
+import com.auguraclient.util.Constants;
+import com.auguraclient.util.GlobalHolder;
+import com.auguraclient.util.Util;
 
 public class SuguraRestAPIImpl implements ISuguraRestAPI {
 
@@ -288,8 +289,6 @@ public class SuguraRestAPIImpl implements ISuguraRestAPI {
 			return;
 		}
 
-		String photoPath = checkpoint.getUploadPhotoAbsPath();
-		http.sendUploadPhotoRequest(Constants.UPLOAD_PHOTO_URL, photoPath);
 		
 		JSONObject restData = new JSONObject();
 		JSONArray entryArray = new JSONArray();
@@ -381,6 +380,16 @@ public class SuguraRestAPIImpl implements ISuguraRestAPI {
 			response = http.sendHttpGetRequest(relationShipUrl
 					+ URLEncoder.encode(rel.toString()));
 			Log.i(Constants.TAG, response);
+			
+			//TODO mv 
+			String photoPath = checkpoint.getUploadPhotoAbsPath();
+			String localPath = GlobalHolder.GLOBAL_STORAGE_PATH + Constants.CommonConfig.PIC_DIR + id +"_visual.jpg";
+			File f = new File(photoPath);
+			if(! f.renameTo(new File(localPath))) {
+				Log.e(Constants.TAG, " can't rename file to local dir");
+			}
+			
+			http.sendUploadPhotoRequest(Constants.UPLOAD_PHOTO_URL, localPath);
 
 		} catch (JSONException e) {
 			throw new APIException(" can't parse API response");
