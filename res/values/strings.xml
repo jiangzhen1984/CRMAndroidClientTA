@@ -41,6 +41,7 @@
 
 	<string name="order_information_required">Someting field missing</string>
 	<string name="order_photo_tips">Press to show full screen</string>
+	<string name="can_not_find_project">Don\'t find any project\.</string>
 
 	<string name="return_sy"> &#60;&#60;</string>
 

@@ -22,14 +22,16 @@ public class Constants {
     }
 
     public static final String TAG = "AUGURACLIENT";
-
-    public static final String API_URL = "http://crm.augura.net/service/v4_1/rest.php";
     
-    public static final String UPLOAD_PHOTO_URL = "http://crm.augura.net/AuguraClasses/AsiactionMobile/loadphoto.php";
+    public static String HOST = "crm.augura.net";
 
-    public static final String PHTOT_API_URL = "http://crm.augura.net/Augura/photos/";
+    public static final String API_URL = "http://"+HOST+"/service/v4_1/rest.php";
+    
+    public static final String UPLOAD_PHOTO_URL = "http://"+HOST+"/AuguraClasses/AsiactionMobile/loadphoto.php";
 
-    public static final String PHTOT_COMPRESSED_API_URL = "http://crm.augura.net/AuguraClasses/phpThumb/phpThumb.php?src=/Augura/photos/";
+    public static final String PHTOT_API_URL = "http://"+HOST+"/Augura/photos/";
+
+    public static final String PHTOT_COMPRESSED_API_URL = "http://"+HOST+"/AuguraClasses/phpThumb/phpThumb.php?src=/Augura/photos/";
 
     public static final String[] API_TABLE = {
             // first one is login

@@ -160,7 +160,6 @@ public class ProjectListScreen extends Activity {
 		etPwd.setText(sp.getString(Constants.SaveConfig.PASSWORD, ""));
 		etAPI.setText(sp.getString(Constants.SaveConfig.API, Constants.API_URL));
 		setButton.setOnClickListener(new OnClickListener(){
-			@Override
 			public void onClick(View v) {
 				if(etName.getText() == null || etName.getText().toString().equals("")) {
 					Toast.makeText(context, " Name can't be empty", Toast.LENGTH_SHORT).show();
@@ -399,15 +398,17 @@ public class ProjectListScreen extends Activity {
 					if (pl == null) {
 						Message.obtain(uiHandler, UI_END_WAITING_WITH_ERROR)
 								.sendToTarget();
+					} else if (pl.getResultCount() == 0){
+						Toast.makeText(context, R.string.can_not_find_project, Toast.LENGTH_SHORT).show();
 					} else {
+						
 						// FIXME remove project from cache and database
 						removeProjectFromDB(pl);
 						GlobalHolder.addProject(pl);
-						saveToDatabase(pl);
-						Message.obtain(uiHandler, UI_END_WAITING)
-								.sendToTarget();
+						saveToDatabase(pl);						
 					}
-
+					Message.obtain(uiHandler, UI_END_WAITING)
+					.sendToTarget();
 				} catch (Exception e) {
 					e.printStackTrace();
 					Message.obtain(uiHandler, UI_END_WAITING_WITH_ERROR)

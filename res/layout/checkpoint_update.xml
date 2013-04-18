@@ -47,8 +47,7 @@
                 android:text="@string/show_menu"
                 android:textColor="@color/font_color"
                 android:textSize="24sp"
-                android:textStyle="bold"
-                 />
+                android:textStyle="bold" />
         </RelativeLayout>
 
         <RelativeLayout
@@ -192,9 +191,8 @@
                 android:layout_marginTop="10dip"
                 android:text="@string/select_photo"
                 android:textSize="14sp" >
-
             </TextView>
-            
+
             <TextView
                 android:id="@+id/qcDefectTextView"
                 android:layout_width="wrap_content"
@@ -223,54 +221,121 @@
                 android:textColor="@color/login_text_color"
                 android:textSize="12sp" />
 
+            <TextView
+                android:id="@+id/tvStatus"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/qcDefectEditText"
+                android:layout_marginLeft="10dp"
+                android:layout_marginTop="15dip"
+                android:text="Status"
+                android:textSize="14sp" >
+            </TextView>
+
             <LinearLayout
-                android:id="@+id/actionLin"
+                android:id="@+id/statusLin"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/qcDefectEditText"
                 android:layout_marginTop="15dip"
+                android:layout_toRightOf="@+id/tvStatus"
                 android:baselineAligned="false"
-                android:gravity="left|center_vertical"
+                android:gravity="center_vertical|center_horizontal"
                 android:orientation="horizontal" >
 
                 <TextView
-                    android:id="@+id/textView6"
+                    android:id="@+id/acStatusEFailed"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_height="match_parent"
                     android:layout_marginLeft="10dp"
-                    android:layout_marginTop="10dip"
-                    android:text="Action"
+                    android:text="Failed"
+                    android:textSize="14sp" >
+                </TextView>
+
+                <TextView
+                    android:id="@+id/tvStatusEAlert"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_marginLeft="10dp"
+                    android:text="Alert"
+                    android:textSize="14sp" >
+                </TextView>
+
+                <TextView
+                    android:id="@+id/tvStatusEPassed"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_marginLeft="10dp"
+                    android:text="Passed"
+                    android:textSize="14sp" >
+                </TextView>
+
+                <TextView
+                    android:id="@+id/tvStatusEReady"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_marginLeft="10dp"
+                    android:text="Ready"
                     android:textSize="14sp" >
                 </TextView>
             </LinearLayout>
 
+            <TextView
+                android:id="@+id/tvAction"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/statusLin"
+                android:layout_marginLeft="10dp"
+                android:layout_marginTop="10dip"
+                android:text="Action"
+                android:textSize="14sp" >
+            </TextView>
+
             <LinearLayout
-                android:id="@+id/qcStatusLin"
+                android:id="@+id/qcActionLin"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/actionLin"
+                android:layout_below="@+id/statusLin"
                 android:layout_marginBottom="10dip"
                 android:layout_marginTop="15dip"
+                android:layout_toRightOf="@+id/tvAction"
                 android:baselineAligned="false"
-                android:gravity="left"
+                android:gravity="center_vertical|center_horizontal"
                 android:orientation="horizontal" >
 
                 <TextView
-                    android:id="@+id/textView7"
+                    android:id="@+id/tvActionEAlert"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_height="match_parent"
                     android:layout_marginLeft="10dp"
-                    android:layout_marginTop="10dip"
-                    android:text="QC Status"
+                    android:text="Alert"
+                    android:textSize="14sp" >
+                </TextView>
+
+                <TextView
+                    android:id="@+id/tvActionEPassed"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_marginLeft="10dp"
+                    android:text="Passed"
+                    android:textSize="14sp" >
+                </TextView>
+
+                <TextView
+                    android:id="@+id/tvActionEReady"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_marginLeft="10dp"
+                    android:text="Ready"
                     android:textSize="14sp" >
                 </TextView>
             </LinearLayout>
 
             <TextView
                 android:id="@+id/qcCommentTextView"
-                android:layout_width="wrap_content"
+                android:layout_width="110dp"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/qcStatusLin"
+                android:layout_below="@+id/qcActionLin"
                 android:layout_marginLeft="10dp"
                 android:layout_marginTop="10dip"
                 android:text="QC Comment"
@@ -309,8 +374,8 @@
                 android:id="@+id/bottom_tab_add_or_update_checkpoint"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textColor="@color/selected_tab"
                 android:padding="4dp"
+                android:textColor="@color/selected_tab"
                 android:textSize="24dp"
                 android:textStyle="bold" />
         </LinearLayout>
