@@ -29,6 +29,7 @@ import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.BaseAdapter;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.PopupMenu;
@@ -74,7 +75,7 @@ public class ProjectListScreen extends Activity {
 
 	private ListAdapter projectAdapter;
 
-	private TextView showMenuButton;
+	private ImageView showMenuButton;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -86,7 +87,7 @@ public class ProjectListScreen extends Activity {
 
 		addProjectLayout = (LinearLayout) findViewById(R.id.tab_add_project_layout);
 		addProjectLayout.setOnClickListener(addProjectListener);
-		showMenuButton = (TextView) findViewById(R.id.menu);
+		showMenuButton = (ImageView) findViewById(R.id.imgShowMenu);
 		
 		ActionBar bar = getActionBar();
 		if(bar != null)

@@ -48,9 +48,10 @@ public final class R {
         public static final int logo_24_24=0x7f02000a;
         public static final int logo_36_36=0x7f02000b;
         public static final int logo_asiaction=0x7f02000c;
-        public static final int project_ok=0x7f02000d;
-        public static final int project_sync=0x7f02000e;
-        public static final int recover_top=0x7f02000f;
+        public static final int menu=0x7f02000d;
+        public static final int project_ok=0x7f02000e;
+        public static final int project_sync=0x7f02000f;
+        public static final int recover_top=0x7f020010;
     }
     public static final class id {
         public static final int acStatusEFailed=0x7f090014;
@@ -77,6 +78,7 @@ public final class R {
         public static final int headerlayout=0x7f090033;
         public static final int imagesOp=0x7f090028;
         public static final int images_id=0x7f09002b;
+        public static final int imgShowMenu=0x7f090043;
         public static final int itemName=0x7f090025;
         public static final int itemOrderCategoryCheckType=0x7f090020;
         public static final int itemOrderComment=0x7f090039;
@@ -88,7 +90,6 @@ public final class R {
         public static final int itemQuntity=0x7f090026;
         public static final int itemTitle=0x7f09003d;
         public static final int login_text=0x7f09002e;
-        public static final int menu=0x7f090043;
         public static final int menu_quit=0x7f090041;
         public static final int menu_setting=0x7f090040;
         public static final int nameEditText=0x7f09000b;

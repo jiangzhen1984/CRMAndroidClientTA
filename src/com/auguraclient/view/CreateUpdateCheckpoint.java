@@ -84,7 +84,7 @@ public class CreateUpdateCheckpoint extends Activity {
 
 	private TextView returnButton;
 
-	private TextView showMenuButton;
+	private ImageView showMenuButton;
 
 	private TextView selectPhotoBUtton;
 
@@ -191,7 +191,7 @@ public class CreateUpdateCheckpoint extends Activity {
 		returnButton = (TextView) this
 				.findViewById(R.id.updateCheckpointReturn);
 
-		showMenuButton = (TextView) this
+		showMenuButton = (ImageView) this
 				.findViewById(R.id.showUpdateCheckpointMenu);
 
 		selectPhotoBUtton = (TextView) this.findViewById(R.id.selectPhoto);

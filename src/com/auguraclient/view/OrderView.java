@@ -32,7 +32,6 @@ import android.widget.Toast;
 
 import com.auguraclient.R;
 import com.auguraclient.db.ContentDescriptor;
-import com.auguraclient.model.APIException;
 import com.auguraclient.model.ISuguraRestAPI;
 import com.auguraclient.model.Project;
 import com.auguraclient.model.ProjectCheckpoint;
@@ -248,11 +247,12 @@ public class OrderView extends Activity {
 				dialog.show();
 				break;
 			case END_WAITING:
+				initAdapterView();
 				if (dialog != null) {
 					dialog.cancel();
 					dialog.dismiss();
 				}
-				initAdapterView();
+				
 				break;
 			case END_WAITING_WITH_ERROR:
 				if (dialog != null) {

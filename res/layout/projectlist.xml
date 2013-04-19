@@ -11,30 +11,27 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@color/title_background"
-    android:gravity="center" >
+     >
 
     <TextView
         android:id="@+id/yourcard_header"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
+        android:layout_marginRight="30dp"
         android:text="@string/title"
         android:textColor="@color/font_color"
         android:textSize="24sp"
         android:textStyle="bold" />
 
-    <TextView
-        android:id="@+id/menu"
+    <ImageView
+        android:id="@+id/imgShowMenu"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentTop="true"
-        android:gravity="right"
-        android:text="@string/show_menu"
-        android:textColor="@color/font_color"
-        android:textSize="24sp"
-        android:textStyle="bold"
-        android:width="70dp" />
+        android:src="@drawable/menu"
+        android:gravity="center"
+        android:layout_toRightOf="@+id/yourcard_header"
+        android:contentDescription="show menu" />
 
 </RelativeLayout>
 
