@@ -184,7 +184,7 @@ public class ProjectOrderListView extends Activity {
                             project.addProjectOrder(l);
                         }
                         Message.obtain(uiHandler, END_WAITING).sendToTarget();
-                    } catch (APIException e) {
+                    } catch (Exception e) {
                         e.printStackTrace();
                         Message.obtain(uiHandler, END_WAITING_WITH_ERROR).sendToTarget();
                     }

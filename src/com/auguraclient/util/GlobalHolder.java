@@ -18,6 +18,8 @@ public class GlobalHolder {
 
 	public static String[] CHECK_TYPE_ENUM = { "Visual", "Manual Test",
 			"Ruler", "Scale", "Caliper", "Pulling Tool" };
+	
+	public static String[] QC_ACTION_ENUM ={"Correct During QC","Correct After QC", "Cannot Correct", "Refuse to Correct"};
 
 	public synchronized static void setCurrentUser(User user) {
 		currentLogInedUser = user;

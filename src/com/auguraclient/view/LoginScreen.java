@@ -250,7 +250,7 @@ public class LoginScreen extends Activity {
                             Message.obtain(progressHandler, PROGRESS_START_TO_LOG_IN_SUCCESSFUL)
                             .sendToTarget();
                         }
-                    } catch (APIException e) {
+                    } catch (Exception e) {
                         // send login progress
                         Message.obtain(progressHandler, PROGRESS_START_TO_LOG_IN_ERROR, e.getMessage())
                                 .sendToTarget();

@@ -35,8 +35,9 @@ public class SuguraRestAPIImpl implements ISuguraRestAPI {
 	 * 22,%22password
 	 * %22:%22c31b32364ce19ca8fcd150a417ecce58%22,%22version%22:%221
 	 * %22},%22application_name%22:%22RestTest%22}
+	 * @throws SessionAPIException 
 	 */
-	public User login(String userName, String password) throws APIException {
+	public User login(String userName, String password) throws APIException, SessionAPIException {
 		String pwdMd5 = Util.encryptMD5(password);
 
 		JSONObject restData = new JSONObject();
@@ -72,7 +73,7 @@ public class SuguraRestAPIImpl implements ISuguraRestAPI {
 		return null;
 	}
 
-	public ProjectList loadProject(String name) throws APIException {
+	public ProjectList loadProject(String name) throws APIException, SessionAPIException {
 		ProjectList pl = this.queryProjectList(name);
 		List<Project> l = pl.getList();
 		for (int i = 0; i < l.size(); i++) {
@@ -88,7 +89,7 @@ public class SuguraRestAPIImpl implements ISuguraRestAPI {
 		return pl;
 	}
 
-	public ProjectList queryProjectList(String name) throws APIException {
+	public ProjectList queryProjectList(String name) throws APIException, SessionAPIException {
 		String sessionId = GlobalHolder.getSessionId();
 		if (sessionId == null || sessionId.isEmpty()) {
 			return null;
@@ -133,7 +134,7 @@ public class SuguraRestAPIImpl implements ISuguraRestAPI {
 	}
 
 	public List<ProjectOrder> queryProjectOrderList(String projectID)
-			throws APIException {
+			throws APIException, SessionAPIException {
 		// {"session":"9467257e6ce3e29f46082b473c9e3554","module_name":"Project","module_id":"a3c3613d-cdc5-703a-55af-513945799b60","link_field_name":"agr_orderdetails_project","related_module_query":"","related_fields":["id","name","quantity","photo_c","qc_status","qc_date","quantity_checked","qc_comment","date_modified"],"deleted":"0"}
 		String sessionId = GlobalHolder.getSessionId();
 		if (sessionId == null || sessionId.isEmpty()) {
@@ -186,7 +187,7 @@ public class SuguraRestAPIImpl implements ISuguraRestAPI {
 	}
 
 	public List<ProjectCheckpoint> queryProjectOrderCheckpointList(
-			String orderId) throws APIException {
+			String orderId) throws APIException, SessionAPIException {
 		// {"session":"9467257e6ce3e29f46082b473c9e3554","module_name":"AGR_OrderDetails","module_id":"d82e0333-5e06-df53-7695-515d29c81443","link_field_name":"agr_orderdetails_agr_qccheckpoints","related_module_query":"","related_fields":["id","name","category","checktype","description","qc_status","executed_date","number_defect","qc_comment","qc_action","visual","date_modified","photo_c"],"deleted":"0"}
 
 		String sessionId = GlobalHolder.getSessionId();
@@ -244,7 +245,7 @@ public class SuguraRestAPIImpl implements ISuguraRestAPI {
 	}
 
 	// http://crm.augura.net/service/v4_1/rest.php?method=set_entry&input_type=JSON&response_type=JSON&rest_data={"session":"XXXXXXXX","module_name":"AGR_QCCheckpoints","name_value_list":[{"name":"id","value":"48287499-7ee5-a933-e687-515e7dc74bf5"},{"name":"deleted","value":1}]}
-	public void deleteCheckpoint(String checkpointId) throws APIException {
+	public void deleteCheckpoint(String checkpointId) throws APIException, SessionAPIException {
 		String sessionId = GlobalHolder.getSessionId();
 		if (sessionId == null || sessionId.isEmpty()) {
 			return;
@@ -283,7 +284,7 @@ public class SuguraRestAPIImpl implements ISuguraRestAPI {
 	}
 
 	public void createCheckpoint(ProjectOrder order,
-			ProjectCheckpoint checkpoint) throws APIException {
+			ProjectCheckpoint checkpoint) throws APIException, SessionAPIException {
 		String sessionId = GlobalHolder.getSessionId();
 		if (sessionId == null || sessionId.isEmpty()) {
 			return;
@@ -381,15 +382,15 @@ public class SuguraRestAPIImpl implements ISuguraRestAPI {
 					+ URLEncoder.encode(rel.toString()));
 			Log.i(Constants.TAG, response);
 			
-			//TODO mv 
 			String photoPath = checkpoint.getUploadPhotoAbsPath();
-			String localPath = GlobalHolder.GLOBAL_STORAGE_PATH + Constants.CommonConfig.PIC_DIR + id +"_visual.jpg";
-			File f = new File(photoPath);
-			if(! f.renameTo(new File(localPath))) {
-				Log.e(Constants.TAG, " can't rename file to local dir");
+			if(photoPath != null && photoPath.length()>0) {
+				String localPath = GlobalHolder.GLOBAL_STORAGE_PATH + Constants.CommonConfig.PIC_DIR + id +"_visual.jpg";
+				File f = new File(photoPath);
+				if(! f.renameTo(new File(localPath))) {
+					Log.e(Constants.TAG, " can't rename file to local dir");
+				}
+				http.sendUploadPhotoRequest(Constants.UPLOAD_PHOTO_URL, localPath);
 			}
-			
-			http.sendUploadPhotoRequest(Constants.UPLOAD_PHOTO_URL, localPath);
 
 		} catch (JSONException e) {
 			throw new APIException(" can't parse API response");
@@ -397,7 +398,7 @@ public class SuguraRestAPIImpl implements ISuguraRestAPI {
 	}
 
 	public void updateCheckpoint(ProjectCheckpoint checkpoint)
-			throws APIException {
+			throws APIException, SessionAPIException {
 		String sessionId = GlobalHolder.getSessionId();
 		if (sessionId == null || sessionId.isEmpty()) {
 			return;
@@ -490,7 +491,7 @@ public class SuguraRestAPIImpl implements ISuguraRestAPI {
 	}
 
 	private JSONObject parseResponseError(String response)
-			throws JSONException, APIException {
+			throws JSONException, APIException,SessionAPIException {
 
 		JSONObject object = new JSONObject(response);
 
@@ -501,7 +502,7 @@ public class SuguraRestAPIImpl implements ISuguraRestAPI {
 			if (errorName != null
 					&& errorName.toString().equalsIgnoreCase(
 							"Invalid Session ID") && errorNumber == 11) {
-				throw new APIException(" Invalid session, please re-log in");
+				throw new SessionAPIException(" Invalid session, please re-log in");
 			}
 
 			if (errorName != null

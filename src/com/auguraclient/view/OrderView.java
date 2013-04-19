@@ -214,6 +214,17 @@ public class OrderView extends Activity {
 					projectOrderCheckpointList.removeView(tView[i]);
 				}
 			}
+		} else if (resultCode ==  4) {
+			ProjectCheckpoint pc = (ProjectCheckpoint)data.getSerializableExtra("checkpoint");
+			if(pc != null) {
+				this.projectItem.addOrderCheckpoint(pc);
+				ItemView appView = new ItemView(mContext);
+				appView.updateView(pc);
+				projectOrderCheckpointList.addView(appView,
+						new LinearLayout.LayoutParams(
+								LinearLayout.LayoutParams.WRAP_CONTENT,
+								LinearLayout.LayoutParams.WRAP_CONTENT));
+			}
 		}
 	}
 
@@ -322,7 +333,7 @@ public class OrderView extends Activity {
 						saveDataToDB();
 					}
 					Message.obtain(uiHandler, END_WAITING).sendToTarget();
-				} catch (APIException e) {
+				} catch (Exception e) {
 					Log.e(Constants.TAG, e.getMessage(), e);
 					Message.obtain(uiHandler, END_WAITING_WITH_ERROR,
 							e.getMessage()).sendToTarget();

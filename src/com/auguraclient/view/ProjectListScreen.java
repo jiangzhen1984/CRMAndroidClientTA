@@ -21,11 +21,12 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
-import android.view.View.OnClickListener;
 import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.BaseAdapter;
 import android.widget.EditText;
 import android.widget.LinearLayout;
@@ -33,7 +34,6 @@ import android.widget.ListView;
 import android.widget.PopupMenu;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.widget.AdapterView.OnItemClickListener;
 
 import com.auguraclient.R;
 import com.auguraclient.db.ContentDescriptor;
@@ -42,6 +42,7 @@ import com.auguraclient.model.Project;
 import com.auguraclient.model.ProjectCheckpoint;
 import com.auguraclient.model.ProjectList;
 import com.auguraclient.model.ProjectOrder;
+import com.auguraclient.model.SessionAPIException;
 import com.auguraclient.model.SuguraRestAPIImpl;
 import com.auguraclient.util.Constants;
 import com.auguraclient.util.GlobalHolder;
@@ -374,6 +375,14 @@ public class ProjectListScreen extends Activity {
 				}
 				Toast.makeText(dialog.getContext(),
 						R.string.error_load_project, Toast.LENGTH_LONG).show();
+				if(((Integer)msg.obj) == -1) {
+					Intent i = new Intent();
+					i.setAction("com.auguraclient.view.login");
+					i.addCategory("com.auguraclient.view");
+					startActivity(i);
+					finish();
+					
+				}				
 			}
 		}
 	}
@@ -409,7 +418,11 @@ public class ProjectListScreen extends Activity {
 					}
 					Message.obtain(uiHandler, UI_END_WAITING)
 					.sendToTarget();
-				} catch (Exception e) {
+				} catch (SessionAPIException e) {
+					e.printStackTrace();
+					Message.obtain(uiHandler, UI_END_WAITING_WITH_ERROR, -1)
+							.sendToTarget();
+				}catch (Exception e) {
 					e.printStackTrace();
 					Message.obtain(uiHandler, UI_END_WAITING_WITH_ERROR)
 							.sendToTarget();
