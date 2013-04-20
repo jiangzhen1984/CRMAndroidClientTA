@@ -231,7 +231,11 @@ public class OrderView extends Activity {
 									LinearLayout.LayoutParams.WRAP_CONTENT));
 					tView.add(appView);
 				} else {
-					//TODO update view
+					for(int i =0;i<tView.size();i++) {
+						if(((ItemView)tView.get(i)).getCheckpointId().equals(pc.getId())) {
+							((ItemView)tView.get(i)).updateView(pc);
+						}
+					}
 				}
 			}
 		}
@@ -279,7 +283,7 @@ public class OrderView extends Activity {
 
 	private void initAdapterView() {
 		tView = new ArrayList<View>(projectItem.getCheckpointCount());
-		for (int i = 0; i < tView.size(); i++) {
+		for (int i = 0; i < projectItem.getCheckpointCount(); i++) {
 			ItemView appView = new ItemView(mContext);
 			appView.updateView(projectItem.getOrderCheckpointrByIndex(i));
 			projectOrderCheckpointList.addView(appView,

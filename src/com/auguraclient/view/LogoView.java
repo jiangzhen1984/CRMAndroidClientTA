@@ -17,7 +17,9 @@ import android.widget.Toast;
 import com.auguraclient.R;
 import com.auguraclient.db.ContentDescriptor;
 import com.auguraclient.model.Project;
+import com.auguraclient.model.ProjectCheckpoint;
 import com.auguraclient.model.ProjectList;
+import com.auguraclient.model.ProjectOrder;
 import com.auguraclient.model.User;
 import com.auguraclient.util.Constants;
 import com.auguraclient.util.GlobalHolder;
@@ -124,13 +126,15 @@ public class LogoView extends Activity {
 					.setId(c
 							.getString(c
 									.getColumnIndexOrThrow(ContentDescriptor.ProjectDesc.Cols.PRO_ID)));
+			loadOderFromDB(p);
 			pl.addProject(p);
 
-			Cursor updateCursor= cr.query(ContentDescriptor.UpdateDesc.CONTENT_URI,
-					new String[]{ContentDescriptor.UpdateDesc.Cols.FLAG},
+			Cursor updateCursor = cr.query(
+					ContentDescriptor.UpdateDesc.CONTENT_URI,
+					new String[] { ContentDescriptor.UpdateDesc.Cols.FLAG },
 					ContentDescriptor.UpdateDesc.Cols.PRO_ID + "=?",
 					new String[] { p.getId() }, null);
-			if(updateCursor.getCount()>0) {
+			if (updateCursor.getCount() > 0) {
 				p.setNeededUpdate(true);
 			} else {
 				p.setNeededUpdate(false);
@@ -139,6 +143,164 @@ public class LogoView extends Activity {
 		}
 		c.close();
 		GlobalHolder.setPl(pl);
+	}
+
+	private void loadOderFromDB(Project p) {
+		ContentResolver cr = this.getContentResolver();
+		Cursor c = null;
+		c = cr.query(ContentDescriptor.ProjectOrderDesc.CONTENT_URI,
+				ContentDescriptor.ProjectOrderDesc.Cols.ALL_COLS,
+				ContentDescriptor.ProjectOrderDesc.Cols.PRO_ID + "=?",
+				new String[] { p.getId() }, null);
+
+		while (c.moveToNext()) {
+			ProjectOrder po = new ProjectOrder();
+			po
+					.setnID(c
+							.getInt(c
+									.getColumnIndexOrThrow(ContentDescriptor.ProjectOrderDesc.Cols.ID)));
+			po
+					.setId(c
+							.getString(c
+									.getColumnIndexOrThrow(ContentDescriptor.ProjectOrderDesc.Cols.ORD_ID)));
+			po
+					.setName(c
+							.getString(c
+									.getColumnIndexOrThrow(ContentDescriptor.ProjectOrderDesc.Cols.NAME)));
+			po
+					.setDescription(c
+							.getString(c
+									.getColumnIndexOrThrow(ContentDescriptor.ProjectOrderDesc.Cols.DESCRIPTION)));
+			po
+					.setPhotoBigPath(c
+							.getString(c
+									.getColumnIndexOrThrow(ContentDescriptor.ProjectOrderDesc.Cols.PHOTO_LOCAL_BIG_PATH)));
+			po
+					.setPhotoPath(c
+							.getString(c
+									.getColumnIndexOrThrow(ContentDescriptor.ProjectOrderDesc.Cols.PHOTO_LOCAL_SMALL_PATH)));
+			po
+					.setPhotoName(c
+							.getString(c
+									.getColumnIndexOrThrow(ContentDescriptor.ProjectOrderDesc.Cols.PHOTO_NAME)));
+			if (c
+					.getColumnIndex(ContentDescriptor.ProjectOrderDesc.Cols.QC_COMMENT) >= 0) {
+				po
+						.setQcComment(c
+								.getString(c
+										.getColumnIndexOrThrow(ContentDescriptor.ProjectOrderDesc.Cols.QC_COMMENT)));
+			}
+			if (c
+					.getColumnIndex(ContentDescriptor.ProjectOrderDesc.Cols.QC_STATUS) >= 0) {
+				po
+						.setQcStatus(c
+								.getString(c
+										.getColumnIndexOrThrow(ContentDescriptor.ProjectOrderDesc.Cols.QC_STATUS)));
+			}
+			if (c
+					.getColumnIndex(ContentDescriptor.ProjectOrderDesc.Cols.QUANTITY) >= 0) {
+				po
+						.setQuantity(c
+								.getString(c
+										.getColumnIndexOrThrow(ContentDescriptor.ProjectOrderDesc.Cols.QUANTITY)));
+			}
+			if (c
+					.getColumnIndex(ContentDescriptor.ProjectOrderDesc.Cols.QUANTITY_CHECKED) >= 0) {
+				po
+						.setQuantityChecked(c
+								.getString(c
+										.getColumnIndexOrThrow(ContentDescriptor.ProjectOrderDesc.Cols.QUANTITY_CHECKED)));
+			}
+			p.addProjectOrder(po);
+			loadCheckpointFromDB(po);
+		}
+
+		p.setLoadOrderFromDB(true);
+		c.close();
+
+	}
+
+	private void loadCheckpointFromDB(ProjectOrder order) {
+		ContentResolver cr = this.getContentResolver();
+		Cursor c = null;
+		c = cr.query(ContentDescriptor.ProjectCheckpointDesc.CONTENT_URI,
+				ContentDescriptor.ProjectCheckpointDesc.Cols.ALL_COLS,
+				ContentDescriptor.ProjectCheckpointDesc.Cols.PRO_ORDER_ID
+						+ "=? and "
+						+ ContentDescriptor.ProjectCheckpointDesc.Cols.FLAG
+						+ "<>?", new String[] { order.getId(),
+						ContentDescriptor.UpdateDesc.TYPE_ENUM_FLAG_DELETE },
+				null);
+
+		while (c.moveToNext()) {
+			ProjectCheckpoint pcp = new ProjectCheckpoint();
+			pcp
+					.setnID(c
+							.getInt(c
+									.getColumnIndexOrThrow(ContentDescriptor.ProjectCheckpointDesc.Cols.ID)));
+			pcp
+					.setId(c
+							.getString(c
+									.getColumnIndexOrThrow(ContentDescriptor.ProjectCheckpointDesc.Cols.CHECKPOINT_ID)));
+			pcp
+					.setName(c
+							.getString(c
+									.getColumnIndexOrThrow(ContentDescriptor.ProjectCheckpointDesc.Cols.NAME)));
+
+			pcp
+					.setPhotoPath(c
+							.getString(c
+									.getColumnIndexOrThrow(ContentDescriptor.ProjectCheckpointDesc.Cols.PHOTO_LOCAL_SMALL_PATH)));
+
+			pcp
+					.setPhotoName(c
+							.getString(c
+									.getColumnIndexOrThrow(ContentDescriptor.ProjectCheckpointDesc.Cols.PHOTO_NAME)));
+
+			pcp
+					.setDescription(c
+							.getString(c
+									.getColumnIndexOrThrow(ContentDescriptor.ProjectCheckpointDesc.Cols.DESCRIPTION)));
+
+			pcp
+					.setCategory(c
+							.getString(c
+									.getColumnIndexOrThrow(ContentDescriptor.ProjectCheckpointDesc.Cols.CATEGORY)));
+
+			pcp
+					.setQcComments(c
+							.getString(c
+									.getColumnIndexOrThrow(ContentDescriptor.ProjectCheckpointDesc.Cols.QC_COMMENT)));
+			pcp
+					.setQcStatus(c
+							.getString(c
+									.getColumnIndexOrThrow(ContentDescriptor.ProjectCheckpointDesc.Cols.QC_STATUS)));
+			pcp
+					.setDescription(c
+							.getString(c
+									.getColumnIndexOrThrow(ContentDescriptor.ProjectCheckpointDesc.Cols.DESCRIPTION)));
+			pcp
+					.setNumberDefect(c
+							.getString(c
+									.getColumnIndexOrThrow(ContentDescriptor.ProjectCheckpointDesc.Cols.NUMBER_DEFECT)));
+			pcp
+					.setCheckType(c
+							.getString(c
+									.getColumnIndexOrThrow(ContentDescriptor.ProjectCheckpointDesc.Cols.CHECK_TYPE)));
+			pcp
+					.setQcAction(c
+							.getString(c
+									.getColumnIndexOrThrow(ContentDescriptor.ProjectCheckpointDesc.Cols.QC_ACTION)));
+
+			pcp
+					.setUploadPhotoAbsPath(c
+							.getString(c
+									.getColumnIndexOrThrow(ContentDescriptor.ProjectCheckpointDesc.Cols.PHOTO_LOCAL_PATH)));
+			order.addOrderCheckpoint(pcp);
+		}
+
+		order.setLoadedCheckpointFromDB(true);
+		c.close();
 	}
 
 	public void doFinish() {

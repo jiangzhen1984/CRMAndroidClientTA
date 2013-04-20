@@ -137,6 +137,7 @@ public class ProjectListScreen extends Activity {
 	@Override
 	protected void onResume() {
 		super.onResume();
+		projectAdapter.notifyDataSetChanged();
 	}
 
 	private void showSettingDialg() {
@@ -412,9 +413,17 @@ public class ProjectListScreen extends Activity {
 				String orderId = c.getString(c.getColumnIndex(ContentDescriptor.UpdateDesc.Cols.PRO_ORDER_ID));
 				String flag = c.getString(c.getColumnIndex(ContentDescriptor.UpdateDesc.Cols.FLAG));
 				if(flag.equals(ContentDescriptor.UpdateDesc.TYPE_ENUM_FLAG_DELETE)) {
+					try {
 					api.deleteCheckpoint(relatedId);
+					} catch(Exception e) {
+						e.printStackTrace();
+					}
 				} else if (flag.equals(ContentDescriptor.UpdateDesc.TYPE_ENUM_FLAG_CREATE)) {
 					ProjectOrder po = p.getOrder(orderId);
+					if( po == null ) {
+						Log.e(Constants.TAG, "Can't find ProjectOrder data:"+orderId);
+						continue;
+					}
 					ProjectCheckpoint pc = po.findProjectCheckpointById(relatedId);
 					if(po == null || pc == null) {
 						Log.e(Constants.TAG, "Can't find checkpoint data:"+relatedId);
@@ -594,6 +603,8 @@ public class ProjectListScreen extends Activity {
 				ItemView appView = new ItemView(context);
 				appView.updateView(GlobalHolder.getProject(position));
 				convertView = appView;
+			} else {
+				((ItemView)convertView).updateView(GlobalHolder.getProject(position));
 			}
 			return convertView;
 		}

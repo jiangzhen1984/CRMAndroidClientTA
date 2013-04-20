@@ -418,12 +418,20 @@ public class CreateUpdateCheckpoint extends Activity {
 			Log.i(Constants.TAG, " update checkpoint count:" + ret);
 			update(ContentDescriptor.UpdateDesc.TYPE_ENUM_FLAG_UPDATE);
 		}
-
+		projectCheckpoint.getProjectItem().getProject().setNeededUpdate(true);
 		//
 
 	}
 
 	private void update(String flag) {
+		
+		int ret =this.getContentResolver().delete(
+				ContentDescriptor.UpdateDesc.CONTENT_URI,
+				ContentDescriptor.UpdateDesc.Cols.RELATE_ID + "=? and "
+						+ ContentDescriptor.UpdateDesc.Cols.FLAG + "=?",
+				new String[] { projectCheckpoint.getId(), ContentDescriptor.UpdateDesc.TYPE_ENUM_FLAG_CREATE});
+
+		
 		ContentValues cv = new ContentValues();
 
 		cv.put(ContentDescriptor.UpdateDesc.Cols.TYPE,
