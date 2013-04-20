@@ -28,5 +28,7 @@
      <color name="menu_background">#cb201f</color>
      <color name="red_background">#ff0000</color>
      
+     <color name="select_background">#d3d0fd</color>
+     
     
 </resources>

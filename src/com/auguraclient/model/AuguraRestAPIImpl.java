@@ -16,7 +16,7 @@ import com.auguraclient.util.Constants;
 import com.auguraclient.util.GlobalHolder;
 import com.auguraclient.util.Util;
 
-public class SuguraRestAPIImpl implements ISuguraRestAPI {
+public class AuguraRestAPIImpl implements IAuguraRestAPI {
 
 	private final static String API_VERSION = "1";
 
@@ -24,7 +24,7 @@ public class SuguraRestAPIImpl implements ISuguraRestAPI {
 
 	private HttpWrapper http;
 
-	public SuguraRestAPIImpl() {
+	public AuguraRestAPIImpl() {
 		http = new HttpWrapper();
 	}
 
@@ -384,12 +384,16 @@ public class SuguraRestAPIImpl implements ISuguraRestAPI {
 			
 			String photoPath = checkpoint.getUploadPhotoAbsPath();
 			if(photoPath != null && photoPath.length()>0) {
-				String localPath = GlobalHolder.GLOBAL_STORAGE_PATH + Constants.CommonConfig.PIC_DIR + id +"_visual.jpg";
+				String localPath = GlobalHolder.GLOBAL_STORAGE_PATH + Constants.CommonConfig.PIC_DIR +"agr_qccheckpoints_"+ id +"_visual.jpg";
 				File f = new File(photoPath);
 				if(! f.renameTo(new File(localPath))) {
 					Log.e(Constants.TAG, " can't rename file to local dir");
 				}
 				http.sendUploadPhotoRequest(Constants.UPLOAD_PHOTO_URL, localPath);
+				
+				checkpoint.setPhotoName("agr_qccheckpoints_"+id +"_visual.jpg");
+				checkpoint.setPhotoPath(Constants.CommonConfig.PIC_DIR +"agr_qccheckpoints_"+ id +"_visual.jpg");
+				this.updateCheckpoint(checkpoint);
 			}
 
 		} catch (JSONException e) {
@@ -420,7 +424,7 @@ public class SuguraRestAPIImpl implements ISuguraRestAPI {
 
 			JSONObject visual = new JSONObject();
 			visual.put("name", "visual");
-			visual.put("value", "");
+			visual.put("value", checkpoint.getPhotoName());
 			entryArray.put(visual);
 
 			JSONObject id = new JSONObject();
@@ -467,7 +471,8 @@ public class SuguraRestAPIImpl implements ISuguraRestAPI {
 			qc_action.put("name", "qc_action");
 			qc_action.put("value", checkpoint.getQcAction());
 			entryArray.put(qc_action);
-
+			
+	
 			// JSONObject executed_date = new JSONObject();
 			// executed_date.put("name", "executed_date");
 			// executed_date.put("value", checkpoint.get);

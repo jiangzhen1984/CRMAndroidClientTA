@@ -1,17 +1,11 @@
 package com.auguraclient.http;
 
 import java.io.BufferedReader;
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.Timer;
@@ -20,8 +14,6 @@ import java.util.TimerTask;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.entity.ByteArrayEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.params.BasicHttpParams;
 import org.apache.http.params.HttpConnectionParams;
@@ -118,6 +110,15 @@ public class HttpWrapper {
 			URLConnection conn = null;
 			OutputStream os = null;
 			InputStream is = null;
+			String photoName = getPhotoName(imagePath);
+			if(photoName == null) {
+				Log.e(Constants.TAG, "can't get photo name");
+				synchronized (msg) {
+					msg.flag = 1;
+					msg.notify();
+				}
+				return;
+			}
 
 			try {
 				URL url = new URL(urlAPI);
@@ -145,11 +146,11 @@ public class HttpWrapper {
 				message1 += "-----------------------------4664151417711" + CrLf;
 				message1 += "Content-Disposition: form-data; name=\"photoname\";"
 						+ CrLf+ CrLf;
-				message1 += "aeee.jpg" + CrLf;
+				message1 += photoName + CrLf;
 				message1 += CrLf + "-----------------------------4664151417711--"+ CrLf+ CrLf;
 				
 				message1 += "-----------------------------4664151417711" + CrLf;
-				message1 += "Content-Disposition: form-data; name=\"photo\"; filename=\""+imagePath+"\""
+				message1 += "Content-Disposition: form-data; name=\"photo\"; filename=\""+imagePath.trim()+"\""
 						+ CrLf;
 				message1 += "Content-Type: image/jpeg" + CrLf;
 				message1 += CrLf;
@@ -224,6 +225,16 @@ public class HttpWrapper {
 				msg.notify();
 			}
 
+		}
+		
+		
+		private String getPhotoName(String photoPath) {
+			int index  = photoPath.lastIndexOf("/");
+			if(index != -1) {
+				return photoPath.substring(index);
+			} else {
+				return null;
+			}
 		}
 
 	}

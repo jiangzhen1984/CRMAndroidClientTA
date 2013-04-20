@@ -18,6 +18,8 @@ public class Project implements ProjectJSONParser,Serializable {
     private String text;
 
     private boolean isLoadOrderFromDB;
+    
+    private boolean isNeededUpdate;
 
     private List<ProjectOrder> projectOrderList;
 
@@ -78,6 +80,19 @@ public class Project implements ProjectJSONParser,Serializable {
         }
         return projectOrderList.get(index);
     }
+    
+    public ProjectOrder getOrder(String id) {
+        if (id ==null || id.equals("") ) {
+            return null;
+        }
+        for(int i=0;i<projectOrderList.size(); i++) {
+            ProjectOrder pi = projectOrderList.get(i);
+            if(pi.getId().equals(id)) {
+            	return pi;
+            }
+        }
+        return null;
+    }
 
 
     public int getOrderCount() {
@@ -109,4 +124,16 @@ public class Project implements ProjectJSONParser,Serializable {
         return null;
     }
 
+
+	public boolean isNeededUpdate() {
+		return isNeededUpdate;
+	}
+
+
+	public void setNeededUpdate(boolean isNeededUpdate) {
+		this.isNeededUpdate = isNeededUpdate;
+	}
+
+    
+    
 }

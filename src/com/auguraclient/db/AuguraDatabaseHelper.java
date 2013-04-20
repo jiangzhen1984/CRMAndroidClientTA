@@ -73,11 +73,28 @@ public class AuguraDatabaseHelper extends SQLiteOpenHelper {
 
                 ContentDescriptor.ProjectCheckpointDesc.Cols.PHOTO_LOCAL_BIG_PATH + " TEXT , " +
                 ContentDescriptor.ProjectCheckpointDesc.Cols.PHOTO_LOCAL_SMALL_PATH + " TEXT , " +
-                ContentDescriptor.ProjectCheckpointDesc.Cols.FLAG + " TEXT , " +
+                ContentDescriptor.ProjectCheckpointDesc.Cols.PHOTO_LOCAL_PATH + " TEXT , " +
+                ContentDescriptor.ProjectCheckpointDesc.Cols.FLAG + " NUMBER NOT NULL , " +
                 "UNIQUE (" +
                     ContentDescriptor.ProjectOrderDesc.Cols.ID +
                 ") ON CONFLICT REPLACE)"
             );
+        
+        
+        
+        db.execSQL("CREATE TABLE " + ContentDescriptor.UpdateDesc.NAME+ " ( " +
+                ContentDescriptor.UpdateDesc.Cols.ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                ContentDescriptor.UpdateDesc.Cols.TYPE +" TEXT NOT NULL," +
+                ContentDescriptor.UpdateDesc.Cols.PRO_ID   + " TEXT NOT NULL,  " +
+                ContentDescriptor.UpdateDesc.Cols.PRO_ORDER_ID + " TEXT NOT NULL, " +
+                ContentDescriptor.UpdateDesc.Cols.RELATE_ID + " TEXT NOT NULL, " +
+                 ContentDescriptor.UpdateDesc.Cols.FLAG + " TEXT NOT NULL, " +
+                "UNIQUE (" +
+                    ContentDescriptor.UpdateDesc.Cols.ID +
+                ") ON CONFLICT REPLACE)"
+            );
+        
+        
     }
 
     @Override

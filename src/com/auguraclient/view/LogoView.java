@@ -48,7 +48,7 @@ public class LogoView extends Activity {
 	class LogoHandler extends Handler {
 
 		@Override
-		public void handleMessage(Message msg) {			
+		public void handleMessage(Message msg) {
 			switch (msg.what) {
 			case INIT:
 				initConfig();
@@ -58,8 +58,7 @@ public class LogoView extends Activity {
 		}
 
 	}
-	
-	
+
 	private void initConfig() {
 		GlobalHolder.GLOBAL_STORAGE_PATH = Environment
 				.getExternalStorageDirectory().getAbsolutePath();
@@ -74,18 +73,16 @@ public class LogoView extends Activity {
 		}
 		SharedPreferences sp = mContext.getSharedPreferences(
 				Constants.SaveConfig.CONFIG, MODE_PRIVATE);
-		String userName = sp.getString(Constants.SaveConfig.USER_NAME,
-				"");
-		String password = sp.getString(Constants.SaveConfig.PASSWORD,
-				"");
+		String userName = sp.getString(Constants.SaveConfig.USER_NAME, "");
+		String password = sp.getString(Constants.SaveConfig.PASSWORD, "");
 		String session = sp.getString(Constants.SaveConfig.SESSION, "");
 		String userID = sp.getString(Constants.SaveConfig.USER_ID, "");
-		
-		Constants.HOST = sp.getString(Constants.SaveConfig.API, "crm.augura.net");
+
+		Constants.HOST = sp.getString(Constants.SaveConfig.API,
+				"crm.augura.net");
 		Intent i = new Intent();
 		if (userName == null || userName.equals("") || session == null
-				|| session.equals("") || userID == null
-				|| userID.equals("")) {
+				|| session.equals("") || userID == null || userID.equals("")) {
 			i.setAction("com.auguraclient.view.login");
 			i.addCategory("com.auguraclient.view");
 		} else {
@@ -111,15 +108,34 @@ public class LogoView extends Activity {
 		pl.setResultCount(c.getCount());
 		while (c.moveToNext()) {
 			Project p = new Project();
-			p.setnID(c.getInt(c
-					.getColumnIndexOrThrow(ContentDescriptor.ProjectDesc.Cols.ID)));
-			p.setName(c.getString(c
-					.getColumnIndexOrThrow(ContentDescriptor.ProjectDesc.Cols.NAME)));
-			p.setText(c.getString(c
-					.getColumnIndexOrThrow(ContentDescriptor.ProjectDesc.Cols.TEXT)));
-			p.setId(c.getString(c
-					.getColumnIndexOrThrow(ContentDescriptor.ProjectDesc.Cols.PRO_ID)));
+			p
+					.setnID(c
+							.getInt(c
+									.getColumnIndexOrThrow(ContentDescriptor.ProjectDesc.Cols.ID)));
+			p
+					.setName(c
+							.getString(c
+									.getColumnIndexOrThrow(ContentDescriptor.ProjectDesc.Cols.NAME)));
+			p
+					.setText(c
+							.getString(c
+									.getColumnIndexOrThrow(ContentDescriptor.ProjectDesc.Cols.TEXT)));
+			p
+					.setId(c
+							.getString(c
+									.getColumnIndexOrThrow(ContentDescriptor.ProjectDesc.Cols.PRO_ID)));
 			pl.addProject(p);
+
+			Cursor updateCursor= cr.query(ContentDescriptor.UpdateDesc.CONTENT_URI,
+					new String[]{ContentDescriptor.UpdateDesc.Cols.FLAG},
+					ContentDescriptor.UpdateDesc.Cols.PRO_ID + "=?",
+					new String[] { p.getId() }, null);
+			if(updateCursor.getCount()>0) {
+				p.setNeededUpdate(true);
+			} else {
+				p.setNeededUpdate(false);
+			}
+			updateCursor.close();
 		}
 		c.close();
 		GlobalHolder.setPl(pl);

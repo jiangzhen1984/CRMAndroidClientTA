@@ -1,6 +1,7 @@
 package com.auguraclient.view;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
 
 import android.app.Activity;
@@ -22,9 +23,9 @@ import android.os.Message;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.view.Window;
 import android.view.WindowManager;
+import android.view.View.OnClickListener;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -32,11 +33,11 @@ import android.widget.Toast;
 
 import com.auguraclient.R;
 import com.auguraclient.db.ContentDescriptor;
-import com.auguraclient.model.ISuguraRestAPI;
+import com.auguraclient.model.AuguraRestAPIImpl;
+import com.auguraclient.model.IAuguraRestAPI;
 import com.auguraclient.model.Project;
 import com.auguraclient.model.ProjectCheckpoint;
 import com.auguraclient.model.ProjectOrder;
-import com.auguraclient.model.SuguraRestAPIImpl;
 import com.auguraclient.util.Constants;
 import com.auguraclient.util.GlobalHolder;
 
@@ -58,7 +59,7 @@ public class OrderView extends Activity {
 
 	private Project project;
 
-	private ISuguraRestAPI api;
+	private IAuguraRestAPI api;
 
 	private LoaderHandler handler;
 
@@ -82,14 +83,12 @@ public class OrderView extends Activity {
 
 	private LinearLayout checkpointReturn;
 
-
-
-	private View[] tView;
+	private List<View> tView;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		//setfullScreen();
+		// setfullScreen();
 		this.setContentView(R.layout.order_detail);
 		projectOrderCheckpointList = (LinearLayout) this
 				.findViewById(R.id.projectOrderCheckpointList);
@@ -121,8 +120,8 @@ public class OrderView extends Activity {
 
 		Integer position = (Integer) this.getIntent().getExtras()
 				.get("project");
-		Integer itemPosition = (Integer) this.getIntent().getExtras()
-				.get("itemPosition");
+		Integer itemPosition = (Integer) this.getIntent().getExtras().get(
+				"itemPosition");
 
 		project = GlobalHolder.getProject(position);
 
@@ -130,7 +129,7 @@ public class OrderView extends Activity {
 
 		mContext = this;
 
-		api = new SuguraRestAPIImpl();
+		api = new AuguraRestAPIImpl();
 
 		HandlerThread ht = new HandlerThread("it");
 		ht.start();
@@ -150,10 +149,13 @@ public class OrderView extends Activity {
 		itemOrderCommentTV.setText("QC Comments:\n"
 				+ projectItem.getQcComment() == null ? "" : projectItem
 				.getQcComment());
-		itemOrderQTTV.setText("QC Date:     " + "Quantity Checked:"
-				+ (projectItem.getQuantityChecked() ==null?"":projectItem.getQuantityChecked()) + "  QC Status:"
-				+ (projectItem.getQcStatus() ==null?"":projectItem.getQcStatus())
-						);
+		itemOrderQTTV.setText("QC Date:     "
+				+ "Quantity Checked:"
+				+ (projectItem.getQuantityChecked() == null ? "" : projectItem
+						.getQuantityChecked())
+				+ "  QC Status:"
+				+ (projectItem.getQcStatus() == null ? "" : projectItem
+						.getQcStatus()));
 
 		projectItemPhotoIV.setImageURI(Uri.fromFile(new File(
 				GlobalHolder.GLOBAL_STORAGE_PATH
@@ -192,8 +194,8 @@ public class OrderView extends Activity {
 
 		public void onClick(View v) {
 			Intent intent = new Intent(Intent.ACTION_VIEW);
-			intent.setDataAndType(
-					Uri.fromFile(new File(GlobalHolder.GLOBAL_STORAGE_PATH
+			intent.setDataAndType(Uri.fromFile(new File(
+					GlobalHolder.GLOBAL_STORAGE_PATH
 							+ projectItem.getOriginPhotoPath())), "image/*");
 			intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 			startActivity(Intent.createChooser(intent, "Select Picture"));
@@ -203,26 +205,34 @@ public class OrderView extends Activity {
 
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-		if(resultCode == 3) {
-			boolean b=data.getBooleanExtra("delete", false);
-			if(b) {
-				ProjectCheckpoint pc = (ProjectCheckpoint)data.getSerializableExtra("checkpoint");
+		if (resultCode == 3) {
+			boolean b = data.getBooleanExtra("delete", false);
+			if (b) {
+				ProjectCheckpoint pc = (ProjectCheckpoint) data
+						.getSerializableExtra("checkpoint");
 				projectItem.removeCheckpoint(pc);
-				for(int i =0;i <tView.length; i++) {
-					if(((ItemView)tView[i]).getCheckpointId().equals(pc.getId()))
-					projectOrderCheckpointList.removeView(tView[i]);
+				for (int i = 0; i < tView.size(); i++) {
+					if (((ItemView) tView.get(i)).getCheckpointId().equals(
+							pc.getId()))
+						projectOrderCheckpointList.removeView(tView.get(i));
 				}
 			}
-		} else if (resultCode ==  4) {
-			ProjectCheckpoint pc = (ProjectCheckpoint)data.getSerializableExtra("checkpoint");
-			if(pc != null) {
-				this.projectItem.addOrderCheckpoint(pc);
-				ItemView appView = new ItemView(mContext);
-				appView.updateView(pc);
-				projectOrderCheckpointList.addView(appView,
-						new LinearLayout.LayoutParams(
-								LinearLayout.LayoutParams.WRAP_CONTENT,
-								LinearLayout.LayoutParams.WRAP_CONTENT));
+		} else if (resultCode == 4) {
+			ProjectCheckpoint pc = (ProjectCheckpoint) data
+					.getSerializableExtra("checkpoint");
+			if (pc != null) {
+				if (projectItem.findProjectCheckpointById(pc.getId()) == null) {
+					this.projectItem.addOrderCheckpoint(pc);
+					ItemView appView = new ItemView(mContext);
+					appView.updateView(pc);
+					projectOrderCheckpointList.addView(appView,
+							new LinearLayout.LayoutParams(
+									LinearLayout.LayoutParams.WRAP_CONTENT,
+									LinearLayout.LayoutParams.WRAP_CONTENT));
+					tView.add(appView);
+				} else {
+					//TODO update view
+				}
 			}
 		}
 	}
@@ -252,7 +262,7 @@ public class OrderView extends Activity {
 					dialog.cancel();
 					dialog.dismiss();
 				}
-				
+
 				break;
 			case END_WAITING_WITH_ERROR:
 				if (dialog != null) {
@@ -268,15 +278,15 @@ public class OrderView extends Activity {
 	}
 
 	private void initAdapterView() {
-		tView = new View[projectItem.getCheckpointCount()];
-		for (int i = 0; i < tView.length; i++) {
+		tView = new ArrayList<View>(projectItem.getCheckpointCount());
+		for (int i = 0; i < tView.size(); i++) {
 			ItemView appView = new ItemView(mContext);
 			appView.updateView(projectItem.getOrderCheckpointrByIndex(i));
 			projectOrderCheckpointList.addView(appView,
 					new LinearLayout.LayoutParams(
 							LinearLayout.LayoutParams.WRAP_CONTENT,
 							LinearLayout.LayoutParams.WRAP_CONTENT));
-			tView[i] = appView;
+			tView.add(appView);
 		}
 	}
 
@@ -349,34 +359,38 @@ public class OrderView extends Activity {
 		for (int z = 0; z < projectItem.getCheckpointCount(); z++) {
 			cv.clear();
 			ProjectCheckpoint pcp = projectItem.getOrderCheckpointrByIndex(z);
-			cv.put(ContentDescriptor.ProjectCheckpointDesc.Cols.NAME,
-					pcp.getName());
+			cv.put(ContentDescriptor.ProjectCheckpointDesc.Cols.NAME, pcp
+					.getName());
 			cv.put(ContentDescriptor.ProjectCheckpointDesc.Cols.DESCRIPTION,
 					pcp.getDescription());
 			cv.put(ContentDescriptor.ProjectCheckpointDesc.Cols.CHECKPOINT_ID,
 					pcp.getId());
-			cv.put(ContentDescriptor.ProjectCheckpointDesc.Cols.QC_COMMENT,
-					pcp.getQcComments());
-			cv.put(ContentDescriptor.ProjectCheckpointDesc.Cols.QC_STATUS,
-					pcp.getQcStatus());
+			cv.put(ContentDescriptor.ProjectCheckpointDesc.Cols.QC_COMMENT, pcp
+					.getQcComments());
+			cv.put(ContentDescriptor.ProjectCheckpointDesc.Cols.QC_STATUS, pcp
+					.getQcStatus());
 			cv.put(ContentDescriptor.ProjectCheckpointDesc.Cols.PRO_ID,
 					projectItem.getProject().getId());
 			cv.put(ContentDescriptor.ProjectCheckpointDesc.Cols.PRO_ORDER_ID,
 					projectItem.getId());
-			cv.put(ContentDescriptor.ProjectCheckpointDesc.Cols.CATEGORY,
-					pcp.getCategory());
-			cv.put(ContentDescriptor.ProjectCheckpointDesc.Cols.CHECK_TYPE,
-					pcp.getCheckType());
-			cv.put(ContentDescriptor.ProjectCheckpointDesc.Cols.QC_ACTION,
-					pcp.getQcAction());
+			cv.put(ContentDescriptor.ProjectCheckpointDesc.Cols.CATEGORY, pcp
+					.getCategory());
+			cv.put(ContentDescriptor.ProjectCheckpointDesc.Cols.CHECK_TYPE, pcp
+					.getCheckType());
+			cv.put(ContentDescriptor.ProjectCheckpointDesc.Cols.QC_ACTION, pcp
+					.getQcAction());
 			cv.put(ContentDescriptor.ProjectCheckpointDesc.Cols.NUMBER_DEFECT,
 					pcp.getNumberDefect());
-			cv.put(ContentDescriptor.ProjectCheckpointDesc.Cols.PHOTO_NAME,
-					pcp.getPhotoName());
-			cv.put(ContentDescriptor.ProjectCheckpointDesc.Cols.PHOTO_LOCAL_SMALL_PATH,
-					pcp.getPhotoPath());
-			cv.put(ContentDescriptor.ProjectCheckpointDesc.Cols.PHOTO_LOCAL_BIG_PATH,
-					pcp.getPhotoPath());
+			cv.put(ContentDescriptor.ProjectCheckpointDesc.Cols.PHOTO_NAME, pcp
+					.getPhotoName());
+			cv
+					.put(
+							ContentDescriptor.ProjectCheckpointDesc.Cols.PHOTO_LOCAL_SMALL_PATH,
+							pcp.getPhotoPath());
+			cv
+					.put(
+							ContentDescriptor.ProjectCheckpointDesc.Cols.PHOTO_LOCAL_BIG_PATH,
+							pcp.getPhotoPath());
 			Uri uri = this.getContentResolver().insert(
 					ContentDescriptor.ProjectCheckpointDesc.CONTENT_URI, cv);
 			long checkpointID = ContentUris.parseId(uri);
@@ -384,68 +398,110 @@ public class OrderView extends Activity {
 		}
 	}
 
-	
-
 	private void loadCheckpointFromDB() {
 		ContentResolver cr = this.getContentResolver();
 		Cursor c = null;
 		c = cr.query(ContentDescriptor.ProjectCheckpointDesc.CONTENT_URI,
 				ContentDescriptor.ProjectCheckpointDesc.Cols.ALL_COLS,
 				ContentDescriptor.ProjectCheckpointDesc.Cols.PRO_ORDER_ID
-						+ "=?", new String[] { this.projectItem.getId() }, null);
+						+ "=? and "
+						+ ContentDescriptor.ProjectCheckpointDesc.Cols.FLAG
+						+ "<>?", new String[] { this.projectItem.getId(),
+						ContentDescriptor.UpdateDesc.TYPE_ENUM_FLAG_DELETE },
+				null);
 
 		while (c.moveToNext()) {
 			ProjectCheckpoint pcp = new ProjectCheckpoint();
-			pcp.setnID(c.getInt(c
-					.getColumnIndexOrThrow(ContentDescriptor.ProjectCheckpointDesc.Cols.ID)));
-			pcp.setId(c.getString(c
-					.getColumnIndexOrThrow(ContentDescriptor.ProjectCheckpointDesc.Cols.CHECKPOINT_ID)));
-			pcp.setName(c.getString(c
-					.getColumnIndexOrThrow(ContentDescriptor.ProjectCheckpointDesc.Cols.NAME)));
+			pcp
+					.setnID(c
+							.getInt(c
+									.getColumnIndexOrThrow(ContentDescriptor.ProjectCheckpointDesc.Cols.ID)));
+			pcp
+					.setId(c
+							.getString(c
+									.getColumnIndexOrThrow(ContentDescriptor.ProjectCheckpointDesc.Cols.CHECKPOINT_ID)));
+			pcp
+					.setName(c
+							.getString(c
+									.getColumnIndexOrThrow(ContentDescriptor.ProjectCheckpointDesc.Cols.NAME)));
 
-			pcp.setPhotoPath(c.getString(c
-					.getColumnIndexOrThrow(ContentDescriptor.ProjectCheckpointDesc.Cols.PHOTO_LOCAL_SMALL_PATH)));
+			pcp
+					.setPhotoPath(c
+							.getString(c
+									.getColumnIndexOrThrow(ContentDescriptor.ProjectCheckpointDesc.Cols.PHOTO_LOCAL_SMALL_PATH)));
 
-			pcp.setPhotoName(c.getString(c
-					.getColumnIndexOrThrow(ContentDescriptor.ProjectCheckpointDesc.Cols.PHOTO_NAME)));
+			pcp
+					.setPhotoName(c
+							.getString(c
+									.getColumnIndexOrThrow(ContentDescriptor.ProjectCheckpointDesc.Cols.PHOTO_NAME)));
 
-			if (c.getColumnIndex(ContentDescriptor.ProjectCheckpointDesc.Cols.DESCRIPTION) > 0) {
-				pcp.setDescription(c.getString(c
-						.getColumnIndexOrThrow(ContentDescriptor.ProjectCheckpointDesc.Cols.DESCRIPTION)));
+			if (c
+					.getColumnIndex(ContentDescriptor.ProjectCheckpointDesc.Cols.DESCRIPTION) > 0) {
+				pcp
+						.setDescription(c
+								.getString(c
+										.getColumnIndexOrThrow(ContentDescriptor.ProjectCheckpointDesc.Cols.DESCRIPTION)));
 			}
 
-			if (c.getColumnIndex(ContentDescriptor.ProjectCheckpointDesc.Cols.CATEGORY) >= 0) {
-				pcp.setCategory(c.getString(c
-						.getColumnIndexOrThrow(ContentDescriptor.ProjectCheckpointDesc.Cols.CATEGORY)));
+			if (c
+					.getColumnIndex(ContentDescriptor.ProjectCheckpointDesc.Cols.CATEGORY) >= 0) {
+				pcp
+						.setCategory(c
+								.getString(c
+										.getColumnIndexOrThrow(ContentDescriptor.ProjectCheckpointDesc.Cols.CATEGORY)));
 			}
 
-			if (c.getColumnIndex(ContentDescriptor.ProjectCheckpointDesc.Cols.QC_COMMENT) >= 0) {
-				pcp.setQcComments(c.getString(c
-						.getColumnIndexOrThrow(ContentDescriptor.ProjectCheckpointDesc.Cols.QC_COMMENT)));
+			if (c
+					.getColumnIndex(ContentDescriptor.ProjectCheckpointDesc.Cols.QC_COMMENT) >= 0) {
+				pcp
+						.setQcComments(c
+								.getString(c
+										.getColumnIndexOrThrow(ContentDescriptor.ProjectCheckpointDesc.Cols.QC_COMMENT)));
 			}
-			if (c.getColumnIndex(ContentDescriptor.ProjectCheckpointDesc.Cols.QC_COMMENT) >= 0) {
-				pcp.setQcComments(c.getString(c
-						.getColumnIndexOrThrow(ContentDescriptor.ProjectCheckpointDesc.Cols.QC_COMMENT)));
+			if (c
+					.getColumnIndex(ContentDescriptor.ProjectCheckpointDesc.Cols.QC_COMMENT) >= 0) {
+				pcp
+						.setQcComments(c
+								.getString(c
+										.getColumnIndexOrThrow(ContentDescriptor.ProjectCheckpointDesc.Cols.QC_COMMENT)));
 			}
-			if (c.getColumnIndex(ContentDescriptor.ProjectCheckpointDesc.Cols.QC_STATUS) >= 0) {
-				pcp.setQcStatus(c.getString(c
-						.getColumnIndexOrThrow(ContentDescriptor.ProjectCheckpointDesc.Cols.QC_STATUS)));
+			if (c
+					.getColumnIndex(ContentDescriptor.ProjectCheckpointDesc.Cols.QC_STATUS) >= 0) {
+				pcp
+						.setQcStatus(c
+								.getString(c
+										.getColumnIndexOrThrow(ContentDescriptor.ProjectCheckpointDesc.Cols.QC_STATUS)));
 			}
-			if (c.getColumnIndex(ContentDescriptor.ProjectCheckpointDesc.Cols.DESCRIPTION) >= 0) {
-				pcp.setDescription(c.getString(c
-						.getColumnIndexOrThrow(ContentDescriptor.ProjectCheckpointDesc.Cols.DESCRIPTION)));
+			if (c
+					.getColumnIndex(ContentDescriptor.ProjectCheckpointDesc.Cols.DESCRIPTION) >= 0) {
+				pcp
+						.setDescription(c
+								.getString(c
+										.getColumnIndexOrThrow(ContentDescriptor.ProjectCheckpointDesc.Cols.DESCRIPTION)));
 			}
-			if (c.getColumnIndex(ContentDescriptor.ProjectCheckpointDesc.Cols.NUMBER_DEFECT) >= 0) {
-				pcp.setNumberDefect(c.getString(c
-						.getColumnIndexOrThrow(ContentDescriptor.ProjectCheckpointDesc.Cols.NUMBER_DEFECT)));
+			if (c
+					.getColumnIndex(ContentDescriptor.ProjectCheckpointDesc.Cols.NUMBER_DEFECT) >= 0) {
+				pcp
+						.setNumberDefect(c
+								.getString(c
+										.getColumnIndexOrThrow(ContentDescriptor.ProjectCheckpointDesc.Cols.NUMBER_DEFECT)));
 			}
-			if (c.getColumnIndex(ContentDescriptor.ProjectCheckpointDesc.Cols.CHECK_TYPE) >= 0) {
-				pcp.setCheckType(c.getString(c
-						.getColumnIndexOrThrow(ContentDescriptor.ProjectCheckpointDesc.Cols.CHECK_TYPE)));
+			if (c
+					.getColumnIndex(ContentDescriptor.ProjectCheckpointDesc.Cols.CHECK_TYPE) >= 0) {
+				pcp
+						.setCheckType(c
+								.getString(c
+										.getColumnIndexOrThrow(ContentDescriptor.ProjectCheckpointDesc.Cols.CHECK_TYPE)));
 			}
-			if (c.getColumnIndex(ContentDescriptor.ProjectCheckpointDesc.Cols.QC_ACTION) >= 0) {
-				pcp.setQcAction(c.getString(c
-						.getColumnIndexOrThrow(ContentDescriptor.ProjectCheckpointDesc.Cols.QC_ACTION)));
+			if (c
+					.getColumnIndex(ContentDescriptor.ProjectCheckpointDesc.Cols.QC_ACTION) >= 0) {
+				pcp
+						.setQcAction(c
+								.getString(c
+										.getColumnIndexOrThrow(ContentDescriptor.ProjectCheckpointDesc.Cols.QC_ACTION)));
+				pcp.setUploadPhotoAbsPath(c
+								.getString(c
+										.getColumnIndexOrThrow(ContentDescriptor.ProjectCheckpointDesc.Cols.PHOTO_LOCAL_PATH)));
 			}
 			projectItem.addOrderCheckpoint(pcp);
 		}
@@ -467,7 +523,7 @@ public class OrderView extends Activity {
 		private ImageView projectItemOrderPhoto;
 
 		private ImageView itemOperationIV;
-		
+
 		private String id;
 
 		public ItemView(Context context) {
@@ -492,30 +548,39 @@ public class OrderView extends Activity {
 			itemOperationIV = (ImageView) this
 					.findViewById(R.id.projectItemOrderOperation);
 		}
-		
+
 		public String getCheckpointId() {
 			return this.id;
 		}
 
 		public void updateView(final ProjectCheckpoint pi) {
 			if (pi == null) {
-				Log.e(Constants.TAG,
-						" can't update view for order view ProjectItemOrder is null");
+				Log
+						.e(Constants.TAG,
+								" can't update view for order view ProjectItemOrder is null");
 				return;
 			}
 			id = pi.getId();
 			itemOrderCategoryCheckType.setText(pi.getCategory() + "   > "
 					+ pi.getCheckType() + "   >" + pi.getName());
 			itemOrderDefectAlert.setText(pi.getQcAction() == null ? "" : pi
-					.getQcAction() + pi.getNumberDefect() == null ? "   " : pi
+					.getQcAction()
+					+ pi.getNumberDefect() == null ? "   " : pi
 					.getNumberDefect());
 			itemOrderQcComments.setText(pi.getQcComments() == null ? "" : pi
 					.getQcComments());
+			if (pi.isCompleted()) {
+				itemOperationIV.setImageResource(R.drawable.completed);
+			} else {
+				itemOperationIV.setImageResource(R.drawable.missing);
+			}
 			if (pi.getPhotoPath() != null && !pi.getPhotoPath().equals("")) {
 				final Uri photo = Uri.fromFile(new File(
 						GlobalHolder.GLOBAL_STORAGE_PATH + pi.getPhotoPath()));
 				projectItemOrderPhoto.setImageURI(photo);
-
+			} else if(pi.getUploadPhotoAbsPath() != null  && !pi.getUploadPhotoAbsPath().equals("")) {
+				final Uri photo = Uri.fromFile(new File(pi.getUploadPhotoAbsPath()));
+				projectItemOrderPhoto.setImageURI(photo);
 			}
 			this.setOnClickListener(new OnClickListener() {
 

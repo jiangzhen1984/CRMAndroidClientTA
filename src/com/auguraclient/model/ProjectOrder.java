@@ -96,10 +96,10 @@ public class ProjectOrder implements ProjectJSONParser, Serializable {
 					.getString("value");
 			this.photoPath = Constants.CommonConfig.PIC_DIR + "p_70_70_"
 					+ photoName; // Constants.PHTOT_COMPRESSED_API_URL
-									// +photoName+"&h=70&w=70";
+			// +photoName+"&h=70&w=70";
 			this.photoBigPath = Constants.CommonConfig.PIC_DIR + "p_150_150_"
 					+ photoName; // Constants.PHTOT_COMPRESSED_API_URL
-									// +photoName+"&h=150&w=150";
+			// +photoName+"&h=150&w=150";
 
 			this.originPhotoPath = Constants.CommonConfig.PIC_DIR + photoName;
 			Util.loadImageFromURL(new URL(Constants.PHTOT_API_URL + photoName),
@@ -277,18 +277,40 @@ public class ProjectOrder implements ProjectJSONParser, Serializable {
 		if (pos >= 0 && pos < this.checkpointList.size())
 			this.checkpointList.remove(pos);
 	}
-	
+
 	public void removeCheckpoint(ProjectCheckpoint p) {
-		if (p == null || p.getId()==null || p.getId().equals("")) {
+		if (p == null || p.getId() == null || p.getId().equals("")) {
 			return;
 		}
-		for(int i=0;i<this.checkpointList.size(); i++) {
-			
-			if(this.checkpointList.get(i).getId().equals(p.getId())) {
+		for (int i = 0; i < this.checkpointList.size(); i++) {
+
+			if (this.checkpointList.get(i).getId().equals(p.getId())) {
 				this.checkpointList.remove(i);
 			}
 		}
-		
+
+	}
+	
+	public ProjectCheckpoint findProjectCheckpointById(String id) {
+		if(id == null || id.equals("")) {
+			return null;
+		}
+		for (int i = 0; i < this.checkpointList.size(); i++) {
+
+			if (this.checkpointList.get(i).getId().equals(id)) {
+				return this.checkpointList.get(i);
+			}
+		}
+		return null;
+	}
+
+	public boolean isCompleted() {
+		for (int i = 0; i < this.checkpointList.size(); i++) {
+			if (!this.checkpointList.get(i).isCompleted()) {
+				return false;
+			}
+		}
+		return true;
 	}
 
 	public JSONArray toJSONArray() throws JSONParserException {

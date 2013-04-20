@@ -4,7 +4,6 @@ package com.auguraclient.view;
 import java.io.File;
 import java.util.List;
 
-import android.app.ActionBar;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.ContentResolver;
@@ -19,26 +18,26 @@ import android.os.Looper;
 import android.os.Message;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
+import android.view.View.OnClickListener;
 import android.widget.AdapterView;
-import android.widget.AdapterView.OnItemClickListener;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.AdapterView.OnItemClickListener;
 
 import com.auguraclient.R;
 import com.auguraclient.db.ContentDescriptor;
-import com.auguraclient.model.APIException;
-import com.auguraclient.model.ISuguraRestAPI;
+import com.auguraclient.model.IAuguraRestAPI;
 import com.auguraclient.model.Project;
+import com.auguraclient.model.ProjectCheckpoint;
 import com.auguraclient.model.ProjectOrder;
-import com.auguraclient.model.SuguraRestAPIImpl;
+import com.auguraclient.model.AuguraRestAPIImpl;
 import com.auguraclient.util.GlobalHolder;
 
 public class ProjectOrderListView extends Activity {
@@ -55,7 +54,7 @@ public class ProjectOrderListView extends Activity {
 
     private Project project;
 
-    private ISuguraRestAPI api;
+    private IAuguraRestAPI api;
 
     private static final int LOAD_PROJECT_ITEM = 1;
 
@@ -88,7 +87,7 @@ public class ProjectOrderListView extends Activity {
         itemTitleTV = (TextView)this.findViewById(R.id.itemTitle);
         returnButton = (LinearLayout) this.findViewById(R.id.order_list_return_button);
         returnButton.setOnClickListener(returnButtonListener);
-        api = new SuguraRestAPIImpl();
+        api = new AuguraRestAPIImpl();
 
         HandlerThread ht = new HandlerThread("it");
         ht.start();
@@ -221,11 +220,93 @@ public class ProjectOrderListView extends Activity {
                po.setQuantityChecked(c.getString(c.getColumnIndexOrThrow(ContentDescriptor.ProjectOrderDesc.Cols.QUANTITY_CHECKED)));
            }
            project.addProjectOrder(po);
+           //load checkpoint
+           loadCheckpointFromDB(po);
        }
 
        project.setLoadOrderFromDB(true);
        c.close();
    }
+    
+    
+    
+    private void loadCheckpointFromDB(ProjectOrder order) {
+		ContentResolver cr = this.getContentResolver();
+		Cursor c = null;
+		c = cr.query(ContentDescriptor.ProjectCheckpointDesc.CONTENT_URI,
+				ContentDescriptor.ProjectCheckpointDesc.Cols.ALL_COLS,
+				ContentDescriptor.ProjectCheckpointDesc.Cols.PRO_ORDER_ID
+						+ "=? and "
+						+ ContentDescriptor.ProjectCheckpointDesc.Cols.FLAG
+						+ "<>?", new String[] { order.getId(),
+						ContentDescriptor.UpdateDesc.TYPE_ENUM_FLAG_DELETE },
+				null);
+		
+
+		while (c.moveToNext()) {
+			ProjectCheckpoint pcp = new ProjectCheckpoint();
+			pcp.setnID(c.getInt(c
+					.getColumnIndexOrThrow(ContentDescriptor.ProjectCheckpointDesc.Cols.ID)));
+			pcp.setId(c.getString(c
+					.getColumnIndexOrThrow(ContentDescriptor.ProjectCheckpointDesc.Cols.CHECKPOINT_ID)));
+			pcp.setName(c.getString(c
+					.getColumnIndexOrThrow(ContentDescriptor.ProjectCheckpointDesc.Cols.NAME)));
+
+			pcp.setPhotoPath(c.getString(c
+					.getColumnIndexOrThrow(ContentDescriptor.ProjectCheckpointDesc.Cols.PHOTO_LOCAL_SMALL_PATH)));
+
+			pcp.setPhotoName(c.getString(c
+					.getColumnIndexOrThrow(ContentDescriptor.ProjectCheckpointDesc.Cols.PHOTO_NAME)));
+
+			pcp
+					.setDescription(c
+							.getString(c
+									.getColumnIndexOrThrow(ContentDescriptor.ProjectCheckpointDesc.Cols.DESCRIPTION)));
+
+			pcp
+					.setCategory(c
+							.getString(c
+									.getColumnIndexOrThrow(ContentDescriptor.ProjectCheckpointDesc.Cols.CATEGORY)));
+
+			pcp
+					.setQcComments(c
+							.getString(c
+									.getColumnIndexOrThrow(ContentDescriptor.ProjectCheckpointDesc.Cols.QC_COMMENT)));
+			pcp
+					.setQcStatus(c
+							.getString(c
+									.getColumnIndexOrThrow(ContentDescriptor.ProjectCheckpointDesc.Cols.QC_STATUS)));
+			pcp
+					.setDescription(c
+							.getString(c
+									.getColumnIndexOrThrow(ContentDescriptor.ProjectCheckpointDesc.Cols.DESCRIPTION)));
+			pcp
+					.setNumberDefect(c
+							.getString(c
+									.getColumnIndexOrThrow(ContentDescriptor.ProjectCheckpointDesc.Cols.NUMBER_DEFECT)));
+			pcp
+					.setCheckType(c
+							.getString(c
+									.getColumnIndexOrThrow(ContentDescriptor.ProjectCheckpointDesc.Cols.CHECK_TYPE)));
+			pcp
+					.setQcAction(c
+							.getString(c
+									.getColumnIndexOrThrow(ContentDescriptor.ProjectCheckpointDesc.Cols.QC_ACTION)));
+			
+			pcp.setUploadPhotoAbsPath(c
+					.getString(c
+							.getColumnIndexOrThrow(ContentDescriptor.ProjectCheckpointDesc.Cols.PHOTO_LOCAL_PATH)));
+			order.addOrderCheckpoint(pcp);
+		}
+
+		order.setLoadedCheckpointFromDB(true);
+		c.close();
+	}
+    
+    
+    
+    
+    
 
     class ListAdapter extends BaseAdapter {
 
@@ -289,13 +370,7 @@ public class ProjectOrderListView extends Activity {
             quantityTV = (TextView)this.findViewById(R.id.itemQuntity);
             itemPhotoIV = (ImageView)this.findViewById(R.id.projectItemPhoto);            
             itemOperationIV = (ImageView)this.findViewById(R.id.imagesOp);
-            itemOperationIV.setOnClickListener(new OnClickListener() {
-
-				public void onClick(View v) {
-					System.out.println("===========");
-				}
-            	
-            });
+            
         }
 
         public void updateView(ProjectOrder pi) {
@@ -306,6 +381,11 @@ public class ProjectOrderListView extends Activity {
                     + pi.getPhotoPath())));
             itemPhotoIV.setOnClickListener(orderPhotoClickListener);
             photoPath = pi.getOriginPhotoPath();
+            if(pi.isCompleted()) {
+            	itemOperationIV.setImageResource(R.drawable.completed);
+            } else {
+            	itemOperationIV.setImageResource(R.drawable.missing);
+            }
         }
         
         private OnClickListener orderPhotoClickListener = new OnClickListener() {

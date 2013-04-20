@@ -7,7 +7,6 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/main_background"
         android:gravity="top"
         android:orientation="vertical" >
 
@@ -52,7 +51,7 @@
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1"
-            android:background="@color/content_background"
+            android:background="@color/white_background"
             android:gravity="center"
             android:orientation="vertical"
             android:paddingTop="10dip" >
@@ -76,11 +75,12 @@
                 android:layout_marginRight="20dip"
                 android:layout_marginTop="5dip"
                 android:layout_toRightOf="@+id/catetoryTextView"
-                android:background="@drawable/login_screen_button"
                 android:gravity="center"
                 android:height="20dp"
                 android:textColor="@color/login_text_color"
-                android:textSize="12sp" />
+                android:textSize="12sp" 
+                android:background="@drawable/edit_text_background"
+                />
 
             <!--
 				<EditText android:id="@+id/categoryEditText"
@@ -104,7 +104,7 @@
                 android:layout_marginLeft="10dip"
                 android:layout_marginTop="18dp"
                 android:height="20dp"
-                android:text="Checkpoint:"
+                android:text="Checktype:"
                 android:textSize="14sp" >
             </TextView>
 
@@ -118,7 +118,7 @@
                 android:layout_marginRight="20dip"
                 android:layout_marginTop="5dip"
                 android:layout_toRightOf="@+id/checkpointTextView"
-                android:background="@drawable/login_screen_button"
+                android:background="@drawable/edit_text_background"
                 android:gravity="center" />
             <!--
 				<EditText android:id="@+id/checkpointEditText"
@@ -157,11 +157,10 @@
                 android:layout_marginRight="20dip"
                 android:layout_marginTop="5dip"
                 android:layout_toRightOf="@+id/checkpointTextView"
-                android:background="@drawable/login_screen_button"
+                android:background="@drawable/edit_text_background"
                 android:gravity="center"
-                android:inputType="textEmailAddress"
+                android:inputType="text"
                 android:text="android"
-                android:textColor="@color/login_text_color"
                 android:textSize="12sp" />
 
             <TextView
@@ -183,12 +182,11 @@
                 android:layout_marginLeft="10dip"
                 android:layout_marginRight="10dip"
                 android:layout_marginTop="5dip"
-                android:background="@drawable/login_screen_button"
                 android:gravity="center"
-                android:inputType="text|textMultiLine|textEmailAddress"
+                android:inputType="text|textMultiLine"
+                android:background="@drawable/edit_text_background"
                 android:minLines="8"
                 android:text="android"
-                android:textColor="@color/login_text_color"
                 android:textSize="12sp" />
 
             <ImageView
@@ -206,6 +204,7 @@
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/checkpointPhoto"
                 android:layout_centerHorizontal="true"
+                
                 android:layout_centerInParent="true"
                 android:layout_marginLeft="10dp"
                 android:layout_marginTop="10dip"
@@ -234,11 +233,9 @@
                 android:layout_marginRight="30dip"
                 android:layout_marginTop="5dip"
                 android:layout_toRightOf="@+id/qcDefectTextView"
-                android:background="@drawable/login_screen_button"
+                android:background="@drawable/edit_text_background"
                 android:gravity="center"
                 android:inputType="number"
-                android:text="android"
-                android:textColor="@color/login_text_color"
                 android:textSize="12sp" />
 
             <TextView
@@ -263,11 +260,21 @@
                 android:gravity="center_vertical|center_horizontal"
                 android:orientation="horizontal" >
 
+ <TextView
+                    android:id="@+id/acStatusEEmpty"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_marginLeft="10dp"
+                    android:text="      "
+                    android:textSize="14sp"
+                    android:background="@color/content_background" >
+                </TextView>
                 <TextView
                     android:id="@+id/acStatusEFailed"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:layout_marginLeft="10dp"
+                    android:background="@color/content_background"
                     android:text="Failed"
                     android:textSize="14sp" >
                 </TextView>
@@ -276,6 +283,7 @@
                     android:id="@+id/tvStatusEAlert"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
+                    android:background="@color/content_background"
                     android:layout_marginLeft="10dp"
                     android:text="Alert"
                     android:textSize="14sp" >
@@ -285,6 +293,7 @@
                     android:id="@+id/tvStatusEPassed"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
+                    android:background="@color/content_background"
                     android:layout_marginLeft="10dp"
                     android:text="Passed"
                     android:textSize="14sp" >
@@ -295,6 +304,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:layout_marginLeft="10dp"
+                    android:background="@color/content_background"
                     android:text="Ready"
                     android:textSize="14sp" >
                 </TextView>
@@ -330,10 +340,10 @@
                     android:layout_gravity="center"
                     android:layout_marginLeft="20dip"
                     android:layout_marginRight="20dip"
-                    android:background="@drawable/login_screen_button"
                     android:gravity="center"
                     android:height="20dp"
                     android:textColor="@color/login_text_color"
+                    android:background="@drawable/edit_text_background"
                     android:textSize="12sp" />
 
             </LinearLayout>
@@ -357,14 +367,13 @@
                 android:layout_centerHorizontal="true"
                 android:layout_marginBottom="5dp"
                 android:layout_marginLeft="10dip"
+                android:background="@drawable/edit_text_background"
                 android:layout_marginRight="10dip"
                 android:layout_marginTop="5dip"
-                android:background="@drawable/login_screen_button"
                 android:gravity="center"
-                android:inputType="textMultiLine|textEmailAddress"
+                android:inputType="textMultiLine|text"
                 android:minLines="8"
                 android:text="android"
-                android:textColor="@color/login_text_color"
                 android:textSize="12sp" />
         </RelativeLayout>
 

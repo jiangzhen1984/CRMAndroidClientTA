@@ -34,10 +34,10 @@ import android.widget.Toast;
 import com.auguraclient.R;
 import com.auguraclient.db.ContentDescriptor;
 import com.auguraclient.model.APIException;
-import com.auguraclient.model.ISuguraRestAPI;
+import com.auguraclient.model.IAuguraRestAPI;
 import com.auguraclient.model.Project;
 import com.auguraclient.model.ProjectOrder;
-import com.auguraclient.model.SuguraRestAPIImpl;
+import com.auguraclient.model.AuguraRestAPIImpl;
 import com.auguraclient.util.GlobalHolder;
 
 public class ProjectOrderListViewWithLIstVIew extends Activity {
@@ -56,7 +56,7 @@ public class ProjectOrderListViewWithLIstVIew extends Activity {
 
     private ListAdapter adapter;
 
-    private ISuguraRestAPI api;
+    private IAuguraRestAPI api;
 
     private static final int LOAD_PROJECT_ITEM = 1;
 
@@ -86,7 +86,7 @@ public class ProjectOrderListViewWithLIstVIew extends Activity {
         itemTitleTV = (TextView)this.findViewById(R.id.itemTitle);
         returnButton = (LinearLayout) this.findViewById(R.id.order_list_return_button);
         returnButton.setOnClickListener(returnButtonListener);
-        api = new SuguraRestAPIImpl();
+        api = new AuguraRestAPIImpl();
 
         HandlerThread ht = new HandlerThread("it");
         ht.start();

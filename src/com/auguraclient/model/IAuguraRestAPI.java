@@ -3,7 +3,7 @@ package com.auguraclient.model;
 import java.util.List;
 
 
-public interface ISuguraRestAPI {
+public interface IAuguraRestAPI {
 
     public User login(String userName, String password) throws APIException,SessionAPIException;
 

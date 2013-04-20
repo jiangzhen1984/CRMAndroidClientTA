@@ -12,14 +12,22 @@ public class GlobalHolder {
 
 	public static String GLOBAL_STORAGE_PATH;
 
-	public static String[] CATEGORY_ENUM = { "Accessory", "Appearance",
+	public static String[] CATEGORY_ENUM = { "", "Accessory", "Appearance",
 			"Dimension Weight", "Functioning", "Marking", "Material",
 			"Packaging", "Resistance", "Wrapping", "Other" };
-
-	public static String[] CHECK_TYPE_ENUM = { "Visual", "Manual Test",
-			"Ruler", "Scale", "Caliper", "Pulling Tool" };
 	
-	public static String[] QC_ACTION_ENUM ={"Correct During QC","Correct After QC", "Cannot Correct", "Refuse to Correct"};
+	public static String[] CATEGORY_ENUM_VALUE = { "", "accessory", "appearance",
+		"dimension_weight", "functioning", "marking", "material",
+		"packaging", "resistance", "wrapping", "other" };
+
+	public static String[] CHECK_TYPE_ENUM = { "", "Visual", "Manual Test",
+			"Ruler", "Scale", "Caliper", "Pulling Tool" };
+	public static String[] CHECK_TYPE_ENUM_VALUE = { "", "visual", "manual",
+		"ruler", "scale", "caliper", "pulling_tool" };
+	
+	public static String[] QC_ACTION_ENUM ={"", "Correct During QC","Correct After QC", "Cannot Correct", "Refuse to Correct"};
+	
+	public static String[] QC_ACTION_ENUM_VALUE ={"", "during_qc","after_qc", "cannot", "refuse"};
 
 	public synchronized static void setCurrentUser(User user) {
 		currentLogInedUser = user;
@@ -43,6 +51,16 @@ public class GlobalHolder {
 	public static void setPl(ProjectList pl) {
 		GlobalHolder.pl = pl;
 	}
+	
+	public static int getIndex(Project p) {
+		for (int i = 0; i < pl.getList().size(); i++) {
+			Project newP = pl.getList().get(i);
+			if(newP.getId().equals(p.getId())) {
+				return i;
+			}
+		}
+		return -1;
+	}
 
 	public static Project getProject(int index) {
 		if (pl == null || pl.getList() == null || pl.getList().isEmpty()
@@ -55,6 +73,16 @@ public class GlobalHolder {
 
 	public static void addProject(Project p) {
 		pl.addProject(p);
+	}
+	
+	public static Project getProjectById(String id) {
+		for (int i = 0; i < pl.getList().size(); i++) {
+			Project newP = pl.getList().get(i);
+			if(newP.getId().equals(id)) {
+				return newP;
+			}
+		}
+		return null;
 	}
 
 	public static void addProject(ProjectList pList) {

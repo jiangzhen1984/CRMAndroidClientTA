@@ -35,6 +35,9 @@ public class AuguraContentProvider extends ContentProvider {
 		case ContentDescriptor.ProjectCheckpointDesc.TOKEN:
 			qb.setTables(ContentDescriptor.ProjectCheckpointDesc.NAME);
 			break;
+		case ContentDescriptor.UpdateDesc.TOKEN:
+			qb.setTables(ContentDescriptor.UpdateDesc.NAME);
+			break;
 		}
 
 		SQLiteDatabase db = auguraHelper.getReadableDatabase();
@@ -74,6 +77,13 @@ public class AuguraContentProvider extends ContentProvider {
 			getContext().getContentResolver().notifyChange(uri, null);
 			return ContentDescriptor.ProjectCheckpointDesc.CONTENT_URI
 					.buildUpon().appendPath(String.valueOf(id)).build();
+			
+		case ContentDescriptor.UpdateDesc.TOKEN:
+			id = db.insert(ContentDescriptor.UpdateDesc.NAME, null,
+					values);
+			getContext().getContentResolver().notifyChange(uri, null);
+			return ContentDescriptor.UpdateDesc.CONTENT_URI
+					.buildUpon().appendPath(String.valueOf(id)).build();
 		default: {
 			throw new UnsupportedOperationException("URI: " + uri
 					+ " not supported.");
@@ -95,6 +105,9 @@ public class AuguraContentProvider extends ContentProvider {
 			break;
 		case ContentDescriptor.ProjectCheckpointDesc.TOKEN:
 			tableName = ContentDescriptor.ProjectCheckpointDesc.NAME;
+			break;
+		case ContentDescriptor.UpdateDesc.TOKEN:
+			tableName = ContentDescriptor.UpdateDesc.NAME;
 			break;
 		}
 
@@ -123,6 +136,9 @@ public class AuguraContentProvider extends ContentProvider {
 			break;
 		case ContentDescriptor.ProjectCheckpointDesc.TOKEN:
 			tableName = ContentDescriptor.ProjectCheckpointDesc.NAME;
+			break;
+		case ContentDescriptor.UpdateDesc.TOKEN:
+			tableName = ContentDescriptor.UpdateDesc.NAME;
 			break;
 		}
 

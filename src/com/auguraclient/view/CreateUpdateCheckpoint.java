@@ -1,10 +1,10 @@
 package com.auguraclient.view;
 
 import java.io.File;
+import java.util.UUID;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
-import android.content.ContentResolver;
 import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.Context;
@@ -20,7 +20,6 @@ import android.os.Message;
 import android.provider.MediaStore;
 import android.text.Editable;
 import android.util.Log;
-import android.view.KeyEvent;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -36,11 +35,11 @@ import android.widget.Toast;
 import com.auguraclient.R;
 import com.auguraclient.db.ContentDescriptor;
 import com.auguraclient.model.APIException;
-import com.auguraclient.model.ISuguraRestAPI;
+import com.auguraclient.model.IAuguraRestAPI;
 import com.auguraclient.model.ProjectCheckpoint;
 import com.auguraclient.model.ProjectOrder;
 import com.auguraclient.model.SessionAPIException;
-import com.auguraclient.model.SuguraRestAPIImpl;
+import com.auguraclient.model.AuguraRestAPIImpl;
 import com.auguraclient.util.Constants;
 import com.auguraclient.util.GlobalHolder;
 
@@ -53,7 +52,7 @@ public class CreateUpdateCheckpoint extends Activity {
 	private Spinner categorySpinner;
 
 	private Spinner checkTypeSpinner;
-	
+
 	private Spinner qcActionSpinner;
 
 	private EditText nameEditText;
@@ -76,7 +75,7 @@ public class CreateUpdateCheckpoint extends Activity {
 
 	private Context mContext;
 
-	private ISuguraRestAPI api;
+	private IAuguraRestAPI api;
 
 	private UiHandler uiHandler;
 
@@ -114,7 +113,7 @@ public class CreateUpdateCheckpoint extends Activity {
 					.getSerializableExtra("projectCheckpoint");
 		}
 
-		api = new SuguraRestAPIImpl();
+		api = new AuguraRestAPIImpl();
 
 		uiHandler = new UiHandler();
 
@@ -137,33 +136,58 @@ public class CreateUpdateCheckpoint extends Activity {
 					GlobalHolder.GLOBAL_STORAGE_PATH
 							+ projectCheckpoint.getPhotoPath())));
 			checkpointPhoto.setOnClickListener(onOpenPhotoClickListener);
+		} else if (projectCheckpoint.getUploadPhotoAbsPath() != null
+				&& !projectCheckpoint.getUploadPhotoAbsPath().equals("")) {
+			final Uri photo = Uri.fromFile(new File(projectCheckpoint
+					.getUploadPhotoAbsPath()));
+			checkpointPhoto.setImageURI(photo);
 		}
 		setQcStatus();
 
 		categorySpinner.setAdapter(new ArrayAdapter(this, R.layout.spinner_ite,
 				GlobalHolder.CATEGORY_ENUM));
+		if (this.projectCheckpoint.getCategory() != null) {
+			for (int i = 0; i < GlobalHolder.CATEGORY_ENUM_VALUE.length; i++) {
+				if (this.projectCheckpoint.getCategory().equals(
+						GlobalHolder.CATEGORY_ENUM_VALUE[i])) {
+					categorySpinner.setSelection(i);
+				}
+			}
+		}
+
 		checkTypeSpinner.setAdapter(new ArrayAdapter(this,
 				R.layout.spinner_ite, GlobalHolder.CHECK_TYPE_ENUM));
-		
-		qcActionSpinner.setAdapter(new ArrayAdapter(this,
-				R.layout.spinner_ite, GlobalHolder.QC_ACTION_ENUM));
+		if (this.projectCheckpoint.getCheckType() != null) {
+			for (int i = 0; i < GlobalHolder.CHECK_TYPE_ENUM_VALUE.length; i++) {
+				if (this.projectCheckpoint.getCheckType().equals(
+						GlobalHolder.CHECK_TYPE_ENUM_VALUE[i])) {
+					checkTypeSpinner.setSelection(i);
+				}
+			}
+		}
+
+		qcActionSpinner.setAdapter(new ArrayAdapter(this, R.layout.spinner_ite,
+				GlobalHolder.QC_ACTION_ENUM));
+		if (this.projectCheckpoint.getQcAction() != null) {
+			for (int i = 0; i < GlobalHolder.QC_ACTION_ENUM_VALUE.length; i++) {
+				if (this.projectCheckpoint.getQcAction().equals(
+						GlobalHolder.QC_ACTION_ENUM_VALUE[i])) {
+					qcActionSpinner.setSelection(i);
+				}
+			}
+		}
 
 	}
-	
-	
-	
 
 	@Override
 	public void onBackPressed() {
 		Intent i = new Intent();
-		if(projectCheckpoint.getId() != null)
+		if (projectCheckpoint.getId() != null)
 			i.putExtra("checkpoint", projectCheckpoint);
 		setResult(4, i);
-		finish();
 		super.onBackPressed();
 		finish();
 	}
-
 
 	private void initListener() {
 		returnButton.setOnClickListener(returnButtonListener);
@@ -175,7 +199,7 @@ public class CreateUpdateCheckpoint extends Activity {
 	private void initView() {
 		categorySpinner = (Spinner) this.findViewById(R.id.categoryEditText);
 		checkTypeSpinner = (Spinner) this.findViewById(R.id.checkpointEditText);
-		qcActionSpinner= (Spinner) this.findViewById(R.id.qcActionSpinner);
+		qcActionSpinner = (Spinner) this.findViewById(R.id.qcActionSpinner);
 		nameEditText = (EditText) this.findViewById(R.id.nameEditText);
 		detailEditText = (EditText) this.findViewById(R.id.detailEditText);
 		qcCommentEditText = (EditText) this
@@ -200,7 +224,8 @@ public class CreateUpdateCheckpoint extends Activity {
 				(TextView) this.findViewById(R.id.acStatusEFailed),
 				(TextView) this.findViewById(R.id.tvStatusEAlert),
 				(TextView) this.findViewById(R.id.tvStatusEPassed),
-				(TextView) this.findViewById(R.id.tvStatusEReady) };
+				(TextView) this.findViewById(R.id.tvStatusEReady),
+				(TextView) this.findViewById(R.id.acStatusEEmpty) };
 		for (int i = 0; i < qcStatusValue.length; i++) {
 			qcStatusValue[i].setOnClickListener(selectQcStatusListener);
 		}
@@ -219,7 +244,7 @@ public class CreateUpdateCheckpoint extends Activity {
 			} else {
 				// qcStatusValue[i].setTextColor(R.color.blank_background);
 				qcStatusValue[i]
-						.setBackgroundResource(R.color.content_background);
+						.setBackgroundResource(R.color.select_background);
 			}
 		}
 	}
@@ -228,7 +253,7 @@ public class CreateUpdateCheckpoint extends Activity {
 
 		public void onClick(View view) {
 			projectCheckpoint.setQcStatus(((TextView) view).getText()
-					.toString());
+					.toString().trim());
 			setQcStatus();
 		}
 
@@ -272,8 +297,8 @@ public class CreateUpdateCheckpoint extends Activity {
 
 		public void onClick(View v) {
 			Intent intent = new Intent(Intent.ACTION_VIEW);
-			intent.setDataAndType(
-					Uri.fromFile(new File(GlobalHolder.GLOBAL_STORAGE_PATH
+			intent.setDataAndType(Uri.fromFile(new File(
+					GlobalHolder.GLOBAL_STORAGE_PATH
 							+ projectCheckpoint.getPhotoPath())), "image/*");
 			intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 			startActivity(Intent.createChooser(intent, "Select Picture"));
@@ -285,7 +310,7 @@ public class CreateUpdateCheckpoint extends Activity {
 
 		public void onClick(View arg0) {
 			Intent i = new Intent();
-			if(projectCheckpoint.getId() != null)
+			if (projectCheckpoint.getId() != null)
 				i.putExtra("checkpoint", projectCheckpoint);
 			setResult(4, i);
 			finish();
@@ -310,12 +335,15 @@ public class CreateUpdateCheckpoint extends Activity {
 	};
 
 	private void recordData() {
-		projectCheckpoint.setCategory(((TextView) categorySpinner
-				.getSelectedView()).getText().toString());
-		projectCheckpoint.setCheckType(((TextView) checkTypeSpinner
-				.getSelectedView()).getText().toString());
-		projectCheckpoint.setQcAction(((TextView) qcActionSpinner
-				.getSelectedView()).getText().toString());
+		projectCheckpoint
+				.setCategory(GlobalHolder.CATEGORY_ENUM_VALUE[categorySpinner
+						.getSelectedItemPosition()]);
+		projectCheckpoint
+				.setCheckType(GlobalHolder.CHECK_TYPE_ENUM_VALUE[this.checkTypeSpinner
+						.getSelectedItemPosition()]);
+		projectCheckpoint
+				.setQcAction(GlobalHolder.QC_ACTION_ENUM_VALUE[this.qcActionSpinner
+						.getSelectedItemPosition()]);
 		projectCheckpoint.setName(nameEditText.getText().toString());
 		projectCheckpoint.setDescription(detailEditText.getText().toString());
 		projectCheckpoint.setQcComments(qcCommentEditText.getText().toString());
@@ -363,31 +391,73 @@ public class CreateUpdateCheckpoint extends Activity {
 	private void submit() throws APIException, SessionAPIException {
 
 		if (this.createFlag) {
-			api.createCheckpoint(this.projectOrder, projectCheckpoint);
-			Uri uri = this.getContentResolver().insert(
-					ContentDescriptor.ProjectCheckpointDesc.CONTENT_URI,
-					getContentValues());
+			// api.createCheckpoint(this.projectOrder, projectCheckpoint);
+			Uri uri = this
+					.getContentResolver()
+					.insert(
+							ContentDescriptor.ProjectCheckpointDesc.CONTENT_URI,
+							getContentValues(ContentDescriptor.UpdateDesc.TYPE_ENUM_FLAG_CREATE));
 			long checkpointID = ContentUris.parseId(uri);
 			this.projectCheckpoint.setnID((int) checkpointID);
 			Log.i(Constants.TAG, " create checkpoint id:" + checkpointID);
-			//this.projectOrder.addOrderCheckpoint(projectCheckpoint);
+			if (checkpointID == -1) {
+				throw new APIException("Can't save data to database");
+			}
+			// this.projectOrder.addOrderCheckpoint(projectCheckpoint);
+			update(ContentDescriptor.UpdateDesc.TYPE_ENUM_FLAG_CREATE);
 		} else {
-			api.updateCheckpoint(projectCheckpoint);
-			int ret = this.getContentResolver().update(
-					ContentDescriptor.ProjectCheckpointDesc.CONTENT_URI
-							.buildUpon()
-							.appendPath(projectCheckpoint.getnID() + "")
-							.build(), getContentValues(), null, null);
+			// api.updateCheckpoint(projectCheckpoint);
+			int ret = this
+					.getContentResolver()
+					.update(
+							ContentDescriptor.ProjectCheckpointDesc.CONTENT_URI,
+							getContentValues(ContentDescriptor.UpdateDesc.TYPE_ENUM_FLAG_CREATE),
+							ContentDescriptor.ProjectCheckpointDesc.Cols.CHECKPOINT_ID
+									+ "=?",
+							new String[] { projectCheckpoint.getId() });
 			Log.i(Constants.TAG, " update checkpoint count:" + ret);
+			update(ContentDescriptor.UpdateDesc.TYPE_ENUM_FLAG_UPDATE);
 		}
+
+		//
+
 	}
 
-	private ContentValues getContentValues() {
+	private void update(String flag) {
+		ContentValues cv = new ContentValues();
+
+		cv.put(ContentDescriptor.UpdateDesc.Cols.TYPE,
+				ContentDescriptor.UpdateDesc.TYPE_ENUM_CHECKPOINT);
+		cv.put(ContentDescriptor.UpdateDesc.Cols.PRO_ID, projectCheckpoint
+				.getProjectItem().getProject().getId());
+		cv.put(ContentDescriptor.UpdateDesc.Cols.PRO_ORDER_ID,
+				projectCheckpoint.getProjectItem().getId());
+		cv.put(ContentDescriptor.UpdateDesc.Cols.RELATE_ID, projectCheckpoint
+				.getId());
+		cv.put(ContentDescriptor.UpdateDesc.Cols.FLAG, flag);
+		Uri uri = this.getContentResolver().insert(
+				ContentDescriptor.UpdateDesc.CONTENT_URI, cv);
+
+		ContentValues update = new ContentValues();
+		update.put(ContentDescriptor.ProjectCheckpointDesc.Cols.FLAG, flag);
+		this.getContentResolver().update(
+				ContentDescriptor.ProjectCheckpointDesc.CONTENT_URI,
+				update,
+				ContentDescriptor.ProjectCheckpointDesc.Cols.CHECKPOINT_ID
+						+ "=?", new String[] { projectCheckpoint.getId() });
+
+	}
+
+	private ContentValues getContentValues(String flag) {
 		ContentValues cv = new ContentValues();
 		cv.put(ContentDescriptor.ProjectCheckpointDesc.Cols.NAME,
 				this.projectCheckpoint.getName());
 		cv.put(ContentDescriptor.ProjectCheckpointDesc.Cols.DESCRIPTION,
 				this.projectCheckpoint.getDescription());
+		if (this.projectCheckpoint.getId() == null
+				|| this.projectCheckpoint.getId().equals("")) {
+			this.projectCheckpoint.setId(UUID.randomUUID().toString());
+		}
 		cv.put(ContentDescriptor.ProjectCheckpointDesc.Cols.CHECKPOINT_ID,
 				this.projectCheckpoint.getId());
 		cv.put(ContentDescriptor.ProjectCheckpointDesc.Cols.QC_COMMENT,
@@ -408,20 +478,40 @@ public class CreateUpdateCheckpoint extends Activity {
 				this.projectCheckpoint.getNumberDefect());
 		cv.put(ContentDescriptor.ProjectCheckpointDesc.Cols.PHOTO_NAME,
 				this.projectCheckpoint.getPhotoName());
-		cv.put(ContentDescriptor.ProjectCheckpointDesc.Cols.PHOTO_LOCAL_SMALL_PATH,
-				this.projectCheckpoint.getPhotoPath());
-		cv.put(ContentDescriptor.ProjectCheckpointDesc.Cols.PHOTO_LOCAL_BIG_PATH,
-				this.projectCheckpoint.getPhotoPath());
+		cv.put(ContentDescriptor.ProjectCheckpointDesc.Cols.FLAG, flag);
+		cv
+				.put(
+						ContentDescriptor.ProjectCheckpointDesc.Cols.PHOTO_LOCAL_SMALL_PATH,
+						this.projectCheckpoint.getPhotoPath());
+		cv
+				.put(
+						ContentDescriptor.ProjectCheckpointDesc.Cols.PHOTO_LOCAL_BIG_PATH,
+						this.projectCheckpoint.getPhotoPath());
+
+		cv.put(ContentDescriptor.ProjectCheckpointDesc.Cols.PHOTO_LOCAL_PATH,
+				this.projectCheckpoint.getUploadPhotoAbsPath());
 		return cv;
 	}
 
 	private void deleteCheckpoint() throws APIException, SessionAPIException {
-		api.deleteCheckpoint(projectCheckpoint.getId());
-		ContentResolver cr = this.getContentResolver();
-		int ret = cr.delete(
-				ContentDescriptor.ProjectCheckpointDesc.CONTENT_URI,
-				ContentDescriptor.ProjectCheckpointDesc.Cols.CHECKPOINT_ID
-						+ "=?", new String[] { projectCheckpoint.getId() });
+		// TODO select add first
+		int ret =this.getContentResolver().delete(
+				ContentDescriptor.UpdateDesc.CONTENT_URI,
+				ContentDescriptor.UpdateDesc.Cols.RELATE_ID + "=? and "
+						+ ContentDescriptor.UpdateDesc.Cols.FLAG + "=?",
+				new String[] { projectCheckpoint.getId(), ContentDescriptor.UpdateDesc.TYPE_ENUM_FLAG_CREATE});
+		
+		//this record it's not new record which it's already exist on website
+		if(ret ==0) {
+			update(ContentDescriptor.UpdateDesc.TYPE_ENUM_FLAG_DELETE);
+		}
+		/*
+		 * api.deleteCheckpoint(projectCheckpoint.getId()); ContentResolver cr =
+		 * this.getContentResolver(); int ret = cr.delete(
+		 * ContentDescriptor.ProjectCheckpointDesc.CONTENT_URI,
+		 * ContentDescriptor.ProjectCheckpointDesc.Cols.CHECKPOINT_ID + "=?",
+		 * new String[] { projectCheckpoint.getId() });
+		 */
 	}
 
 	private void showDialog() {

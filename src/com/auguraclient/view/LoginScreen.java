@@ -3,8 +3,8 @@ package com.auguraclient.view;
 
 import com.auguraclient.R;
 import com.auguraclient.model.APIException;
-import com.auguraclient.model.ISuguraRestAPI;
-import com.auguraclient.model.SuguraRestAPIImpl;
+import com.auguraclient.model.IAuguraRestAPI;
+import com.auguraclient.model.AuguraRestAPIImpl;
 import com.auguraclient.model.User;
 import com.auguraclient.util.Constants;
 import com.auguraclient.util.GlobalHolder;
@@ -59,7 +59,7 @@ public class LoginScreen extends Activity {
 
     private ProgressHandler progressHandler;
 
-    private ISuguraRestAPI api;
+    private IAuguraRestAPI api;
 
 
     private Context context;
@@ -91,7 +91,7 @@ public class LoginScreen extends Activity {
 
         progressHandler = new ProgressHandler();
 
-        api = new SuguraRestAPIImpl();
+        api = new AuguraRestAPIImpl();
 
         context = this;
     }
