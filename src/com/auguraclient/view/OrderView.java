@@ -14,6 +14,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
+import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
@@ -40,6 +41,7 @@ import com.auguraclient.model.ProjectCheckpoint;
 import com.auguraclient.model.ProjectOrder;
 import com.auguraclient.util.Constants;
 import com.auguraclient.util.GlobalHolder;
+import com.auguraclient.util.Util;
 
 public class OrderView extends Activity {
 
@@ -90,6 +92,7 @@ public class OrderView extends Activity {
 		super.onCreate(savedInstanceState);
 		// setfullScreen();
 		this.setContentView(R.layout.order_detail);
+		this.overridePendingTransition(0, R.anim.view_checkpoint_out);
 		projectOrderCheckpointList = (LinearLayout) this
 				.findViewById(R.id.projectOrderCheckpointList);
 
@@ -183,7 +186,8 @@ public class OrderView extends Activity {
 		public void onClick(View v) {
 			Intent i = new Intent();
 			i.putExtra("create", true);
-			i.putExtra("projectOrder", projectItem);
+			i.putExtra("project", projectItem.getProject().getId());
+			i.putExtra("projectOrder", projectItem.getId());
 			i.setClass(mContext, CreateUpdateCheckpoint.class);
 			startActivityForResult(i, 200);
 		}
@@ -208,8 +212,9 @@ public class OrderView extends Activity {
 		if (resultCode == 3) {
 			boolean b = data.getBooleanExtra("delete", false);
 			if (b) {
-				ProjectCheckpoint pc = (ProjectCheckpoint) data
-						.getSerializableExtra("checkpoint");
+				String  pcId =  data
+						.getStringExtra("checkpoint");
+				ProjectCheckpoint pc = projectItem.findProjectCheckpointById(pcId);
 				projectItem.removeCheckpoint(pc);
 				for (int i = 0; i < tView.size(); i++) {
 					if (((ItemView) tView.get(i)).getCheckpointId().equals(
@@ -218,11 +223,18 @@ public class OrderView extends Activity {
 				}
 			}
 		} else if (resultCode == 4) {
-			ProjectCheckpoint pc = (ProjectCheckpoint) data
-					.getSerializableExtra("checkpoint");
-			if (pc != null) {
-				if (projectItem.findProjectCheckpointById(pc.getId()) == null) {
-					this.projectItem.addOrderCheckpoint(pc);
+			String projectCheckpointId= data
+					.getStringExtra("checkpoint");
+			if (projectCheckpointId != null) {
+				ProjectCheckpoint pc = projectItem.findProjectCheckpointById(projectCheckpointId);
+				if (pc != null) {
+					
+					for(int i =0;i<tView.size();i++) {
+						if(((ItemView)tView.get(i)).getCheckpointId().equals(projectCheckpointId)) {
+							((ItemView)tView.get(i)).updateView(pc);
+							return;
+						}
+					}
 					ItemView appView = new ItemView(mContext);
 					appView.updateView(pc);
 					projectOrderCheckpointList.addView(appView,
@@ -230,12 +242,6 @@ public class OrderView extends Activity {
 									LinearLayout.LayoutParams.WRAP_CONTENT,
 									LinearLayout.LayoutParams.WRAP_CONTENT));
 					tView.add(appView);
-				} else {
-					for(int i =0;i<tView.size();i++) {
-						if(((ItemView)tView.get(i)).getCheckpointId().equals(pc.getId())) {
-							((ItemView)tView.get(i)).updateView(pc);
-						}
-					}
 				}
 			}
 		}
@@ -337,15 +343,15 @@ public class OrderView extends Activity {
 				Message.obtain(uiHandler, START_WAITING).sendToTarget();
 				List<ProjectCheckpoint> l;
 				try {
-					if (!projectItem.isLoadedCheckpointFromDB()) {
-						loadCheckpointFromDB();
-					}
-					if (projectItem.getCheckpointCount() <= 0) {
-						l = api.queryProjectOrderCheckpointList(projectItem
-								.getId());
-						projectItem.addOrderCheckpoint(l);
-						saveDataToDB();
-					}
+//					if (!projectItem.isLoadedCheckpointFromDB()) {
+//						loadCheckpointFromDB();
+//					}
+//					if (projectItem.getCheckpointCount() <= 0) {
+//						l = api.queryProjectOrderCheckpointList(projectItem
+//								.getId());
+//						projectItem.addOrderCheckpoint(l);
+//						saveDataToDB();
+//					}
 					Message.obtain(uiHandler, END_WAITING).sendToTarget();
 				} catch (Exception e) {
 					Log.e(Constants.TAG, e.getMessage(), e);
@@ -529,6 +535,8 @@ public class OrderView extends Activity {
 		private ImageView itemOperationIV;
 
 		private String id;
+		
+		private Bitmap photo;
 
 		public ItemView(Context context) {
 			super(context);
@@ -565,8 +573,8 @@ public class OrderView extends Activity {
 				return;
 			}
 			id = pi.getId();
-			itemOrderCategoryCheckType.setText(pi.getCategory() + "   > "
-					+ pi.getCheckType() + "   >" + pi.getName());
+			itemOrderCategoryCheckType.setText(pi.getCategoryLabel() + "   > "
+					+ pi.getCheckTypeLabel() + "   >" + pi.getName());
 			itemOrderDefectAlert.setText(pi.getQcAction() == null ? "" : pi
 					.getQcAction()
 					+ pi.getNumberDefect() == null ? "   " : pi
@@ -579,21 +587,23 @@ public class OrderView extends Activity {
 				itemOperationIV.setImageResource(R.drawable.missing);
 			}
 			if (pi.getPhotoPath() != null && !pi.getPhotoPath().equals("")) {
-				final Uri photo = Uri.fromFile(new File(
-						GlobalHolder.GLOBAL_STORAGE_PATH + pi.getPhotoPath()));
-				projectItemOrderPhoto.setImageURI(photo);
+				photo  = Util.decodeFile(photo, 
+						GlobalHolder.GLOBAL_STORAGE_PATH + pi.getPhotoPath());
+				projectItemOrderPhoto.setImageBitmap(photo);
 			} else if(pi.getUploadPhotoAbsPath() != null  && !pi.getUploadPhotoAbsPath().equals("")) {
-				final Uri photo = Uri.fromFile(new File(pi.getUploadPhotoAbsPath()));
-				projectItemOrderPhoto.setImageURI(photo);
+				photo  = Util.decodeFile(photo,pi.getUploadPhotoAbsPath());
+				projectItemOrderPhoto.setImageBitmap(photo);
+				
 			}
 			this.setOnClickListener(new OnClickListener() {
 
 				public void onClick(View arg0) {
 					Intent i = new Intent();
 					i.putExtra("create", false);
-					i.putExtra("projectOrder", projectItem);
-					i.putExtra("projectCheckpoint", pi);
-					i.setClass(mContext, CreateUpdateCheckpoint.class);
+					i.putExtra("project", projectItem.getProject().getId());
+					i.putExtra("projectOrder", projectItem.getId());
+					i.putExtra("projectCheckpoint", pi.getId());
+					i.setClass(mContext, CreateUpdateCheckpoint.class);					
 					startActivityForResult(i, 100);
 
 				}

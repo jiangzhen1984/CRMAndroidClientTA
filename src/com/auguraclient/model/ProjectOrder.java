@@ -1,13 +1,5 @@
 package com.auguraclient.model;
 
-import com.auguraclient.util.Constants;
-import com.auguraclient.util.GlobalHolder;
-import com.auguraclient.util.Util;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import java.io.IOException;
 import java.io.Serializable;
 import java.net.MalformedURLException;
@@ -18,6 +10,14 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import com.auguraclient.util.Constants;
+import com.auguraclient.util.GlobalHolder;
+import com.auguraclient.util.Util;
 
 public class ProjectOrder implements ProjectJSONParser, Serializable {
 
@@ -148,6 +148,18 @@ public class ProjectOrder implements ProjectJSONParser, Serializable {
 	}
 
 	public String getQcStatus() {
+		for (int i = 0; i < this.checkpointList.size(); i++) {
+			ProjectCheckpoint p = this.checkpointList.get(i);
+			if (p == null || p.getQcAction() == null) {
+				continue;
+			}
+			if (p.getQcAction().equals(Constants.QC_STATUS_FAILED)) {
+				return Constants.QC_STATUS_FAILED;
+			} else if (p.getQcAction().equals(Constants.QC_STATUS_ALTER)) {
+				return Constants.QC_STATUS_ALTER;
+			}
+		}
+
 		return qcStatus;
 	}
 
@@ -206,6 +218,8 @@ public class ProjectOrder implements ProjectJSONParser, Serializable {
 
 	public void addOrderCheckpoint(ProjectCheckpoint po) {
 		if (po != null) {
+			if(po.getId() == null)
+				throw new RuntimeException(" checkpoint id is null");
 			this.checkpointList.add(po);
 			po.setProjectItem(this);
 		}
@@ -290,9 +304,22 @@ public class ProjectOrder implements ProjectJSONParser, Serializable {
 		}
 
 	}
-	
+
+	public int getProjectCheckpointPos(ProjectCheckpoint pc) {
+		if (pc == null || pc.getId() == null || pc.getId().equals("")) {
+			return -1;
+		}
+		for (int i = 0; i < this.checkpointList.size(); i++) {
+
+			if (this.checkpointList.get(i).getId().equals(pc.getId())) {
+				return i;
+			}
+		}
+		return -1;
+	}
+
 	public ProjectCheckpoint findProjectCheckpointById(String id) {
-		if(id == null || id.equals("")) {
+		if (id == null || id.equals("")) {
 			return null;
 		}
 		for (int i = 0; i < this.checkpointList.size(); i++) {
@@ -305,6 +332,10 @@ public class ProjectOrder implements ProjectJSONParser, Serializable {
 	}
 
 	public boolean isCompleted() {
+		if (this.quantityChecked == null || this.quantityChecked.equals("")
+				|| this.qcComment == null || this.qcComment.equals("")) {
+			return false;
+		}
 		for (int i = 0; i < this.checkpointList.size(); i++) {
 			if (!this.checkpointList.get(i).isCompleted()) {
 				return false;

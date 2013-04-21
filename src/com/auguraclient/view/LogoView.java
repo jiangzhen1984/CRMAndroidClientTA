@@ -213,6 +213,7 @@ public class LogoView extends Activity {
 			}
 			p.addProjectOrder(po);
 			loadCheckpointFromDB(po);
+			po.setLoadedCheckpointFromDB(true);
 		}
 
 		p.setLoadOrderFromDB(true);

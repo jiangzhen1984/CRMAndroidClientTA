@@ -1,6 +1,7 @@
 package com.auguraclient.util;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -16,6 +17,8 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.util.Log;
 
 import com.auguraclient.model.JSONParserException;
@@ -256,4 +259,34 @@ public class Util {
 		}
 	}
 
+	
+	
+	
+	public static  Bitmap decodeFile(Bitmap photo, String filePath) {
+		if (photo != null) {
+			photo.recycle();
+		}
+
+		InputStream is = null;
+		try {
+			is = new FileInputStream(new File(filePath));
+			BitmapFactory.Options options = new BitmapFactory.Options();
+			options.inJustDecodeBounds = false;
+			options.inSampleSize = 10; // width，hight设为原来的十分一
+			photo = BitmapFactory.decodeStream(is, null, options);
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+
+		} finally {
+			if (is != null) {
+				try {
+					is.close();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
+		}
+		return photo;
+
+	}
 }

@@ -140,6 +140,12 @@ public class ProjectListScreen extends Activity {
 		projectAdapter.notifyDataSetChanged();
 	}
 
+	@Override
+	public void onBackPressed() {
+		super.onBackPressed();
+		finish();
+	}
+
 	private void showSettingDialg() {
 		final Dialog settingDlg = new Dialog(this);
 		settingDlg.requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -329,56 +335,33 @@ public class ProjectListScreen extends Activity {
 		}
 	}
 
-	
-	
-	
-	private void saveCheckpoint(ProjectCheckpoint pcp) {
+	private void updateCheckpoint(ProjectCheckpoint pcp) {
 		ContentValues cv = new ContentValues();
-		
-		cv.put(ContentDescriptor.ProjectCheckpointDesc.Cols.NAME,
-				pcp.getName());
 		cv
-				.put(
-						ContentDescriptor.ProjectCheckpointDesc.Cols.DESCRIPTION,
-						pcp.getDescription());
-		cv
-				.put(
-						ContentDescriptor.ProjectCheckpointDesc.Cols.CHECKPOINT_ID,
-						pcp.getId());
-		cv
-				.put(
-						ContentDescriptor.ProjectCheckpointDesc.Cols.QC_COMMENT,
-						pcp.getQcComments());
-		cv
-				.put(
-						ContentDescriptor.ProjectCheckpointDesc.Cols.QC_STATUS,
-						pcp.getQcStatus());
-		cv.put(ContentDescriptor.ProjectCheckpointDesc.Cols.PRO_ID,
-				pcp.getProjectItem().getProject().getId());
-		cv
-				.put(
-						ContentDescriptor.ProjectCheckpointDesc.Cols.PRO_ORDER_ID,
-						pcp.getProjectItem().getId());
-		cv
-				.put(
-						ContentDescriptor.ProjectCheckpointDesc.Cols.CATEGORY,
-						pcp.getCategory());
-		cv
-				.put(
-						ContentDescriptor.ProjectCheckpointDesc.Cols.CHECK_TYPE,
-						pcp.getCheckType());
-		cv
-				.put(
-						ContentDescriptor.ProjectCheckpointDesc.Cols.QC_ACTION,
-						pcp.getQcAction());
-		cv
-				.put(
-						ContentDescriptor.ProjectCheckpointDesc.Cols.NUMBER_DEFECT,
-						pcp.getNumberDefect());
-		cv
-				.put(
-						ContentDescriptor.ProjectCheckpointDesc.Cols.PHOTO_NAME,
-						pcp.getPhotoName());
+				.put(ContentDescriptor.ProjectCheckpointDesc.Cols.NAME, pcp
+						.getName());
+		cv.put(ContentDescriptor.ProjectCheckpointDesc.Cols.DESCRIPTION, pcp
+				.getDescription());
+		cv.put(ContentDescriptor.ProjectCheckpointDesc.Cols.CHECKPOINT_ID, pcp
+				.getId());
+		cv.put(ContentDescriptor.ProjectCheckpointDesc.Cols.QC_COMMENT, pcp
+				.getQcComments());
+		cv.put(ContentDescriptor.ProjectCheckpointDesc.Cols.QC_STATUS, pcp
+				.getQcStatus());
+		cv.put(ContentDescriptor.ProjectCheckpointDesc.Cols.PRO_ID, pcp
+				.getProjectItem().getProject().getId());
+		cv.put(ContentDescriptor.ProjectCheckpointDesc.Cols.PRO_ORDER_ID, pcp
+				.getProjectItem().getId());
+		cv.put(ContentDescriptor.ProjectCheckpointDesc.Cols.CATEGORY, pcp
+				.getCategory());
+		cv.put(ContentDescriptor.ProjectCheckpointDesc.Cols.CHECK_TYPE, pcp
+				.getCheckType());
+		cv.put(ContentDescriptor.ProjectCheckpointDesc.Cols.QC_ACTION, pcp
+				.getQcAction());
+		cv.put(ContentDescriptor.ProjectCheckpointDesc.Cols.NUMBER_DEFECT, pcp
+				.getNumberDefect());
+		cv.put(ContentDescriptor.ProjectCheckpointDesc.Cols.PHOTO_NAME, pcp
+				.getPhotoName());
 		cv
 				.put(
 						ContentDescriptor.ProjectCheckpointDesc.Cols.PHOTO_LOCAL_SMALL_PATH,
@@ -387,18 +370,58 @@ public class ProjectListScreen extends Activity {
 				.put(
 						ContentDescriptor.ProjectCheckpointDesc.Cols.PHOTO_LOCAL_BIG_PATH,
 						pcp.getPhotoPath());
-		cv.put(ContentDescriptor.ProjectCheckpointDesc.Cols.FLAG,
-				"0");
-		Uri uri = this
-				.getContentResolver()
-				.insert(
-						ContentDescriptor.ProjectCheckpointDesc.CONTENT_URI,
-						cv);
+		cv.put(ContentDescriptor.ProjectCheckpointDesc.Cols.FLAG, "0");
+		int ret = this.getContentResolver().update(
+				ContentDescriptor.ProjectCheckpointDesc.CONTENT_URI, cv,
+				ContentDescriptor.ProjectCheckpointDesc.Cols.ID + "=?",
+				new String[] { pcp.getnID() + "" });
+		Log.i(Constants.TAG, "======================" + ret);
+	}
+
+	private void saveCheckpoint(ProjectCheckpoint pcp) {
+		ContentValues cv = new ContentValues();
+
+		cv
+				.put(ContentDescriptor.ProjectCheckpointDesc.Cols.NAME, pcp
+						.getName());
+		cv.put(ContentDescriptor.ProjectCheckpointDesc.Cols.DESCRIPTION, pcp
+				.getDescription());
+		cv.put(ContentDescriptor.ProjectCheckpointDesc.Cols.CHECKPOINT_ID, pcp
+				.getId());
+		cv.put(ContentDescriptor.ProjectCheckpointDesc.Cols.QC_COMMENT, pcp
+				.getQcComments());
+		cv.put(ContentDescriptor.ProjectCheckpointDesc.Cols.QC_STATUS, pcp
+				.getQcStatus());
+		cv.put(ContentDescriptor.ProjectCheckpointDesc.Cols.PRO_ID, pcp
+				.getProjectItem().getProject().getId());
+		cv.put(ContentDescriptor.ProjectCheckpointDesc.Cols.PRO_ORDER_ID, pcp
+				.getProjectItem().getId());
+		cv.put(ContentDescriptor.ProjectCheckpointDesc.Cols.CATEGORY, pcp
+				.getCategory());
+		cv.put(ContentDescriptor.ProjectCheckpointDesc.Cols.CHECK_TYPE, pcp
+				.getCheckType());
+		cv.put(ContentDescriptor.ProjectCheckpointDesc.Cols.QC_ACTION, pcp
+				.getQcAction());
+		cv.put(ContentDescriptor.ProjectCheckpointDesc.Cols.NUMBER_DEFECT, pcp
+				.getNumberDefect());
+		cv.put(ContentDescriptor.ProjectCheckpointDesc.Cols.PHOTO_NAME, pcp
+				.getPhotoName());
+		cv
+				.put(
+						ContentDescriptor.ProjectCheckpointDesc.Cols.PHOTO_LOCAL_SMALL_PATH,
+						pcp.getPhotoPath());
+		cv
+				.put(
+						ContentDescriptor.ProjectCheckpointDesc.Cols.PHOTO_LOCAL_BIG_PATH,
+						pcp.getPhotoPath());
+		cv.put(ContentDescriptor.ProjectCheckpointDesc.Cols.FLAG, "0");
+		Uri uri = this.getContentResolver().insert(
+				ContentDescriptor.ProjectCheckpointDesc.CONTENT_URI, cv);
 		long checkpointID = ContentUris.parseId(uri);
 		pcp.setnID((int) checkpointID);
 
 	}
-	
+
 	private void doSync(Project p) throws APIException, SessionAPIException {
 		Cursor c = null;
 
@@ -406,63 +429,83 @@ public class ProjectListScreen extends Activity {
 			c = this.getContentResolver().query(
 					ContentDescriptor.UpdateDesc.CONTENT_URI,
 					ContentDescriptor.UpdateDesc.Cols.ALL_COLS,
-					ContentDescriptor.UpdateDesc.Cols.PRO_ID+"=?",
+					ContentDescriptor.UpdateDesc.Cols.PRO_ID + "=?",
 					new String[] { p.getId() }, null);
 			while (c.moveToNext()) {
-				String relatedId = c.getString(c.getColumnIndex(ContentDescriptor.UpdateDesc.Cols.RELATE_ID));
-				String orderId = c.getString(c.getColumnIndex(ContentDescriptor.UpdateDesc.Cols.PRO_ORDER_ID));
-				String flag = c.getString(c.getColumnIndex(ContentDescriptor.UpdateDesc.Cols.FLAG));
-				if(flag.equals(ContentDescriptor.UpdateDesc.TYPE_ENUM_FLAG_DELETE)) {
+				String relatedId = c
+						.getString(c
+								.getColumnIndex(ContentDescriptor.UpdateDesc.Cols.RELATE_ID));
+				String orderId = c
+						.getString(c
+								.getColumnIndex(ContentDescriptor.UpdateDesc.Cols.PRO_ORDER_ID));
+				String flag = c
+						.getString(c
+								.getColumnIndex(ContentDescriptor.UpdateDesc.Cols.FLAG));
+				if (flag
+						.equals(ContentDescriptor.UpdateDesc.TYPE_ENUM_FLAG_DELETE)) {
 					try {
-					api.deleteCheckpoint(relatedId);
-					} catch(Exception e) {
+						api.deleteCheckpoint(relatedId);
+					} catch (Exception e) {
 						e.printStackTrace();
 					}
-				} else if (flag.equals(ContentDescriptor.UpdateDesc.TYPE_ENUM_FLAG_CREATE)) {
+
+					this
+							.getContentResolver()
+							.delete(
+									ContentDescriptor.ProjectCheckpointDesc.CONTENT_URI,
+									ContentDescriptor.ProjectCheckpointDesc.Cols.CHECKPOINT_ID
+											+ "=?", new String[] { relatedId });
+
+				} else if (flag
+						.equals(ContentDescriptor.UpdateDesc.TYPE_ENUM_FLAG_CREATE)) {
 					ProjectOrder po = p.getOrder(orderId);
-					if( po == null ) {
-						Log.e(Constants.TAG, "Can't find ProjectOrder data:"+orderId);
+					if (po == null) {
+						Log.e(Constants.TAG, "Can't find ProjectOrder data:"
+								+ orderId);
 						continue;
 					}
-					ProjectCheckpoint pc = po.findProjectCheckpointById(relatedId);
-					if(po == null || pc == null) {
-						Log.e(Constants.TAG, "Can't find checkpoint data:"+relatedId);
+					ProjectCheckpoint pc = po
+							.findProjectCheckpointById(relatedId);
+					if (po == null || pc == null) {
+						Log.e(Constants.TAG, "Can't find checkpoint data:"
+								+ relatedId);
 						continue;
 					}
-					//Clear temporary id to get new Id
+					// Clear temporary id to get new Id
 					pc.setId(null);
 					api.createCheckpoint(po, pc);
-					saveCheckpoint(pc);
-				} else if (flag.equals(ContentDescriptor.UpdateDesc.TYPE_ENUM_FLAG_UPDATE)) {
+					updateCheckpoint(pc);
+				} else if (flag
+						.equals(ContentDescriptor.UpdateDesc.TYPE_ENUM_FLAG_UPDATE)) {
 					ProjectOrder po = p.getOrder(orderId);
-					ProjectCheckpoint pc = po.findProjectCheckpointById(relatedId);
-					if(pc == null) {
-						Log.e(Constants.TAG, "Can't find checkpoint data:"+relatedId);
+					ProjectCheckpoint pc = po
+							.findProjectCheckpointById(relatedId);
+					if (pc == null) {
+						Log.e(Constants.TAG, "Can't find checkpoint data:"
+								+ relatedId);
 						continue;
 					}
 					api.updateCheckpoint(pc);
-					saveCheckpoint(pc);
 				} else {
-					Log.e(Constants.TAG, "Incorrect type:"+flag);
+					Log.e(Constants.TAG, "Incorrect type:" + flag);
 				}
 			}
-		}catch (APIException e) {
+		} catch (APIException e) {
 			throw e;
 		} catch (SessionAPIException e) {
 			throw e;
 		} finally {
-			if(c != null)
+			if (c != null)
 				c.close();
 		}
-		
-		
+
 		this.getContentResolver().delete(
 				ContentDescriptor.UpdateDesc.CONTENT_URI,
-				ContentDescriptor.UpdateDesc.Cols.PRO_ID+"=?",
+				ContentDescriptor.UpdateDesc.Cols.PRO_ID + "=?",
 				new String[] { p.getId() });
-		
+
 		p.setNeededUpdate(false);
-		//TODO update UI
+		// TODO update UI
 	}
 
 	private ProgressDialog dialog;
@@ -563,9 +606,8 @@ public class ProjectListScreen extends Activity {
 					Toast.makeText(context, "sync error " + e.getMessage(),
 							Toast.LENGTH_SHORT).show();
 					Message.obtain(uiHandler, UI_END_WAITING_WITH_ERROR, -1)
-					.sendToTarget();
-				} 
-				catch (Exception e) {
+							.sendToTarget();
+				} catch (Exception e) {
 					e.printStackTrace();
 					Toast.makeText(context, "sync error " + e.getMessage(),
 							Toast.LENGTH_SHORT).show();
@@ -604,7 +646,8 @@ public class ProjectListScreen extends Activity {
 				appView.updateView(GlobalHolder.getProject(position));
 				convertView = appView;
 			} else {
-				((ItemView)convertView).updateView(GlobalHolder.getProject(position));
+				((ItemView) convertView).updateView(GlobalHolder
+						.getProject(position));
 			}
 			return convertView;
 		}
@@ -636,7 +679,7 @@ public class ProjectListScreen extends Activity {
 
 		public void updateView(final Project p) {
 			tv.setText(p.getText());
-			tv.setOnClickListener(new OnClickListener () {
+			tv.setOnClickListener(new OnClickListener() {
 
 				@Override
 				public void onClick(View v) {
@@ -645,14 +688,15 @@ public class ProjectListScreen extends Activity {
 					i.putExtra("project", GlobalHolder.getIndex(p));
 					context.startActivity(i);
 				}
-				
+
 			});
 			if (p.isNeededUpdate()) {
 				operation.setImageResource(R.drawable.project_sync);
 				operation.setOnClickListener(new OnClickListener() {
 					@Override
 					public void onClick(View v) {
-						Message.obtain(handler, CMD_SYNC_PROJECT, p.getId()).sendToTarget();
+						Message.obtain(handler, CMD_SYNC_PROJECT, p.getId())
+								.sendToTarget();
 					}
 
 				});

@@ -1,6 +1,13 @@
 package com.auguraclient.view;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.util.Random;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.UUID;
 
 import android.app.Activity;
@@ -11,8 +18,10 @@ import android.content.Context;
 import android.content.CursorLoader;
 import android.content.Intent;
 import android.database.Cursor;
+import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Handler;
 import android.os.HandlerThread;
 import android.os.Looper;
@@ -20,9 +29,14 @@ import android.os.Message;
 import android.provider.MediaStore;
 import android.text.Editable;
 import android.util.Log;
+import android.view.GestureDetector;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
+import android.view.GestureDetector.OnGestureListener;
 import android.view.View.OnClickListener;
+import android.view.View.OnFocusChangeListener;
+import android.view.View.OnTouchListener;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -35,15 +49,18 @@ import android.widget.Toast;
 import com.auguraclient.R;
 import com.auguraclient.db.ContentDescriptor;
 import com.auguraclient.model.APIException;
+import com.auguraclient.model.AuguraRestAPIImpl;
 import com.auguraclient.model.IAuguraRestAPI;
+import com.auguraclient.model.Project;
 import com.auguraclient.model.ProjectCheckpoint;
 import com.auguraclient.model.ProjectOrder;
 import com.auguraclient.model.SessionAPIException;
-import com.auguraclient.model.AuguraRestAPIImpl;
 import com.auguraclient.util.Constants;
 import com.auguraclient.util.GlobalHolder;
+import com.auguraclient.util.Util;
 
-public class CreateUpdateCheckpoint extends Activity {
+public class CreateUpdateCheckpoint extends Activity implements
+		OnTouchListener, OnGestureListener {
 
 	// private EditText categoryEditText;
 
@@ -89,29 +106,31 @@ public class CreateUpdateCheckpoint extends Activity {
 
 	private TextView[] qcStatusValue;
 
+	private GestureDetector mGestureDetector;
+
 	private boolean createFlag = true;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+//		Intent i = this.getIntent();
+//		if (i.getBooleanExtra("direct", false)) {
+//			overridePendingTransition(R.anim.view_checkpoint_in,
+//					R.anim.view_checkpoint_out);
+//		} else {
+//			overridePendingTransition(R.anim.view_checkpoint_out,
+//					R.anim.view_checkpoint_in);
+//		}
 
 		this.setContentView(R.layout.checkpoint_update);
+		mGestureDetector = new GestureDetector((OnGestureListener) this);
 		initView();
 		initListener();
 
 		createFlag = this.getIntent().getBooleanExtra("create", true);
 		mContext = this;
-		projectOrder = (ProjectOrder) this.getIntent().getSerializableExtra(
-				"projectOrder");
-		if (createFlag) {
-			projectCheckpoint = new ProjectCheckpoint();
-			projectOrder.addOrderCheckpoint(projectCheckpoint);
-			addOrUpdateTextView.setText(R.string.create_checkpoint);
-		} else {
-			addOrUpdateTextView.setText(R.string.update_checkpoint);
-			projectCheckpoint = (ProjectCheckpoint) this.getIntent()
-					.getSerializableExtra("projectCheckpoint");
-		}
+		Project project =GlobalHolder.getProjectById(this.getIntent().getStringExtra("project"));
+		projectOrder = project.getOrder(this.getIntent().getStringExtra("projectOrder"));
 
 		api = new AuguraRestAPIImpl();
 
@@ -120,7 +139,17 @@ public class CreateUpdateCheckpoint extends Activity {
 		HandlerThread ut = new HandlerThread("ut");
 		ut.start();
 		cmdHandler = new CmdHanlder(ut.getLooper());
+		
+		if (createFlag) {
+			projectCheckpoint = new ProjectCheckpoint();
+			addOrUpdateTextView.setText(R.string.create_checkpoint);
+		} else {
+			addOrUpdateTextView.setText(R.string.update_checkpoint);
+			projectCheckpoint = projectOrder.findProjectCheckpointById(this.getIntent().getStringExtra("projectCheckpoint"));
+		}
 	}
+
+	Bitmap photo;
 
 	@Override
 	protected void onResume() {
@@ -131,17 +160,16 @@ public class CreateUpdateCheckpoint extends Activity {
 		detailEditText.setText(projectCheckpoint.getDescription());
 		qcCommentEditText.setText(projectCheckpoint.getQcComments());
 		qcDefectEditText.setText(projectCheckpoint.getNumberDefect());
-		if (projectCheckpoint.getPhotoPath() != null) {
+		if (projectCheckpoint.getUploadPhotoAbsPath() != null
+				&& !projectCheckpoint.getUploadPhotoAbsPath().equals("")) {
+			photo = Util.decodeFile(photo, projectCheckpoint.getUploadPhotoAbsPath());
+			checkpointPhoto.setImageBitmap(photo);
+		} else if (projectCheckpoint.getPhotoPath() != null) {
 			checkpointPhoto.setImageURI(Uri.fromFile(new File(
 					GlobalHolder.GLOBAL_STORAGE_PATH
 							+ projectCheckpoint.getPhotoPath())));
-			checkpointPhoto.setOnClickListener(onOpenPhotoClickListener);
-		} else if (projectCheckpoint.getUploadPhotoAbsPath() != null
-				&& !projectCheckpoint.getUploadPhotoAbsPath().equals("")) {
-			final Uri photo = Uri.fromFile(new File(projectCheckpoint
-					.getUploadPhotoAbsPath()));
-			checkpointPhoto.setImageURI(photo);
 		}
+		checkpointPhoto.setOnClickListener(onOpenPhotoClickListener);
 		setQcStatus();
 
 		categorySpinner.setAdapter(new ArrayAdapter(this, R.layout.spinner_ite,
@@ -177,16 +205,119 @@ public class CreateUpdateCheckpoint extends Activity {
 			}
 		}
 
+		initAutoSaveListener();
+		
+	}
+
+	@Override
+	protected void onStop() {
+		super.onStop();
+		if (photo != null) {
+			photo.recycle();
+			System.gc();
+		}
+		
+		ProjectCheckpoint pc = projectOrder.findProjectCheckpointById(projectCheckpoint.getId());
+		if(projectCheckpoint.getId() != null) {
+			if(pc == null) {
+				projectOrder.addOrderCheckpoint(projectCheckpoint);
+			}
+		}
 	}
 
 	@Override
 	public void onBackPressed() {
 		Intent i = new Intent();
 		if (projectCheckpoint.getId() != null)
-			i.putExtra("checkpoint", projectCheckpoint);
+			i.putExtra("checkpoint", projectCheckpoint.getId());
 		setResult(4, i);
 		super.onBackPressed();
 		finish();
+	}
+
+	@Override
+	public boolean onTouch(View v, MotionEvent event) {
+		return mGestureDetector.onTouchEvent(event);
+	}
+
+	@Override
+	public boolean onDown(MotionEvent e) {
+		return false;
+	}
+
+	@Override
+	public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX,
+			float velocityY) {
+		int pos = projectOrder.getProjectCheckpointPos(projectCheckpoint);
+		if (pos == -1) {
+			return true;
+		}
+		boolean toRight = false;
+		boolean startSwitch = false;
+		if (e1.getX() - e2.getX() > 100 && Math.abs(velocityX) > 100) {
+			if (pos < projectOrder.getCheckpointCount() - 1) {
+				startSwitch = true;
+				pos++;
+				overridePendingTransition(R.anim.view_checkpoint_in,
+						R.anim.view_checkpoint_out);
+				toRight = true;
+			} else {
+				Toast
+						.makeText(mContext, "This is last one",
+								Toast.LENGTH_SHORT).show();
+			}
+
+		} else if (e2.getX() - e1.getX() > 100 && Math.abs(velocityX) > 100) {
+			if (pos > 0) {
+				pos--;
+				startSwitch = true;
+				overridePendingTransition(R.anim.view_checkpoint_out,
+						R.anim.view_checkpoint_in);
+			} else {
+				Toast.makeText(mContext, "This is first one",
+						Toast.LENGTH_SHORT).show();
+			}
+		}
+		if (startSwitch) {
+			Intent i = new Intent();
+			i.putExtra("create", false);
+			i.putExtra("direct", toRight);
+			i.putExtra("project", projectOrder.getProject().getId());
+			i.putExtra("projectOrder", projectOrder.getId());
+			i.putExtra("projectCheckpoint", projectOrder
+					.getOrderCheckpointrByIndex(pos).getId());
+			i.setClass(mContext, CreateUpdateCheckpoint.class);
+			startActivity(i);
+			finish();
+		}
+
+		return false;
+	}
+
+	public boolean dispatchTouchEvent(MotionEvent ev) {
+		mGestureDetector.onTouchEvent(ev);
+		return super.dispatchTouchEvent(ev);
+	}
+
+	@Override
+	public void onLongPress(MotionEvent e) {
+
+	}
+
+	@Override
+	public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX,
+			float distanceY) {
+		return false;
+	}
+
+	@Override
+	public void onShowPress(MotionEvent e) {
+
+	}
+
+	@Override
+	public boolean onSingleTapUp(MotionEvent e) {
+		return false;
 	}
 
 	private void initListener() {
@@ -194,6 +325,16 @@ public class CreateUpdateCheckpoint extends Activity {
 		submitButton.setOnClickListener(submitListener);
 		showMenuButton.setOnClickListener(showMenuListener);
 		selectPhotoBUtton.setOnClickListener(selectPhotoListener);
+		
+	}
+	
+	private void initAutoSaveListener() {
+
+		nameEditText.setOnFocusChangeListener(textChangeListener);
+		detailEditText.setOnFocusChangeListener(textChangeListener);
+		qcCommentEditText.setOnFocusChangeListener(textChangeListener);
+		qcDefectEditText.setOnFocusChangeListener(textChangeListener);
+		
 	}
 
 	private void initView() {
@@ -249,6 +390,7 @@ public class CreateUpdateCheckpoint extends Activity {
 		}
 	}
 
+
 	private OnClickListener selectQcStatusListener = new OnClickListener() {
 
 		public void onClick(View view) {
@@ -263,9 +405,12 @@ public class CreateUpdateCheckpoint extends Activity {
 
 		public void onClick(View arg0) {
 			recordData();
-			Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
-			intent.setType("image/*");
+			Intent intent = new Intent("android.media.action.IMAGE_CAPTURE");
 			startActivityForResult(intent, 100);
+			/*
+			 * Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+			 * intent.setType("image/*"); startActivityForResult(intent, 100);
+			 */
 		}
 	};
 
@@ -297,9 +442,13 @@ public class CreateUpdateCheckpoint extends Activity {
 
 		public void onClick(View v) {
 			Intent intent = new Intent(Intent.ACTION_VIEW);
-			intent.setDataAndType(Uri.fromFile(new File(
-					GlobalHolder.GLOBAL_STORAGE_PATH
-							+ projectCheckpoint.getPhotoPath())), "image/*");
+			if (projectCheckpoint.getUploadPhotoAbsPath() != null) {
+				intent.setDataAndType(Uri.fromFile(new File(projectCheckpoint
+						.getUploadPhotoAbsPath())), "image/*");
+			} else if (projectCheckpoint.getPhotoPath() != null) {
+				intent.setDataAndType(Uri.fromFile(new File(projectCheckpoint
+						.getPhotoPath())), "image/*");
+			}
 			intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 			startActivity(Intent.createChooser(intent, "Select Picture"));
 		}
@@ -311,7 +460,7 @@ public class CreateUpdateCheckpoint extends Activity {
 		public void onClick(View arg0) {
 			Intent i = new Intent();
 			if (projectCheckpoint.getId() != null)
-				i.putExtra("checkpoint", projectCheckpoint);
+				i.putExtra("checkpoint", projectCheckpoint.getId());
 			setResult(4, i);
 			finish();
 		}
@@ -333,6 +482,38 @@ public class CreateUpdateCheckpoint extends Activity {
 		}
 
 	};
+	
+	private OnFocusChangeListener textChangeListener = new OnFocusChangeListener() {
+
+		@Override
+		public void onFocusChange(View v, boolean hasFocus) {
+			if(!hasFocus) {
+				autoSave();
+			}
+		}
+
+		
+		
+	};
+	
+	private Timer timer;
+	private void autoSave() {
+		if(timer != null) {
+			timer.cancel();
+			timer = null;
+		}
+		timer = new Timer();
+		timer.schedule(new TimerTask() {
+
+			@Override
+			public void run() {
+				recordData();
+				Message.obtain(cmdHandler, UI_COMMIT).sendToTarget();
+			}
+			
+		}, 200);
+		
+	}
 
 	private void recordData() {
 		projectCheckpoint
@@ -354,10 +535,49 @@ public class CreateUpdateCheckpoint extends Activity {
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		if (resultCode == Activity.RESULT_OK && requestCode == 100) {
-			Uri selectedImageUri = data.getData();
-			checkpointPhoto.setImageURI(selectedImageUri);
-			projectCheckpoint
-					.setUploadPhotoAbsPath(getRealPathFromURI(selectedImageUri));
+			if (photo != null) {
+				photo.recycle();
+			}
+			FileOutputStream fo = null;
+			photo = (Bitmap) data.getExtras().get("data");
+			ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+			photo.compress(Bitmap.CompressFormat.JPEG, 40, bytes);
+			Random randomGenerator = new Random();
+			randomGenerator.nextInt();
+			String newimagename = randomGenerator.toString() + ".jpg";
+			File f = new File(Environment.getExternalStorageDirectory()
+					+ File.separator + newimagename);
+			try {
+				f.createNewFile();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+
+			try {
+				fo = new FileOutputStream(f.getAbsoluteFile());
+				fo.write(bytes.toByteArray());
+				projectCheckpoint.setUploadPhotoAbsPath(f.getAbsolutePath());
+			} catch (FileNotFoundException e) {
+				e.printStackTrace();
+			} catch (IOException e) {
+				e.printStackTrace();
+			} finally {
+				try {
+					if (fo != null)
+						fo.close();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
+
+			checkpointPhoto.setImageBitmap(photo);
+			/*
+			 * 
+			 * Uri selectedImageUri = data.getData();
+			 * checkpointPhoto.setImageURI(selectedImageUri);
+			 * projectCheckpoint.setUploadPhotoAbsPath(getRealPathFromURI(data
+			 * .getData()));
+			 */
 		}
 	}
 
@@ -403,8 +623,10 @@ public class CreateUpdateCheckpoint extends Activity {
 			if (checkpointID == -1) {
 				throw new APIException("Can't save data to database");
 			}
+			projectOrder.addOrderCheckpoint(projectCheckpoint);
 			// this.projectOrder.addOrderCheckpoint(projectCheckpoint);
 			update(ContentDescriptor.UpdateDesc.TYPE_ENUM_FLAG_CREATE);
+			this.createFlag = false;
 		} else {
 			// api.updateCheckpoint(projectCheckpoint);
 			int ret = this
@@ -424,14 +646,27 @@ public class CreateUpdateCheckpoint extends Activity {
 	}
 
 	private void update(String flag) {
-		
-		int ret =this.getContentResolver().delete(
-				ContentDescriptor.UpdateDesc.CONTENT_URI,
-				ContentDescriptor.UpdateDesc.Cols.RELATE_ID + "=? and "
-						+ ContentDescriptor.UpdateDesc.Cols.FLAG + "=?",
-				new String[] { projectCheckpoint.getId(), ContentDescriptor.UpdateDesc.TYPE_ENUM_FLAG_CREATE});
+		if (!flag.equals(ContentDescriptor.UpdateDesc.TYPE_ENUM_FLAG_CREATE)) {
+			Cursor cur = this
+					.getContentResolver()
+					.query(
+							ContentDescriptor.UpdateDesc.CONTENT_URI,
+							ContentDescriptor.UpdateDesc.Cols.ALL_COLS,
+							ContentDescriptor.UpdateDesc.Cols.RELATE_ID
+									+ "=? and "
+									+ ContentDescriptor.UpdateDesc.Cols.FLAG
+									+ "=?",
+							new String[] {
+									projectCheckpoint.getId(),
+									ContentDescriptor.UpdateDesc.TYPE_ENUM_FLAG_CREATE },
+							null);
+			int count = cur.getCount();
+			cur.close();
+			if (count > 0) {
+				return;
+			}
 
-		
+		}
 		ContentValues cv = new ContentValues();
 
 		cv.put(ContentDescriptor.UpdateDesc.Cols.TYPE,
@@ -503,14 +738,15 @@ public class CreateUpdateCheckpoint extends Activity {
 
 	private void deleteCheckpoint() throws APIException, SessionAPIException {
 		// TODO select add first
-		int ret =this.getContentResolver().delete(
+		int ret = this.getContentResolver().delete(
 				ContentDescriptor.UpdateDesc.CONTENT_URI,
 				ContentDescriptor.UpdateDesc.Cols.RELATE_ID + "=? and "
 						+ ContentDescriptor.UpdateDesc.Cols.FLAG + "=?",
-				new String[] { projectCheckpoint.getId(), ContentDescriptor.UpdateDesc.TYPE_ENUM_FLAG_CREATE});
-		
-		//this record it's not new record which it's already exist on website
-		if(ret ==0) {
+				new String[] { projectCheckpoint.getId(),
+						ContentDescriptor.UpdateDesc.TYPE_ENUM_FLAG_CREATE });
+
+		// this record it's not new record which it's already exist on website
+		if (ret == 0) {
 			update(ContentDescriptor.UpdateDesc.TYPE_ENUM_FLAG_DELETE);
 		}
 		/*
@@ -549,11 +785,11 @@ public class CreateUpdateCheckpoint extends Activity {
 				Message.obtain(uiHandler, UI_START_SUBMIT).sendToTarget();
 				try {
 					submit();
-					Toast.makeText(mContext, "Sumit successfully ",
+					Toast.makeText(mContext, "Saved",
 							Toast.LENGTH_LONG).show();
 				} catch (Exception e) {
 					e.printStackTrace();
-					Toast.makeText(mContext, e.getMessage(), Toast.LENGTH_LONG)
+					Toast.makeText(mContext, e.getMessage(), Toast.LENGTH_SHORT)
 							.show();
 				}
 				Message.obtain(uiHandler, UI_END_COMMIT).sendToTarget();
@@ -591,7 +827,7 @@ public class CreateUpdateCheckpoint extends Activity {
 			case UI_END_THIS_SESSION:
 				closeDialog();
 				Intent i = new Intent();
-				i.putExtra("checkpoint", projectCheckpoint);
+				i.putExtra("checkpoint", projectCheckpoint.getId());
 				i.putExtra("delete", true);
 				setResult(3, i);
 				finish();

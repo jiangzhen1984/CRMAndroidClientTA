@@ -164,12 +164,34 @@ public class ProjectCheckpoint implements ProjectJSONParser, Serializable {
 		return category;
 	}
 
+	public String getCategoryLabel() {
+		for (int i = 0; i < GlobalHolder.CATEGORY_ENUM_VALUE.length; i++) {
+			if (this.category != null
+					&& this.category
+							.equals(GlobalHolder.CATEGORY_ENUM_VALUE[i])) {
+				return GlobalHolder.CATEGORY_ENUM_VALUE[i];
+			}
+		}
+		return null;
+	}
+
 	public void setCategory(String category) {
 		this.category = category;
 	}
 
 	public String getCheckType() {
 		return checkType;
+	}
+
+	public String getCheckTypeLabel() {
+		for (int i = 0; i < GlobalHolder.CHECK_TYPE_ENUM_VALUE.length; i++) {
+			if (this.checkType != null
+					&& this.checkType
+							.equals(GlobalHolder.CHECK_TYPE_ENUM_VALUE[i])) {
+				return GlobalHolder.CHECK_TYPE_ENUM_VALUE[i];
+			}
+		}
+		return null;
 	}
 
 	public void setCheckType(String checkType) {
@@ -257,16 +279,7 @@ public class ProjectCheckpoint implements ProjectJSONParser, Serializable {
 	}
 
 	public boolean isCompleted() {
-		if (this.category == null || this.category.equals("")
-				|| this.qcAction == null || this.qcAction.equals("")
-				|| this.checkType == null || this.checkType.equals("")
-				|| this.numberDefect == null || this.numberDefect.equals("")
-				|| this.name == null || this.name.equals("")
-				|| this.qcStatus == null || this.qcStatus.equals("")
-				|| this.description == null || this.description.equals("")
-				|| this.qcComments == null || this.qcComments.equals("")
-
-		) {
+		if (this.qcStatus == null || this.qcStatus.equals("")) {
 			return false;
 		}
 

@@ -175,13 +175,13 @@ public class ProjectOrderListView extends Activity {
                     Message.obtain(uiHandler, START_WAITING).sendToTarget();
                     List<ProjectOrder> l;
                     try {
-                        if(!project.isLoadOrderFromDB()){
-                            loadOrderFromDB();
-                        }
-                        if (project.getOrderCount() <= 0) {
-                            l = api.queryProjectOrderList(project.getId());
-                            project.addProjectOrder(l);
-                        }
+//                        if(!project.isLoadOrderFromDB()){
+//                            loadOrderFromDB();
+//                        }
+//                        if (project.getOrderCount() <= 0) {
+//                            l = api.queryProjectOrderList(project.getId());
+//                            project.addProjectOrder(l);
+//                        }
                         Message.obtain(uiHandler, END_WAITING).sendToTarget();
                     } catch (Exception e) {
                         e.printStackTrace();

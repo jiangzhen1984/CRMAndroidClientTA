@@ -72,4 +72,13 @@ public class Constants {
     public static final int CREATE_CHECK_POINT_RELATION_SHIP_URL_INDEX = 7;
 
     public static final int BUFFER_SIZE = 5000;
+    
+    
+    public static final String QC_STATUS_FAILED ="Failed";
+    
+    public static final String QC_STATUS_ALTER ="Alert";
+    
+    public static final String QC_STATUS_PASSED ="Passed";
+    
+    public static final String QC_STATUS_READY ="Ready";
 }
