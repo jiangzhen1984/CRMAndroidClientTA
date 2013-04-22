@@ -357,6 +357,8 @@ public class ProjectOrderListView extends Activity {
         private ImageView itemOperationIV;
         
         private String photoPath;
+        
+        private View parent;
 
         public ItemView(Context context) {
             super(context);
@@ -368,6 +370,7 @@ public class ProjectOrderListView extends Activity {
             this.mContext = c;
             View view = LayoutInflater.from(this.mContext).inflate(R.layout.component_order, null);
             addView(view);
+            parent = findViewById(R.id.componentOrder);
             itemNameTV = (TextView)this.findViewById(R.id.itemName);
             qcStatusTV = (TextView)this.findViewById(R.id.qcStatus);
             quantityTV = (TextView)this.findViewById(R.id.itemQuntity);
@@ -384,6 +387,15 @@ public class ProjectOrderListView extends Activity {
                     + pi.getPhotoPath())));
             itemPhotoIV.setOnClickListener(orderPhotoClickListener);
             photoPath = pi.getOriginPhotoPath();
+            
+            if (pi.isCompleted()) {
+				//itemOperationIV.setImageResource(R.drawable.completed);
+				this.setBackgroundColor(R.color.white_background);
+			} else {
+				//itemOperationIV.setImageResource(R.drawable.missing);
+				parent.setBackgroundColor(R.color.checkpoint_incomplete_bg);
+			}
+            
             if(pi.isCompleted()) {
             	itemOperationIV.setImageResource(R.drawable.completed);
             } else {

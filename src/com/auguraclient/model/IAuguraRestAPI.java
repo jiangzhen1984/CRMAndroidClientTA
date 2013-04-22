@@ -18,6 +18,8 @@ public interface IAuguraRestAPI {
 
     public List<ProjectCheckpoint> queryProjectOrderCheckpointList(String orderId) throws APIException,SessionAPIException;
 
+    
+    public void updateOrder(ProjectOrder order) throws APIException,SessionAPIException;
 
     public void deleteCheckpoint(String checkpointId) throws APIException,SessionAPIException;
 

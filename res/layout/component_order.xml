@@ -9,8 +9,8 @@
     android:background="@color/order_background"
     android:paddingBottom="10dp"
     android:paddingLeft="5dp"
-    android:paddingRight="4dp"
-    android:paddingTop="10dp" >
+    android:paddingTop="10dp"
+    android:id="@+id/componentOrder" >
 
     <ImageView
         android:id="@+id/projectItemPhoto"
@@ -20,7 +20,7 @@
         android:layout_centerVertical="true"
         android:layout_marginLeft="7dip"
         android:contentDescription="@string/order_photo_tips"
-        android:src="@drawable/alert_icon" />
+        android:src="@drawable/logo72x72" />
 
         <TextView
             android:layout_width="wrap_content"

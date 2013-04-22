@@ -1,65 +1,74 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="wrap_content"
+  android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginBottom="5dip"
-    android:layout_marginLeft="7dip"
-    android:layout_marginRight="7dip"
-    android:layout_marginTop="5dip"
-    android:background="@color/white_background" >
-
-    <ImageView
-        android:id="@+id/projectItemOrderOperation"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_marginBottom="5dip"
+    
+    android:background="@color/order_background"
+    
+    android:id="@+id/componentCheckpoint">
+    
+      <ImageView
+        android:id="@+id/projectItemOrderPhoto"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_alignParentLeft="true"        
         android:layout_marginLeft="7dip"
-        android:layout_marginRight="7dip"
-        android:layout_marginTop="5dip"
          />
-
-    <TextView
+   
+   
+   
+   <TextView
         android:id="@+id/itemOrderCategoryCheckType"
+        android:layout_marginLeft="7dip"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="15dip"
         android:layout_marginTop="10dip"
-        android:layout_toRightOf="@id/projectItemOrderOperation"
+        android:layout_toRightOf="@+id/projectItemOrderPhoto"
         android:text="temOrderCategoryCheckType"
         android:textSize="10sp"
         android:textStyle="bold" />
-
+   
+   
+   
     <TextView
         android:id="@+id/itemOrderDefectAlert"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/projectItemOrderOperation"
-        android:layout_margin="4dp"
+        android:layout_below="@+id/itemOrderCategoryCheckType"
+        android:layout_toRightOf="@+id/projectItemOrderPhoto"
+        android:layout_marginLeft="7dip"
         android:text="mOrderDefectAlert"
         android:textSize="10sp"
         android:textStyle="bold" />
-
+        
+        
+        
     <TextView
         android:id="@+id/itemOrderQcComments"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/itemOrderDefectAlert"
-        android:layout_margin="4dp"
+        android:layout_toRightOf="@+id/projectItemOrderPhoto"
+        android:layout_marginLeft="7dip"
         android:text="OrderQcComments11"
         android:textSize="8sp"
         android:textStyle="bold" />
+   
+    
     
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="15dp"
-        android:layout_below="@id/itemOrderQcComments"
+        android:layout_height="1dp"
+        android:layout_below="@id/itemOrderQcComments"        
         android:background="@color/content_background" />
-
+    
+    
     <ImageView
-        android:id="@+id/projectItemOrderPhoto"
-        android:layout_width="70px"
-        android:layout_height="70px"
+        android:id="@+id/projectItemOrderPhotoRight"
+       android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:padding ="5dp"
         android:layout_alignParentRight="true" />
 
 </RelativeLayout>

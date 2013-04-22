@@ -30,5 +30,8 @@
      
      <color name="select_background">#d3d0fd</color>
      
+     <color name="checkpoint_incomplete_bg">#fef0f1</color>
+     <color name="checkpoint_complete_bg">#eafaef</color>
+     
     
 </resources>

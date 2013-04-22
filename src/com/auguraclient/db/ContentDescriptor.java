@@ -171,6 +171,8 @@ public class ContentDescriptor {
 
 		public static final String TYPE_ENUM_CHECKPOINT ="1";
 		
+		public static final String TYPE_ENUM_ORDER ="2";
+		
 		public static final String TYPE_ENUM_FLAG_CREATE ="1";
 		
 		public static final String TYPE_ENUM_FLAG_UPDATE ="2";

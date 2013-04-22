@@ -244,6 +244,65 @@ public class AuguraRestAPIImpl implements IAuguraRestAPI {
 		return null;
 	}
 
+	
+	
+	public void updateOrder(ProjectOrder order) throws APIException,SessionAPIException {
+		
+		String sessionId = GlobalHolder.getSessionId();
+		if (sessionId == null || sessionId.isEmpty()) {
+			return;
+		}
+		
+		JSONObject restData = new JSONObject();
+		JSONArray entryArray = new JSONArray();
+		try {
+			restData.put("session", sessionId);
+			restData.put("module_name", "AGR_OrderDetails");
+
+
+			
+			JSONObject id = new JSONObject();
+			id.put("name", "id");
+			id.put("value", order.getId());
+			entryArray.put(id);
+
+			JSONObject name = new JSONObject();
+			name.put("name", "qc_status");
+			name.put("value", order.getQcStatus());
+			entryArray.put(name);
+
+			JSONObject category = new JSONObject();
+			category.put("name", "quantity_checked");
+			category.put("value", order.getQuantityChecked());
+			entryArray.put(category);
+
+			JSONObject checktype = new JSONObject();
+			checktype.put("name", "qc_comment");
+			checktype.put("value", order.getQcComment());
+			entryArray.put(checktype);
+
+			JSONObject description = new JSONObject();
+			description.put("name", "qc_date");
+			description.put("value", order.getModifiedDateString());
+			entryArray.put(description);
+
+		
+			restData.put("name_value_list", entryArray);
+
+			Log.i(Constants.TAG, restData.toString());
+			String url = Util.getUpdateOrderUrl();
+			String response;
+
+			response = http.sendHttpGetRequest(url
+					+ URLEncoder.encode(restData.toString()));
+			parseResponseError(response);
+			Log.i(Constants.TAG, response);
+
+		} catch (JSONException e) {
+			throw new APIException(" can't parse API response");
+		}
+	}
+	
 	// http://crm.augura.net/service/v4_1/rest.php?method=set_entry&input_type=JSON&response_type=JSON&rest_data={"session":"XXXXXXXX","module_name":"AGR_QCCheckpoints","name_value_list":[{"name":"id","value":"48287499-7ee5-a933-e687-515e7dc74bf5"},{"name":"deleted","value":1}]}
 	public void deleteCheckpoint(String checkpointId) throws APIException, SessionAPIException {
 		String sessionId = GlobalHolder.getSessionId();

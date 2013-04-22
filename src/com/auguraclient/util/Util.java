@@ -91,6 +91,10 @@ public class Util {
 		return Constants.API_TABLE[Constants.CREATE_CHECK_POINT_RELATION_SHIP_URL_INDEX];
 	}
 
+	
+	public static String getUpdateOrderUrl() {
+		return Constants.API_TABLE[Constants.UPDATE_ORDER_URL_INDEX];
+	}
 	public static User parserUserJson(JSONObject object) {
 		if (object == null) {
 			return null;

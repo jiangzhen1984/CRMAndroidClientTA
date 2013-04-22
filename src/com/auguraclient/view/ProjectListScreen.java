@@ -441,6 +441,16 @@ public class ProjectListScreen extends Activity {
 				String flag = c
 						.getString(c
 								.getColumnIndex(ContentDescriptor.UpdateDesc.Cols.FLAG));
+				
+				
+				String type = c
+				.getString(c
+						.getColumnIndex(ContentDescriptor.UpdateDesc.Cols.TYPE));
+				if(type.equals(ContentDescriptor.UpdateDesc.TYPE_ENUM_ORDER)) {
+					//TODO update order
+					continue;
+				}
+				
 				if (flag
 						.equals(ContentDescriptor.UpdateDesc.TYPE_ENUM_FLAG_DELETE)) {
 					try {

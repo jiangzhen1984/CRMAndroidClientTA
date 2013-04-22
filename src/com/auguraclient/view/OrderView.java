@@ -169,6 +169,14 @@ public class OrderView extends Activity {
 
 	}
 
+	
+	
+	@Override
+	public void onBackPressed() {
+		saveOrder();
+		super.onBackPressed();
+	}
+
 	private void initView() {
 		projectOrderCheckpointList = (LinearLayout) this
 				.findViewById(R.id.projectOrderCheckpointList);
@@ -504,15 +512,31 @@ public class OrderView extends Activity {
 		projectItem.setQcComment(itemOrderCommentED.getText().toString());
 		projectItem.setDescription(itemOrderDescriptionED.getText().toString());
 		projectItem.setQcStatus(GlobalHolder.QC_Status_ENUM[qcStatusSpinner.getSelectedItemPosition()]);
+		projectItem.setQuantityChecked(qcCheckedED.getText().toString());
 		
 		ContentValues cv = new ContentValues();
 		cv.put(ContentDescriptor.ProjectOrderDesc.Cols.QC_COMMENT, projectItem.getQcComment());
 		cv.put(ContentDescriptor.ProjectOrderDesc.Cols.QC_STATUS, projectItem.getQcStatus());
-		cv.put(ContentDescriptor.ProjectOrderDesc.Cols.DESCRIPTION, projectItem.getDescription());
 		cv.put(ContentDescriptor.ProjectOrderDesc.Cols.DATE_MODIFIED, qcDateED.getText().toString());
+		cv.put(ContentDescriptor.ProjectOrderDesc.Cols.QUANTITY_CHECKED, qcCheckedED.getText().toString());
 		int ret = this.getContentResolver().update(
 				ContentDescriptor.ProjectOrderDesc.CONTENT_URI, cv, ContentDescriptor.ProjectOrderDesc.Cols.ID+"=?", new String[]{projectItem.getnID()+""});
 		Log.i(Constants.TAG, " update order count:"+ret);
+		
+		if(ret > 0) {
+			ContentValues orderCV = new ContentValues();
+
+			orderCV.put(ContentDescriptor.UpdateDesc.Cols.TYPE,
+					ContentDescriptor.UpdateDesc.TYPE_ENUM_ORDER);
+			orderCV.put(ContentDescriptor.UpdateDesc.Cols.PRO_ID, projectItem.getProject().getId());
+			orderCV.put(ContentDescriptor.UpdateDesc.Cols.PRO_ORDER_ID,
+					projectItem.getId());
+			orderCV.put(ContentDescriptor.UpdateDesc.Cols.RELATE_ID,
+					projectItem.getId());
+			cv.put(ContentDescriptor.UpdateDesc.Cols.FLAG, ContentDescriptor.UpdateDesc.TYPE_ENUM_FLAG_UPDATE);
+			Uri uri = this.getContentResolver().insert(
+					ContentDescriptor.UpdateDesc.CONTENT_URI, cv);
+		}
 		
 	}
 
@@ -630,6 +654,7 @@ public class OrderView extends Activity {
 		c.close();
 	}
 
+	static boolean a;
 	class ItemView extends LinearLayout {
 
 		private Context mContext;
@@ -647,6 +672,8 @@ public class OrderView extends Activity {
 		private String id;
 
 		private Bitmap photo;
+		
+		private View parent;
 
 		public ItemView(Context context) {
 			super(context);
@@ -659,6 +686,7 @@ public class OrderView extends Activity {
 			View view = LayoutInflater.from(this.mContext).inflate(
 					R.layout.component_checkpoint, null, false);
 			addView(view);
+			parent = findViewById(R.id.componentCheckpoint);
 			itemOrderCategoryCheckType = (TextView) this
 					.findViewById(R.id.itemOrderCategoryCheckType);
 			itemOrderDefectAlert = (TextView) this
@@ -668,7 +696,7 @@ public class OrderView extends Activity {
 			projectItemOrderPhoto = (ImageView) this
 					.findViewById(R.id.projectItemOrderPhoto);
 			itemOperationIV = (ImageView) this
-					.findViewById(R.id.projectItemOrderOperation);
+					.findViewById(R.id.projectItemOrderPhotoRight);
 		}
 
 		public String getCheckpointId() {
@@ -682,27 +710,30 @@ public class OrderView extends Activity {
 				return;
 			}
 			id = pi.getId();
-			itemOrderCategoryCheckType.setText(pi.getCategoryLabel() + "   > "
-					+ pi.getCheckTypeLabel() + "   >" + pi.getName());
-			itemOrderDefectAlert.setText(pi.getQcAction() == null ? "" : pi
-					.getQcAction() + pi.getNumberDefect() == null ? "   " : pi
-					.getNumberDefect());
+			itemOrderCategoryCheckType.setText(pi.getCategoryLabel() + " > "
+					 + pi.getName()+" ( "+ pi.getCheckTypeLabel()+" )");
+			itemOrderDefectAlert.setText(
+					(pi.getQcStatus() == null ? "" : pi.getQcStatus()) + 
+					(pi.getNumberDefect() == null ? " " : (pi.getNumberDefect()+" defect "))+
+					(pi.getQcAction()==null?"":pi.getQcAction()));
 			itemOrderQcComments.setText(pi.getQcComments() == null ? "" : pi
 					.getQcComments());
+			
 			if (pi.isCompleted()) {
-				itemOperationIV.setImageResource(R.drawable.completed);
+				//itemOperationIV.setImageResource(R.drawable.completed);
+				this.setBackgroundColor(R.color.white_background);
 			} else {
-				itemOperationIV.setImageResource(R.drawable.missing);
+				//itemOperationIV.setImageResource(R.drawable.missing);
+				parent.setBackgroundColor(R.color.checkpoint_incomplete_bg);
 			}
 			if (pi.getPhotoPath() != null && !pi.getPhotoPath().equals("")) {
 				photo = Util.decodeFile(photo, GlobalHolder.GLOBAL_STORAGE_PATH
 						+ pi.getPhotoPath());
-				projectItemOrderPhoto.setImageBitmap(photo);
+				itemOperationIV.setImageBitmap(photo);
 			} else if (pi.getUploadPhotoAbsPath() != null
 					&& !pi.getUploadPhotoAbsPath().equals("")) {
 				photo = Util.decodeFile(photo, pi.getUploadPhotoAbsPath());
-				projectItemOrderPhoto.setImageBitmap(photo);
-
+				itemOperationIV.setImageBitmap(photo);
 			}
 			this.setOnClickListener(new OnClickListener() {
 
