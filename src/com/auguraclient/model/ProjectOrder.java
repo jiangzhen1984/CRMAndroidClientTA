@@ -343,6 +343,14 @@ public class ProjectOrder implements ProjectJSONParser, Serializable {
 		}
 		return true;
 	}
+	
+	public String getModifiedDateString() {
+		if(this.dateDodified == null) {
+			return "";
+		}
+		DateFormat da = new SimpleDateFormat("yyyy-MM-dd");
+		return da.format(this.dateDodified);
+	}
 
 	public JSONArray toJSONArray() throws JSONParserException {
 		return null;

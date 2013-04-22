@@ -56,4 +56,10 @@
 	<string name="setting_user_pwd">Password</string>
 	<string name="setting_API">API</string>
 	<string name="setting_button">Setting</string>
+	
+	<string name="order_detal_qc_comment">QC Comment:</string>
+	<string name="order_detal_qc_date">QC Date:</string>
+	<string name="order_detal_qc_checked">Quantity Checked:</string>
+	<string name="order_detal_qc_status">QC Status:</string>
+	<string name="order_detal_date_picker_title">Select Date</string>
 </resources>

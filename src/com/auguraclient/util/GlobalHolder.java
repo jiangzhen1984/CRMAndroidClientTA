@@ -28,6 +28,9 @@ public class GlobalHolder {
 	public static String[] QC_ACTION_ENUM ={"", "Correct During QC","Correct After QC", "Cannot Correct", "Refuse to Correct"};
 	
 	public static String[] QC_ACTION_ENUM_VALUE ={"", "during_qc","after_qc", "cannot", "refuse"};
+	
+	
+	public static String[] QC_Status_ENUM ={"", "Failed","Passed", "Alert", "Ready"};
 
 	public synchronized static void setCurrentUser(User user) {
 		currentLogInedUser = user;

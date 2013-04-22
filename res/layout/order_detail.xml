@@ -2,12 +2,11 @@
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/scroll"
     android:layout_width="fill_parent"
-    android:layout_height="fill_parent"
-    android:background="@color/content_background" >
+    android:layout_height="fill_parent" >
 
     <LinearLayout
         android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
+        android:layout_height="wrap_content"
         android:background="@color/content_background"
         android:gravity="top"
         android:orientation="vertical" >
@@ -51,7 +50,9 @@
         <RelativeLayout
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:background="@color/white_background" >
+            android:layout_weight="2"
+            android:background="@color/white_background"
+            android:gravity="center" >
 
             <ImageView
                 android:id="@+id/projectItemPhoto"
@@ -71,28 +72,112 @@
                 android:textSize="15sp"
                 android:textStyle="bold" />
 
-            <TextView
+            <EditText
                 android:id="@+id/itemOrderDescription"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/itemOrderQuntity"
+                android:layout_marginBottom="10dp"
+                android:layout_marginRight="5dp"
                 android:layout_toRightOf="@id/projectItemPhoto"
-                android:textSize="10sp"
+                android:background="@drawable/edit_text_background"
+                android:inputType="text|textMultiLine"
+                android:minLines="4"
+                android:textSize="12sp"
                 android:textStyle="bold" />
 
-            <TextView
-                android:id="@+id/itemOrderQT"
+            <LinearLayout
+                android:id="@+id/qtLin"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/projectItemPhoto"
+                android:layout_marginTop="10dp" >
+
+                <TextView
+                    android:id="@+id/order_detal_qc_date"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/order_detal_qc_date"
+                    android:textSize="15sp"
+                    android:textStyle="bold" />
+
+                <EditText
+                    android:id="@+id/order_detal_qc_date_edit"
+                    android:layout_width="100dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="right"
+                    android:layout_marginRight="5dp"
+                    android:background="@drawable/edit_text_background"
+                    android:editable="false"
+                    android:inputType="none"
+                    android:textSize="12sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/order_detal_qc_checked"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/order_detal_qc_checked"
+                    android:textSize="15sp"
+                    android:textStyle="bold" />
+
+                <EditText
+                    android:id="@+id/order_detal_qc_checked_edit"
+                    android:layout_width="30dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="right"
+                    android:layout_marginRight="5dp"
+                    android:background="@drawable/edit_text_background"
+                    android:inputType="number"
+                    android:textSize="12sp"
+                    android:textStyle="bold" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/qtLin1"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/qtLin" >
+
+                <TextView
+                    android:id="@+id/order_detal_qc_status"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/order_detal_qc_status"
+                    android:textSize="15sp"
+                    android:textStyle="bold" />
+
+                <Spinner
+                    android:id="@+id/qcStatusSpinner"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="20dip"
+                    android:layout_marginRight="20dip"
+                    android:layout_marginTop="5dip"
+                    android:background="@drawable/edit_text_background"
+                    android:gravity="center"
+                    android:height="20dp"
+                    android:textColor="@color/login_text_color"
+                    android:textSize="12sp" />
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/commentTV"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/qtLin1"
+                android:text="@string/order_detal_qc_comment"
                 android:textSize="15sp"
                 android:textStyle="bold" />
 
-            <TextView
+            <EditText
                 android:id="@+id/itemOrderComment"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/itemOrderQT"
+                android:layout_below="@id/commentTV"
+                android:background="@drawable/edit_text_background"
+                android:inputType="text|textMultiLine"
+                android:minLines="8"
                 android:textSize="12sp"
                 android:textStyle="bold" />
         </RelativeLayout>
@@ -102,6 +187,7 @@
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
             android:layout_margin="5dp"
+            android:background="@color/content_background"
             android:orientation="vertical" />
 
         <LinearLayout
@@ -117,13 +203,12 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:background="@color/add_project_background"
+                android:padding="4dp"
                 android:text="@string/add_checkpoint"
                 android:textColor="@color/selected_tab"
-                android:padding="4dp"
                 android:textSize="24dp"
                 android:textStyle="bold" />
-            </LinearLayout>
-
+        </LinearLayout>
     </LinearLayout>
 
 </ScrollView>

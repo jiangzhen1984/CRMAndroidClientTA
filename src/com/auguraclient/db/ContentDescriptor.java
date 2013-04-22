@@ -78,9 +78,9 @@ public class ContentDescriptor {
 
 			public static final String QC_STATUS = "qc_status";
 
-			public static final String QUANTITY_CHECKED = " quantity_checked";
+			public static final String QUANTITY_CHECKED = "quantity_checked";
 
-			public static final String QC_COMMENT = " qc_comment";
+			public static final String QC_COMMENT = "qc_comment";
 
 			public static final String DATE_MODIFIED = "date_modified";
 

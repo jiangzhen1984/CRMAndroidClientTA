@@ -1,6 +1,9 @@
 package com.auguraclient.view;
 
 import java.io.File;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 
 import android.app.Activity;
 import android.content.ContentResolver;
@@ -110,22 +113,14 @@ public class LogoView extends Activity {
 		pl.setResultCount(c.getCount());
 		while (c.moveToNext()) {
 			Project p = new Project();
-			p
-					.setnID(c
-							.getInt(c
-									.getColumnIndexOrThrow(ContentDescriptor.ProjectDesc.Cols.ID)));
-			p
-					.setName(c
-							.getString(c
-									.getColumnIndexOrThrow(ContentDescriptor.ProjectDesc.Cols.NAME)));
-			p
-					.setText(c
-							.getString(c
-									.getColumnIndexOrThrow(ContentDescriptor.ProjectDesc.Cols.TEXT)));
-			p
-					.setId(c
-							.getString(c
-									.getColumnIndexOrThrow(ContentDescriptor.ProjectDesc.Cols.PRO_ID)));
+			p.setnID(c.getInt(c
+					.getColumnIndexOrThrow(ContentDescriptor.ProjectDesc.Cols.ID)));
+			p.setName(c.getString(c
+					.getColumnIndexOrThrow(ContentDescriptor.ProjectDesc.Cols.NAME)));
+			p.setText(c.getString(c
+					.getColumnIndexOrThrow(ContentDescriptor.ProjectDesc.Cols.TEXT)));
+			p.setId(c.getString(c
+					.getColumnIndexOrThrow(ContentDescriptor.ProjectDesc.Cols.PRO_ID)));
 			loadOderFromDB(p);
 			pl.addProject(p);
 
@@ -152,64 +147,39 @@ public class LogoView extends Activity {
 				ContentDescriptor.ProjectOrderDesc.Cols.ALL_COLS,
 				ContentDescriptor.ProjectOrderDesc.Cols.PRO_ID + "=?",
 				new String[] { p.getId() }, null);
-
+		DateFormat dp = new SimpleDateFormat("yyyy-MM-dd");
 		while (c.moveToNext()) {
 			ProjectOrder po = new ProjectOrder();
-			po
-					.setnID(c
-							.getInt(c
-									.getColumnIndexOrThrow(ContentDescriptor.ProjectOrderDesc.Cols.ID)));
-			po
-					.setId(c
-							.getString(c
-									.getColumnIndexOrThrow(ContentDescriptor.ProjectOrderDesc.Cols.ORD_ID)));
-			po
-					.setName(c
-							.getString(c
-									.getColumnIndexOrThrow(ContentDescriptor.ProjectOrderDesc.Cols.NAME)));
-			po
-					.setDescription(c
-							.getString(c
-									.getColumnIndexOrThrow(ContentDescriptor.ProjectOrderDesc.Cols.DESCRIPTION)));
-			po
-					.setPhotoBigPath(c
-							.getString(c
-									.getColumnIndexOrThrow(ContentDescriptor.ProjectOrderDesc.Cols.PHOTO_LOCAL_BIG_PATH)));
-			po
-					.setPhotoPath(c
-							.getString(c
-									.getColumnIndexOrThrow(ContentDescriptor.ProjectOrderDesc.Cols.PHOTO_LOCAL_SMALL_PATH)));
-			po
-					.setPhotoName(c
-							.getString(c
-									.getColumnIndexOrThrow(ContentDescriptor.ProjectOrderDesc.Cols.PHOTO_NAME)));
-			if (c
-					.getColumnIndex(ContentDescriptor.ProjectOrderDesc.Cols.QC_COMMENT) >= 0) {
-				po
-						.setQcComment(c
-								.getString(c
-										.getColumnIndexOrThrow(ContentDescriptor.ProjectOrderDesc.Cols.QC_COMMENT)));
-			}
-			if (c
-					.getColumnIndex(ContentDescriptor.ProjectOrderDesc.Cols.QC_STATUS) >= 0) {
-				po
-						.setQcStatus(c
-								.getString(c
-										.getColumnIndexOrThrow(ContentDescriptor.ProjectOrderDesc.Cols.QC_STATUS)));
-			}
-			if (c
-					.getColumnIndex(ContentDescriptor.ProjectOrderDesc.Cols.QUANTITY) >= 0) {
-				po
-						.setQuantity(c
-								.getString(c
-										.getColumnIndexOrThrow(ContentDescriptor.ProjectOrderDesc.Cols.QUANTITY)));
-			}
-			if (c
-					.getColumnIndex(ContentDescriptor.ProjectOrderDesc.Cols.QUANTITY_CHECKED) >= 0) {
-				po
-						.setQuantityChecked(c
-								.getString(c
-										.getColumnIndexOrThrow(ContentDescriptor.ProjectOrderDesc.Cols.QUANTITY_CHECKED)));
+			po.setnID(c.getInt(c
+					.getColumnIndexOrThrow(ContentDescriptor.ProjectOrderDesc.Cols.ID)));
+			po.setId(c.getString(c
+					.getColumnIndexOrThrow(ContentDescriptor.ProjectOrderDesc.Cols.ORD_ID)));
+			po.setName(c.getString(c
+					.getColumnIndexOrThrow(ContentDescriptor.ProjectOrderDesc.Cols.NAME)));
+			po.setDescription(c.getString(c
+					.getColumnIndexOrThrow(ContentDescriptor.ProjectOrderDesc.Cols.DESCRIPTION)));
+			po.setPhotoBigPath(c.getString(c
+					.getColumnIndexOrThrow(ContentDescriptor.ProjectOrderDesc.Cols.PHOTO_LOCAL_BIG_PATH)));
+			po.setPhotoPath(c.getString(c
+					.getColumnIndexOrThrow(ContentDescriptor.ProjectOrderDesc.Cols.PHOTO_LOCAL_SMALL_PATH)));
+			po.setPhotoName(c.getString(c
+					.getColumnIndexOrThrow(ContentDescriptor.ProjectOrderDesc.Cols.PHOTO_NAME)));
+			po.setQcComment(c.getString(c
+					.getColumnIndexOrThrow(ContentDescriptor.ProjectOrderDesc.Cols.QC_COMMENT)));
+			po.setQcStatus(c.getString(c
+					.getColumnIndexOrThrow(ContentDescriptor.ProjectOrderDesc.Cols.QC_STATUS)));
+			po.setQuantity(c.getString(c
+					.getColumnIndexOrThrow(ContentDescriptor.ProjectOrderDesc.Cols.QUANTITY)));
+			po.setQuantityChecked(c.getString(c
+					.getColumnIndexOrThrow(ContentDescriptor.ProjectOrderDesc.Cols.QUANTITY_CHECKED)));
+			String dateString  = c.getString(c
+					.getColumnIndexOrThrow(ContentDescriptor.ProjectOrderDesc.Cols.DATE_MODIFIED));
+			if(dateString != null) {
+				try {
+					po.setDateDodified(dp.parse(dateString));
+				} catch (ParseException e) {
+					e.printStackTrace();
+				}
 			}
 			p.addProjectOrder(po);
 			loadCheckpointFromDB(po);
@@ -235,68 +205,40 @@ public class LogoView extends Activity {
 
 		while (c.moveToNext()) {
 			ProjectCheckpoint pcp = new ProjectCheckpoint();
-			pcp
-					.setnID(c
-							.getInt(c
-									.getColumnIndexOrThrow(ContentDescriptor.ProjectCheckpointDesc.Cols.ID)));
-			pcp
-					.setId(c
-							.getString(c
-									.getColumnIndexOrThrow(ContentDescriptor.ProjectCheckpointDesc.Cols.CHECKPOINT_ID)));
-			pcp
-					.setName(c
-							.getString(c
-									.getColumnIndexOrThrow(ContentDescriptor.ProjectCheckpointDesc.Cols.NAME)));
+			pcp.setnID(c.getInt(c
+					.getColumnIndexOrThrow(ContentDescriptor.ProjectCheckpointDesc.Cols.ID)));
+			pcp.setId(c.getString(c
+					.getColumnIndexOrThrow(ContentDescriptor.ProjectCheckpointDesc.Cols.CHECKPOINT_ID)));
+			pcp.setName(c.getString(c
+					.getColumnIndexOrThrow(ContentDescriptor.ProjectCheckpointDesc.Cols.NAME)));
 
-			pcp
-					.setPhotoPath(c
-							.getString(c
-									.getColumnIndexOrThrow(ContentDescriptor.ProjectCheckpointDesc.Cols.PHOTO_LOCAL_SMALL_PATH)));
+			pcp.setPhotoPath(c.getString(c
+					.getColumnIndexOrThrow(ContentDescriptor.ProjectCheckpointDesc.Cols.PHOTO_LOCAL_SMALL_PATH)));
 
-			pcp
-					.setPhotoName(c
-							.getString(c
-									.getColumnIndexOrThrow(ContentDescriptor.ProjectCheckpointDesc.Cols.PHOTO_NAME)));
+			pcp.setPhotoName(c.getString(c
+					.getColumnIndexOrThrow(ContentDescriptor.ProjectCheckpointDesc.Cols.PHOTO_NAME)));
 
-			pcp
-					.setDescription(c
-							.getString(c
-									.getColumnIndexOrThrow(ContentDescriptor.ProjectCheckpointDesc.Cols.DESCRIPTION)));
+			pcp.setDescription(c.getString(c
+					.getColumnIndexOrThrow(ContentDescriptor.ProjectCheckpointDesc.Cols.DESCRIPTION)));
 
-			pcp
-					.setCategory(c
-							.getString(c
-									.getColumnIndexOrThrow(ContentDescriptor.ProjectCheckpointDesc.Cols.CATEGORY)));
+			pcp.setCategory(c.getString(c
+					.getColumnIndexOrThrow(ContentDescriptor.ProjectCheckpointDesc.Cols.CATEGORY)));
 
-			pcp
-					.setQcComments(c
-							.getString(c
-									.getColumnIndexOrThrow(ContentDescriptor.ProjectCheckpointDesc.Cols.QC_COMMENT)));
-			pcp
-					.setQcStatus(c
-							.getString(c
-									.getColumnIndexOrThrow(ContentDescriptor.ProjectCheckpointDesc.Cols.QC_STATUS)));
-			pcp
-					.setDescription(c
-							.getString(c
-									.getColumnIndexOrThrow(ContentDescriptor.ProjectCheckpointDesc.Cols.DESCRIPTION)));
-			pcp
-					.setNumberDefect(c
-							.getString(c
-									.getColumnIndexOrThrow(ContentDescriptor.ProjectCheckpointDesc.Cols.NUMBER_DEFECT)));
-			pcp
-					.setCheckType(c
-							.getString(c
-									.getColumnIndexOrThrow(ContentDescriptor.ProjectCheckpointDesc.Cols.CHECK_TYPE)));
-			pcp
-					.setQcAction(c
-							.getString(c
-									.getColumnIndexOrThrow(ContentDescriptor.ProjectCheckpointDesc.Cols.QC_ACTION)));
+			pcp.setQcComments(c.getString(c
+					.getColumnIndexOrThrow(ContentDescriptor.ProjectCheckpointDesc.Cols.QC_COMMENT)));
+			pcp.setQcStatus(c.getString(c
+					.getColumnIndexOrThrow(ContentDescriptor.ProjectCheckpointDesc.Cols.QC_STATUS)));
+			pcp.setDescription(c.getString(c
+					.getColumnIndexOrThrow(ContentDescriptor.ProjectCheckpointDesc.Cols.DESCRIPTION)));
+			pcp.setNumberDefect(c.getString(c
+					.getColumnIndexOrThrow(ContentDescriptor.ProjectCheckpointDesc.Cols.NUMBER_DEFECT)));
+			pcp.setCheckType(c.getString(c
+					.getColumnIndexOrThrow(ContentDescriptor.ProjectCheckpointDesc.Cols.CHECK_TYPE)));
+			pcp.setQcAction(c.getString(c
+					.getColumnIndexOrThrow(ContentDescriptor.ProjectCheckpointDesc.Cols.QC_ACTION)));
 
-			pcp
-					.setUploadPhotoAbsPath(c
-							.getString(c
-									.getColumnIndexOrThrow(ContentDescriptor.ProjectCheckpointDesc.Cols.PHOTO_LOCAL_PATH)));
+			pcp.setUploadPhotoAbsPath(c.getString(c
+					.getColumnIndexOrThrow(ContentDescriptor.ProjectCheckpointDesc.Cols.PHOTO_LOCAL_PATH)));
 			order.addOrderCheckpoint(pcp);
 		}
 
