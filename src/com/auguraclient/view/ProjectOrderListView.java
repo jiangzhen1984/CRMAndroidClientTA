@@ -111,6 +111,7 @@ public class ProjectOrderListView extends Activity {
     protected void onResume() {
         super.onResume();
         itemTitleTV.setText(this.project.getName());
+        adapter.notifyDataSetChanged();
     }
     
     private OnClickListener returnButtonListener = new OnClickListener() {
@@ -333,6 +334,8 @@ public class ProjectOrderListView extends Activity {
                 ItemView appView = new ItemView(context);
                 appView.updateView(project.getOrder(position));
                 convertView = appView;
+            } else {
+            	((ItemView)convertView).updateView(project.getOrder(position));
             }
             return convertView;
         }

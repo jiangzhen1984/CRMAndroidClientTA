@@ -87,7 +87,7 @@ public class OrderView extends Activity {
 
 	private TextView itemOrderQuntityTV;
 
-	private EditText itemOrderDescriptionED;
+	private TextView itemOrderDescriptionED;
 
 	private EditText itemOrderCommentED;
 
@@ -179,7 +179,7 @@ public class OrderView extends Activity {
 		itemOrderQuntityTV = (TextView) this
 				.findViewById(R.id.itemOrderQuntity);
 
-		itemOrderDescriptionED = (EditText) this
+		itemOrderDescriptionED = (TextView) this
 				.findViewById(R.id.itemOrderDescription);
 
 		itemOrderCommentED = (EditText) this

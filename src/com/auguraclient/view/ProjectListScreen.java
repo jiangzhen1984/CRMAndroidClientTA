@@ -45,6 +45,7 @@ import com.auguraclient.model.ProjectCheckpoint;
 import com.auguraclient.model.ProjectList;
 import com.auguraclient.model.ProjectOrder;
 import com.auguraclient.model.SessionAPIException;
+import com.auguraclient.model.User;
 import com.auguraclient.util.Constants;
 import com.auguraclient.util.GlobalHolder;
 import com.auguraclient.util.SoundEngine;
@@ -231,8 +232,7 @@ public class ProjectListScreen extends Activity {
 						Message.obtain(handler, CMD_QUERY_PROJECT,
 								projectText.getText().toString())
 								.sendToTarget();
-						Message.obtain(uiHandler, UI_START_WAITING)
-								.sendToTarget();
+						
 
 					}
 
@@ -561,6 +561,28 @@ public class ProjectListScreen extends Activity {
 			case CMD_QUERY_PROJECT:
 
 				try {
+					Message.obtain(uiHandler, UI_START_WAITING)
+					.sendToTarget();
+					//TODO login fist
+					SharedPreferences sp = context.getSharedPreferences(
+							Constants.SaveConfig.CONFIG, MODE_PRIVATE);
+					String userName = sp.getString(Constants.SaveConfig.USER_NAME, "");
+					String password = sp.getString(Constants.SaveConfig.PASSWORD, "");
+					if(userName == null || userName.equals("") || password ==null || password.equals("")) {
+						Message.obtain(uiHandler, UI_END_WAITING)
+						.sendToTarget();
+						Toast.makeText(context, "please set user name and password first!",
+								Toast.LENGTH_SHORT).show();
+						return;
+					}
+					 User user = api.login(userName, password);
+					 if(user ==null) {
+						 Message.obtain(uiHandler, UI_END_WAITING_WITH_ERROR)
+							.sendToTarget();
+						 return;
+					 }
+					 GlobalHolder.setCurrentUser(user);
+					
 					ProjectList pl = api.loadProject((String) msg.obj);
 					if (pl == null) {
 						Message.obtain(uiHandler, UI_END_WAITING_WITH_ERROR)
@@ -601,6 +623,21 @@ public class ProjectListScreen extends Activity {
 				}
 				Message.obtain(uiHandler, UI_START_WAITING).sendToTarget();
 				try {
+					
+					//TODO login fist
+					SharedPreferences sp = context.getSharedPreferences(
+							Constants.SaveConfig.CONFIG, MODE_PRIVATE);
+					String userName = sp.getString(Constants.SaveConfig.USER_NAME, "");
+					String password = sp.getString(Constants.SaveConfig.PASSWORD, "");
+					
+					 User user = api.login(userName, password);
+					 if(user ==null) {
+						 Message.obtain(uiHandler, UI_END_WAITING_WITH_ERROR)
+							.sendToTarget();
+						 return;
+					 }
+					 GlobalHolder.setCurrentUser(user);
+					
 					doSync(p);
 				} catch (SessionAPIException e) {
 					Toast.makeText(context, "sync error " + e.getMessage(),

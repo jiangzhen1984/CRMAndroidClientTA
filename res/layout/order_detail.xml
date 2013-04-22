@@ -72,7 +72,7 @@
                 android:textSize="15sp"
                 android:textStyle="bold" />
 
-            <EditText
+            <TextView
                 android:id="@+id/itemOrderDescription"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
@@ -80,8 +80,6 @@
                 android:layout_marginBottom="10dp"
                 android:layout_marginRight="5dp"
                 android:layout_toRightOf="@id/projectItemPhoto"
-                android:background="@drawable/edit_text_background"
-                android:inputType="text|textMultiLine"
                 android:minLines="4"
                 android:textSize="12sp"
                 android:textStyle="bold" />

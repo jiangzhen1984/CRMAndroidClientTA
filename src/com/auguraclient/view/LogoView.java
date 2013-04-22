@@ -86,11 +86,11 @@ public class LogoView extends Activity {
 		Constants.HOST = sp.getString(Constants.SaveConfig.API,
 				"crm.augura.net");
 		Intent i = new Intent();
-		if (userName == null || userName.equals("") || session == null
-				|| session.equals("") || userID == null || userID.equals("")) {
-			i.setAction("com.auguraclient.view.login");
-			i.addCategory("com.auguraclient.view");
-		} else {
+//		if (userName == null || userName.equals("") || session == null
+//				|| session.equals("") || userID == null || userID.equals("")) {
+//			i.setAction("com.auguraclient.view.login");
+//			i.addCategory("com.auguraclient.view");
+//		} else {
 			User u = new User();
 			u.setUserName(userName);
 			u.setmSessionID(session);
@@ -100,7 +100,7 @@ public class LogoView extends Activity {
 			loadProjectFromDb();
 			i.setAction("com.auguraclient.view.projectList");
 			i.addCategory("com.auguraclient.view");
-		}
+	//	}
 		mContext.startActivity(i);
 	}
 

@@ -29,7 +29,7 @@
 				android:layout_centerHorizontal="true" android:layout_marginLeft="10dip"
 				android:layout_marginRight="10dip" android:layout_marginTop="5dip"
 				android:background="@drawable/login_screen_button" android:gravity="center"
-				android:inputType="number" android:textColor="@color/login_text_color"
+				android:inputType="text" android:textColor="@color/login_text_color"
 				android:textSize="12sp" />
 		</LinearLayout>
 		
