@@ -238,6 +238,7 @@ public class CreateUpdateCheckpoint extends Activity implements
 		if (projectCheckpoint.getId() != null)
 			i.putExtra("checkpoint", projectCheckpoint.getId());
 		setResult(4, i);
+		recordData();
 		try {
 			submit();
 		} catch (APIException e) {
