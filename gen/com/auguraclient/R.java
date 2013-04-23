@@ -11,15 +11,16 @@ public final class R {
     public static final class anim {
         public static final int fadein=0x7f040000;
         public static final int fadeout=0x7f040001;
-        public static final int view_checkpoint_in=0x7f040002;
-        public static final int view_checkpoint_out=0x7f040003;
+        public static final int to_right_view_checkpoint_in=0x7f040002;
+        public static final int to_right_view_checkpoint_out=0x7f040003;
+        public static final int view_checkpoint_in=0x7f040004;
+        public static final int view_checkpoint_out=0x7f040005;
     }
     public static final class attr {
     }
     public static final class color {
         public static final int add_project_background=0x7f06000a;
         public static final int blank_background=0x7f06000e;
-        public static final int checkpoint_complete_bg=0x7f060014;
         public static final int checkpoint_component_background=0x7f060006;
         public static final int checkpoint_component_background_speration_line=0x7f060007;
         public static final int checkpoint_incomplete_bg=0x7f060013;

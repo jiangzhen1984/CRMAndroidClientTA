@@ -18,26 +18,26 @@ import android.os.Looper;
 import android.os.Message;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
-import android.view.View.OnClickListener;
 import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.widget.AdapterView.OnItemClickListener;
 
 import com.auguraclient.R;
 import com.auguraclient.db.ContentDescriptor;
+import com.auguraclient.model.AuguraRestAPIImpl;
 import com.auguraclient.model.IAuguraRestAPI;
 import com.auguraclient.model.Project;
 import com.auguraclient.model.ProjectCheckpoint;
 import com.auguraclient.model.ProjectOrder;
-import com.auguraclient.model.AuguraRestAPIImpl;
 import com.auguraclient.util.GlobalHolder;
 
 public class ProjectOrderListView extends Activity {
@@ -390,17 +390,17 @@ public class ProjectOrderListView extends Activity {
             
             if (pi.isCompleted()) {
 				//itemOperationIV.setImageResource(R.drawable.completed);
-				this.setBackgroundColor(R.color.white_background);
+            	parent.setBackgroundColor(mContext.getResources().getColor(R.color.white_background));
 			} else {
 				//itemOperationIV.setImageResource(R.drawable.missing);
-				parent.setBackgroundColor(R.color.checkpoint_incomplete_bg);
+				parent.setBackgroundColor(mContext.getResources().getColor(R.color.checkpoint_incomplete_bg));
 			}
             
-            if(pi.isCompleted()) {
-            	itemOperationIV.setImageResource(R.drawable.completed);
-            } else {
-            	itemOperationIV.setImageResource(R.drawable.missing);
-            }
+//            if(pi.isCompleted()) {
+//            	itemOperationIV.setImageResource(R.drawable.completed);
+//            } else {
+//            	itemOperationIV.setImageResource(R.drawable.missing);
+//            }
         }
         
         private OnClickListener orderPhotoClickListener = new OnClickListener() {

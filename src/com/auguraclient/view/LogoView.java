@@ -4,6 +4,7 @@ import java.io.File;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Collections;
 
 import android.app.Activity;
 import android.content.ContentResolver;
@@ -241,7 +242,7 @@ public class LogoView extends Activity {
 					.getColumnIndexOrThrow(ContentDescriptor.ProjectCheckpointDesc.Cols.PHOTO_LOCAL_PATH)));
 			order.addOrderCheckpoint(pcp);
 		}
-
+		Collections.sort(order.getCheckpointList());
 		order.setLoadedCheckpointFromDB(true);
 		c.close();
 	}

@@ -721,10 +721,10 @@ public class OrderView extends Activity {
 			
 			if (pi.isCompleted()) {
 				//itemOperationIV.setImageResource(R.drawable.completed);
-				this.setBackgroundColor(R.color.white_background);
+				parent.setBackgroundColor(mContext.getResources().getColor(R.color.white_background));
 			} else {
 				//itemOperationIV.setImageResource(R.drawable.missing);
-				parent.setBackgroundColor(R.color.checkpoint_incomplete_bg);
+				parent.setBackgroundColor(mContext.getResources().getColor(R.color.checkpoint_incomplete_bg));
 			}
 			if (pi.getPhotoPath() != null && !pi.getPhotoPath().equals("")) {
 				photo = Util.decodeFile(photo, GlobalHolder.GLOBAL_STORAGE_PATH

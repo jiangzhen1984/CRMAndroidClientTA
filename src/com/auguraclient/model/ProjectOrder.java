@@ -344,6 +344,13 @@ public class ProjectOrder implements ProjectJSONParser, Serializable {
 		return true;
 	}
 	
+	
+	
+	
+	public List<ProjectCheckpoint> getCheckpointList() {
+		return checkpointList;
+	}
+
 	public String getModifiedDateString() {
 		if(this.dateDodified == null) {
 			return "";

@@ -238,6 +238,13 @@ public class CreateUpdateCheckpoint extends Activity implements
 		if (projectCheckpoint.getId() != null)
 			i.putExtra("checkpoint", projectCheckpoint.getId());
 		setResult(4, i);
+		try {
+			submit();
+		} catch (APIException e) {
+			e.printStackTrace();
+		} catch (SessionAPIException e) {
+			e.printStackTrace();
+		}
 		super.onBackPressed();
 		finish();
 	}
@@ -265,8 +272,7 @@ public class CreateUpdateCheckpoint extends Activity implements
 			if (pos < projectOrder.getCheckpointCount() - 1) {
 				startSwitch = true;
 				pos++;
-				overridePendingTransition(R.anim.view_checkpoint_in,
-						R.anim.view_checkpoint_out);
+				
 				toRight = true;
 			} else {
 				Toast.makeText(mContext, "This is last one", Toast.LENGTH_SHORT)
@@ -277,10 +283,9 @@ public class CreateUpdateCheckpoint extends Activity implements
 			if (pos > 0) {
 				pos--;
 				startSwitch = true;
-				overridePendingTransition(R.anim.view_checkpoint_out,
-						R.anim.view_checkpoint_in);
+				toRight = false;
 			} else {
-				Toast.makeText(mContext, "This is first one",
+				Toast.makeText(mContext, "This is first one1",
 						Toast.LENGTH_SHORT).show();
 			}
 		}
@@ -294,6 +299,13 @@ public class CreateUpdateCheckpoint extends Activity implements
 					.getOrderCheckpointrByIndex(pos).getId());
 			i.setClass(mContext, CreateUpdateCheckpoint.class);
 			startActivity(i);
+			if(toRight) {
+				CreateUpdateCheckpoint.this.overridePendingTransition(R.anim.view_checkpoint_in,
+						R.anim.view_checkpoint_out);
+			} else {
+				CreateUpdateCheckpoint.this.overridePendingTransition(R.anim.to_right_view_checkpoint_in,
+						R.anim.to_right_view_checkpoint_out);
+			}
 			finish();
 		}
 
@@ -326,6 +338,8 @@ public class CreateUpdateCheckpoint extends Activity implements
 		return false;
 	}
 
+	
+	
 	private void initListener() {
 		returnButton.setOnClickListener(returnButtonListener);
 		submitButton.setOnClickListener(submitListener);

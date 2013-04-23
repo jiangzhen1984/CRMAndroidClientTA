@@ -17,7 +17,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-public class ProjectCheckpoint implements ProjectJSONParser, Serializable {
+public class ProjectCheckpoint implements ProjectJSONParser, Serializable, Comparable<ProjectCheckpoint> {
 
 	/**
      *
@@ -285,5 +285,55 @@ public class ProjectCheckpoint implements ProjectJSONParser, Serializable {
 
 		return true;
 	}
+
+	@Override
+	public int compareTo(ProjectCheckpoint pc) {
+		if(pc == null || pc.getCategory() == null || pc.getCategory().equals("")) {
+			return 1;
+		} else if(this.category == null || this.category.equals("")) {
+			return -1;
+		} else {
+			int ret = compare(this.category.toCharArray(), pc.getCategory().toCharArray());
+			if( ret== 0)  {
+				if(pc.getName() == null || pc.getName().equals("")) {
+					return 1;
+				} else if(this.name == null || this.name.equals("")) {
+					return -1;
+				} else {
+					return compare(this.name.toCharArray(), pc.getName().toCharArray());
+				}
+				
+			} else {
+				return ret;
+			}
+		}
+		
+	}
+	
+	
+	private int compare(char[] oldC, char[] newC) {
+		int i= 0;
+		int j=0;
+		for(; i<newC.length && j <oldC.length; i++, j++) {
+			if(newC[i] == oldC[j]) {
+				continue;
+			} else if(newC[i] < oldC[j]) {
+				return 1;
+			} else {
+				return -1;
+			}
+		}
+		
+		if(i == newC.length) {
+			return 1;
+		} else if(j == oldC.length) {
+			return -1;
+		}
+		
+		return 0;
+	}
+	
+	
+	
 
 }

@@ -1,5 +1,9 @@
 package com.auguraclient.view;
 
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+
 import android.app.ActionBar;
 import android.app.Activity;
 import android.app.Dialog;
@@ -423,8 +427,7 @@ public class ProjectListScreen extends Activity {
 	}
 
 	private void doSync(Project p) throws APIException, SessionAPIException {
-		Cursor c = null;
-
+		Cursor c =null;
 		try {
 			c = this.getContentResolver().query(
 					ContentDescriptor.UpdateDesc.CONTENT_URI,
@@ -447,6 +450,48 @@ public class ProjectListScreen extends Activity {
 				.getString(c
 						.getColumnIndex(ContentDescriptor.UpdateDesc.Cols.TYPE));
 				if(type.equals(ContentDescriptor.UpdateDesc.TYPE_ENUM_ORDER)) {
+					
+					Cursor orderCur = null;
+					orderCur = this.getContentResolver().query(ContentDescriptor.ProjectOrderDesc.CONTENT_URI,
+							ContentDescriptor.ProjectOrderDesc.Cols.ALL_COLS,
+							ContentDescriptor.ProjectOrderDesc.Cols.ORD_ID + "=?",
+							new String[] {orderId }, null);
+					DateFormat dp = new SimpleDateFormat("yyyy-MM-dd");
+					if (orderCur.moveToNext()) {
+						ProjectOrder po = new ProjectOrder();
+						po.setnID(orderCur.getInt(orderCur
+								.getColumnIndexOrThrow(ContentDescriptor.ProjectOrderDesc.Cols.ID)));
+						po.setId(orderCur.getString(orderCur
+								.getColumnIndexOrThrow(ContentDescriptor.ProjectOrderDesc.Cols.ORD_ID)));
+						po.setName(orderCur.getString(orderCur
+								.getColumnIndexOrThrow(ContentDescriptor.ProjectOrderDesc.Cols.NAME)));
+						po.setDescription(orderCur.getString(orderCur
+								.getColumnIndexOrThrow(ContentDescriptor.ProjectOrderDesc.Cols.DESCRIPTION)));
+						po.setQcComment(orderCur.getString(orderCur
+								.getColumnIndexOrThrow(ContentDescriptor.ProjectOrderDesc.Cols.QC_COMMENT)));
+						po.setQcStatus(orderCur.getString(orderCur
+								.getColumnIndexOrThrow(ContentDescriptor.ProjectOrderDesc.Cols.QC_STATUS)));
+						po.setQuantity(orderCur.getString(orderCur
+								.getColumnIndexOrThrow(ContentDescriptor.ProjectOrderDesc.Cols.QUANTITY)));
+						po.setQuantityChecked(orderCur.getString(orderCur
+								.getColumnIndexOrThrow(ContentDescriptor.ProjectOrderDesc.Cols.QUANTITY_CHECKED)));
+						String dateString  = orderCur.getString(orderCur
+								.getColumnIndexOrThrow(ContentDescriptor.ProjectOrderDesc.Cols.DATE_MODIFIED));
+						if(dateString != null) {
+							try {
+								po.setDateDodified(dp.parse(dateString));
+							} catch (ParseException e) {
+								e.printStackTrace();
+							}
+						}
+						orderCur.close();
+						
+						api.updateOrder(po);
+					}
+					
+					
+					
+					
 					//TODO update order
 					continue;
 				}
