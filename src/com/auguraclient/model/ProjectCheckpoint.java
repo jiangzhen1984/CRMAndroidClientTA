@@ -169,7 +169,7 @@ public class ProjectCheckpoint implements ProjectJSONParser, Serializable, Compa
 			if (this.category != null
 					&& this.category
 							.equals(GlobalHolder.CATEGORY_ENUM_VALUE[i])) {
-				return GlobalHolder.CATEGORY_ENUM_VALUE[i];
+				return GlobalHolder.CATEGORY_ENUM[i];
 			}
 		}
 		return null;
@@ -188,7 +188,7 @@ public class ProjectCheckpoint implements ProjectJSONParser, Serializable, Compa
 			if (this.checkType != null
 					&& this.checkType
 							.equals(GlobalHolder.CHECK_TYPE_ENUM_VALUE[i])) {
-				return GlobalHolder.CHECK_TYPE_ENUM_VALUE[i];
+				return GlobalHolder.CHECK_TYPE_ENUM[i];
 			}
 		}
 		return null;

@@ -240,10 +240,15 @@
 				android:minLines="8" android:text="android" android:textSize="12sp" />
 		</RelativeLayout>
 
-		<LinearLayout android:id="@+id/bottom_tab_add_or_update_checkpoint_layout"
-			android:layout_width="match_parent" android:layout_height="wrap_content"
-			android:layout_marginTop="10dp" android:layout_weight="1"
-			android:background="@color/add_project_background" android:gravity="center">
+		<LinearLayout
+		    android:id="@+id/bottom_tab_add_or_update_checkpoint_layout"
+		    android:layout_width="match_parent"
+		    android:layout_height="wrap_content"
+		    android:layout_marginTop="10dp"
+		    android:layout_weight="1"
+		    android:background="@color/add_project_background"
+		    android:gravity="center"
+		    android:visibility="invisible" >
 
 			<TextView android:id="@+id/bottom_tab_add_or_update_checkpoint"
 				android:layout_width="wrap_content" android:layout_height="wrap_content"

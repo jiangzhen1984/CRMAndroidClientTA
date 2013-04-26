@@ -144,6 +144,7 @@ public class CreateUpdateCheckpoint extends Activity implements
 		if (createFlag) {
 			projectCheckpoint = new ProjectCheckpoint();
 			addOrUpdateTextView.setText(R.string.create_checkpoint);
+			submitButton.setVisibility(View.VISIBLE);
 		} else {
 			addOrUpdateTextView.setText(R.string.update_checkpoint);
 			projectCheckpoint = projectOrder.findProjectCheckpointById(this
@@ -162,15 +163,15 @@ public class CreateUpdateCheckpoint extends Activity implements
 		detailEditText.setText(projectCheckpoint.getDescription());
 		qcCommentEditText.setText(projectCheckpoint.getQcComments());
 		qcDefectEditText.setText(projectCheckpoint.getNumberDefect());
-		if (projectCheckpoint.getUploadPhotoAbsPath() != null
-				&& !projectCheckpoint.getUploadPhotoAbsPath().equals("")) {
-			photo = Util.decodeFile(photo,
-					projectCheckpoint.getUploadPhotoAbsPath());
-			checkpointPhoto.setImageBitmap(photo);
-		} else if (projectCheckpoint.getPhotoPath() != null) {
-			checkpointPhoto.setImageURI(Uri.fromFile(new File(
-					GlobalHolder.GLOBAL_STORAGE_PATH
-							+ projectCheckpoint.getPhotoPath())));
+//		if (projectCheckpoint.getUploadPhotoAbsPath() != null
+//				&& !projectCheckpoint.getUploadPhotoAbsPath().equals("")) {
+//			photo = Util.decodeFile(photo,
+//					projectCheckpoint.getUploadPhotoAbsPath());
+//			checkpointPhoto.setImageBitmap(photo);
+//		} else 
+		if (projectCheckpoint.getPhotoPath() != null) {
+			checkpointPhoto.setImageURI(Uri.parse(projectCheckpoint
+					.getPhotoPath()));
 		}
 		checkpointPhoto.setOnClickListener(onOpenPhotoClickListener);
 		setQcStatus();
@@ -465,8 +466,8 @@ public class CreateUpdateCheckpoint extends Activity implements
 				intent.setDataAndType(Uri.fromFile(new File(projectCheckpoint
 						.getUploadPhotoAbsPath())), "image/*");
 			} else if (projectCheckpoint.getPhotoPath() != null) {
-				intent.setDataAndType(Uri.fromFile(new File(projectCheckpoint
-						.getPhotoPath())), "image/*");
+				intent.setDataAndType(Uri.parse(projectCheckpoint
+						.getPhotoPath()), "image/*");
 			}
 			intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 			startActivity(Intent.createChooser(intent, "Select Picture"));
@@ -598,7 +599,9 @@ public class CreateUpdateCheckpoint extends Activity implements
 			FileOutputStream fo = null;
 			photo = (Bitmap) data.getExtras().get("data");
 			ByteArrayOutputStream bytes = new ByteArrayOutputStream();
-			photo.compress(Bitmap.CompressFormat.JPEG, 40, bytes);
+			photo.compress(Bitmap.CompressFormat.PNG, 100, bytes);
+			
+			
 			Random randomGenerator = new Random();
 			randomGenerator.nextInt();
 			String newimagename = randomGenerator.toString() + ".jpg";
@@ -613,7 +616,9 @@ public class CreateUpdateCheckpoint extends Activity implements
 			try {
 				fo = new FileOutputStream(f.getAbsoluteFile());
 				fo.write(bytes.toByteArray());
+				projectCheckpoint.setPhotoPath(f.getAbsolutePath());
 				projectCheckpoint.setUploadPhotoAbsPath(f.getAbsolutePath());
+			//	projectCheckpoint.setUploadPhotoAbsPath(getRealPathFromURI(data .getData()));
 			} catch (FileNotFoundException e) {
 				e.printStackTrace();
 			} catch (IOException e) {
@@ -628,6 +633,13 @@ public class CreateUpdateCheckpoint extends Activity implements
 			}
 
 			checkpointPhoto.setImageBitmap(photo);
+			
+			/*
+			  Uri selectedImageUri = data.getData();
+			  checkpointPhoto.setImageURI(selectedImageUri);
+			  projectCheckpoint.setPhotoPath(selectedImageUri.toString());
+			  projectCheckpoint.setUploadPhotoAbsPath(getRealPathFromURI(data .getData()));
+			  */
 			autoSave();
 			/*
 			 * 
@@ -668,6 +680,10 @@ public class CreateUpdateCheckpoint extends Activity implements
 
 	private void submit() throws APIException, SessionAPIException {
 
+		if(projectCheckpoint.getName() == null ||projectCheckpoint.getName().equals("")) {
+			return;
+		}
+		
 		if (this.createFlag) {
 			// api.createCheckpoint(this.projectOrder, projectCheckpoint);
 			Uri uri = this
@@ -836,7 +852,7 @@ public class CreateUpdateCheckpoint extends Activity implements
 				Message.obtain(uiHandler, UI_START_SUBMIT).sendToTarget();
 				try {
 					submit();
-					Toast.makeText(mContext, "Saved", Toast.LENGTH_LONG).show();
+					//Toast.makeText(mContext, "Saved", Toast.LENGTH_LONG).show();
 				} catch (Exception e) {
 					e.printStackTrace();
 					Toast.makeText(mContext, e.getMessage(), Toast.LENGTH_SHORT)

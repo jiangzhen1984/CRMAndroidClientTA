@@ -472,7 +472,7 @@ public class OrderView extends Activity {
 				
 			case AUTO_SAVE_ORDER_DETAIL:
 				saveOrder();
-				Toast.makeText(mContext, "Order detail is auto saved", Toast.LENGTH_SHORT).show();
+			//	Toast.makeText(mContext, "Order detail is auto saved", Toast.LENGTH_SHORT).show();
 				break;
 			}
 		}
@@ -727,9 +727,12 @@ public class OrderView extends Activity {
 				parent.setBackgroundColor(mContext.getResources().getColor(R.color.checkpoint_incomplete_bg));
 			}
 			if (pi.getPhotoPath() != null && !pi.getPhotoPath().equals("")) {
-				photo = Util.decodeFile(photo, GlobalHolder.GLOBAL_STORAGE_PATH
-						+ pi.getPhotoPath());
-				itemOperationIV.setImageBitmap(photo);
+				itemOperationIV.setImageURI(	Uri.parse(pi
+						.getPhotoPath()));
+//			
+//				photo = Util.decodeFile(photo, GlobalHolder.GLOBAL_STORAGE_PATH
+//						+ pi.getPhotoPath());
+//				itemOperationIV.setImageBitmap(photo);
 			} else if (pi.getUploadPhotoAbsPath() != null
 					&& !pi.getUploadPhotoAbsPath().equals("")) {
 				photo = Util.decodeFile(photo, pi.getUploadPhotoAbsPath());
