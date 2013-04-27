@@ -10,7 +10,7 @@ import android.util.Log;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ProjectList implements ProjectJSONParser {
+public class ProjectList  extends AbstractModel implements ProjectJSONParser {
 
     private int resultCount;
 

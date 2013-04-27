@@ -17,8 +17,13 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import android.content.Context;
+import android.content.CursorLoader;
+import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.net.Uri;
+import android.provider.MediaStore;
 import android.util.Log;
 
 import com.auguraclient.model.JSONParserException;
@@ -276,7 +281,7 @@ public class Util {
 			is = new FileInputStream(new File(filePath));
 			BitmapFactory.Options options = new BitmapFactory.Options();
 			options.inJustDecodeBounds = false;
-			options.inSampleSize = 10; // width£¬hightÉèÎªÔ­À´µÄÊ®·ÖÒ»
+			options.inSampleSize = 10; // widthï¿½ï¿½hightï¿½ï¿½ÎªÔ­ï¿½ï¿½ï¿½ï¿½Ê®ï¿½ï¿½Ò»
 			photo = BitmapFactory.decodeStream(is, null, options);
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
@@ -293,4 +298,58 @@ public class Util {
 		return photo;
 
 	}
+	
+	
+	
+	public static  Bitmap decodeFile(String filePath) {
+
+		InputStream is = null;
+		try {
+			is = new FileInputStream(new File(filePath));
+			BitmapFactory.Options options = new BitmapFactory.Options();
+			options.inJustDecodeBounds = false;
+			options.inSampleSize = 10; // widthï¿½ï¿½hightï¿½ï¿½ÎªÔ­ï¿½ï¿½ï¿½ï¿½Ê®ï¿½ï¿½Ò»
+			return BitmapFactory.decodeStream(is, null, options);
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+			return null;
+		} finally {
+			if (is != null) {
+				try {
+					is.close();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
+		}
+
+	}
+	
+	
+	public static Bitmap decodeBitmapFromUri(Context context, Uri uri, int width, int height) {
+		String file = getRealPathFromURI(context, uri);
+		BitmapFactory.Options options = new BitmapFactory.Options();
+		//options.outHeight = width;
+		//options.outWidth = height;
+		options.inScaled = true;
+		options.inSampleSize = 4;
+		return BitmapFactory.decodeFile(file, options);
+	}
+
+	public static String getRealPathFromURI(Context context, Uri contentUri) {
+		String[] proj = { MediaStore.Images.Media.DATA };
+		CursorLoader loader = new CursorLoader(context, contentUri, proj,
+				null, null, null);
+		Cursor cursor = loader.loadInBackground();
+		int column_index = cursor
+				.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
+		cursor.moveToFirst();
+		String url = cursor.getString(column_index);
+		cursor.close();
+		return url;
+	}
+	
+	
+	
+	
 }

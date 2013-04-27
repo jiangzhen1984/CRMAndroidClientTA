@@ -8,9 +8,7 @@ import android.app.ActionBar;
 import android.app.Activity;
 import android.app.Dialog;
 import android.app.ProgressDialog;
-import android.content.ContentResolver;
 import android.content.ContentUris;
-import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -26,10 +24,10 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
-import android.view.View.OnClickListener;
 import android.widget.BaseAdapter;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -42,13 +40,16 @@ import android.widget.Toast;
 import com.auguraclient.R;
 import com.auguraclient.db.ContentDescriptor;
 import com.auguraclient.model.APIException;
+import com.auguraclient.model.AuguaModuleImpl;
 import com.auguraclient.model.AuguraRestAPIImpl;
+import com.auguraclient.model.IAuguraModule;
 import com.auguraclient.model.IAuguraRestAPI;
 import com.auguraclient.model.Project;
 import com.auguraclient.model.ProjectCheckpoint;
 import com.auguraclient.model.ProjectList;
 import com.auguraclient.model.ProjectOrder;
 import com.auguraclient.model.SessionAPIException;
+import com.auguraclient.model.UpdateRecord;
 import com.auguraclient.model.User;
 import com.auguraclient.util.Constants;
 import com.auguraclient.util.GlobalHolder;
@@ -74,6 +75,8 @@ public class ProjectListScreen extends Activity {
 
 	private IAuguraRestAPI api;
 
+	private IAuguraModule moduleApi;
+
 	private CmdHandler handler;
 
 	private UIHandler uiHandler;
@@ -87,7 +90,6 @@ public class ProjectListScreen extends Activity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		// setfullScreen();
 		setContentView(R.layout.projectlist);
 
 		projectList = (ListView) findViewById(R.id.projectList);
@@ -127,6 +129,7 @@ public class ProjectListScreen extends Activity {
 
 		context = this;
 		api = new AuguraRestAPIImpl();
+		moduleApi = new AuguaModuleImpl(context);
 		HandlerThread th = new HandlerThread("project");
 		th.start();
 		handler = new CmdHandler(th.getLooper());
@@ -166,9 +169,7 @@ public class ProjectListScreen extends Activity {
 				Constants.SaveConfig.CONFIG, MODE_PRIVATE);
 		etName.setText(sp.getString(Constants.SaveConfig.USER_NAME, ""));
 		etPwd.setText(sp.getString(Constants.SaveConfig.PASSWORD, ""));
-		etAPI
-				.setText(sp.getString(Constants.SaveConfig.API,
-						Constants.API_URL));
+		etAPI.setText(sp.getString(Constants.SaveConfig.API, Constants.API_URL));
 		setButton.setOnClickListener(new OnClickListener() {
 			public void onClick(View v) {
 				if (etName.getText() == null
@@ -236,7 +237,6 @@ public class ProjectListScreen extends Activity {
 						Message.obtain(handler, CMD_QUERY_PROJECT,
 								projectText.getText().toString())
 								.sendToTarget();
-						
 
 					}
 
@@ -249,69 +249,21 @@ public class ProjectListScreen extends Activity {
 		}
 	};
 
-	public void setfullScreen() {
-		requestWindowFeature(Window.FEATURE_NO_TITLE);
-		getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
-				WindowManager.LayoutParams.FLAG_FULLSCREEN);
-		getWindow().setFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON,
-				WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
-	}
-
-	private void saveToDatabase(ProjectList pl) {
+	private void saveToDatabase(ProjectList pl) throws Exception {
 		for (int i = 0; i < pl.getList().size(); i++) {
 			Project p = pl.getList().get(i);
-			ContentValues cv = new ContentValues();
-			cv.put(ContentDescriptor.ProjectDesc.Cols.PRO_ID, p.getId());
-			cv.put(ContentDescriptor.ProjectDesc.Cols.NAME, p.getName());
-			cv.put(ContentDescriptor.ProjectDesc.Cols.TEXT, p.getText());
-			cv.put(ContentDescriptor.ProjectDesc.Cols.SYNC_FLAG, "1");
-			Uri uri = this.getContentResolver().insert(
-					ContentDescriptor.ProjectDesc.CONTENT_URI, cv);
-			long perojectId = ContentUris.parseId(uri);
-			p.setnID((int) perojectId);
+			moduleApi.saveProject(p);
 			p.setLoadOrderFromDB(true);
 
 			for (int j = 0; j < p.getOrderCount(); j++) {
-				cv.clear();
 				ProjectOrder po = p.getOrder(j);
-				cv.put(ContentDescriptor.ProjectOrderDesc.Cols.NAME, po
-						.getName());
-				cv.put(ContentDescriptor.ProjectOrderDesc.Cols.DESCRIPTION, po
-						.getDescription());
-				cv.put(ContentDescriptor.ProjectOrderDesc.Cols.ORD_ID, po
-						.getId());
-				cv.put(ContentDescriptor.ProjectOrderDesc.Cols.PRO_ID, p
-						.getId());
-				cv.put(ContentDescriptor.ProjectOrderDesc.Cols.QC_COMMENT, po
-						.getQcComment());
-				cv.put(ContentDescriptor.ProjectOrderDesc.Cols.QC_STATUS, po
-						.getQcStatus());
-				cv.put(ContentDescriptor.ProjectOrderDesc.Cols.QUANTITY, po
-						.getQuantity());
-				cv
-						.put(
-								ContentDescriptor.ProjectOrderDesc.Cols.QUANTITY_CHECKED,
-								po.getQuantityChecked());
-				cv.put(ContentDescriptor.ProjectOrderDesc.Cols.PHOTO_NAME, po
-						.getPhotoName());
-				cv
-						.put(
-								ContentDescriptor.ProjectOrderDesc.Cols.PHOTO_LOCAL_SMALL_PATH,
-								po.getPhotoPath());
-				cv
-						.put(
-								ContentDescriptor.ProjectOrderDesc.Cols.PHOTO_LOCAL_BIG_PATH,
-								po.getPhotoBigPath());
-				uri = this.getContentResolver().insert(
-						ContentDescriptor.ProjectOrderDesc.CONTENT_URI, cv);
-				long projectOrderId = ContentUris.parseId(uri);
-				po.setnID((int) projectOrderId);
+
+				moduleApi.saveProjectOrder(po);
 				po.setLoadedCheckpointFromDB(true);
 
 				for (int z = 0; z < po.getCheckpointCount(); z++) {
-					cv.clear();
 					ProjectCheckpoint pcp = po.getOrderCheckpointrByIndex(z);
-					saveCheckpoint(pcp);
+					moduleApi.saveCheckpoint(pcp);
 				}
 			}
 
@@ -319,115 +271,26 @@ public class ProjectListScreen extends Activity {
 	}
 
 	private void removeProjectFromDB(ProjectList pl) {
-		ContentResolver cr = this.getContentResolver();
 		for (int i = 0; i < pl.getList().size(); i++) {
 			Project p = pl.getList().get(i);
-			// delete project_order_checkpoint table records
-			int ret = cr.delete(
-					ContentDescriptor.ProjectCheckpointDesc.CONTENT_URI,
+			int ret = this.moduleApi.deleteFromDB(ProjectCheckpoint.class,
 					ContentDescriptor.ProjectCheckpointDesc.Cols.PRO_ID + "=?",
 					new String[] { p.getId() });
-			Log.i(Constants.TAG, "-------delete " + ret);
-			ret = cr.delete(ContentDescriptor.ProjectOrderDesc.CONTENT_URI,
+			Log.i(Constants.TAG, "-------delete project checkpoint " + ret);
+			ret = this.moduleApi.deleteFromDB(ProjectOrder.class,
 					ContentDescriptor.ProjectOrderDesc.Cols.PRO_ID + "=?",
 					new String[] { p.getId() });
-			Log.i(Constants.TAG, "-------delete " + ret);
-			ret = cr.delete(ContentDescriptor.ProjectDesc.CONTENT_URI,
-					ContentDescriptor.ProjectOrderDesc.Cols.PRO_ID + "=?",
+			Log.i(Constants.TAG, "-------delete order" + ret);
+			ret = this.moduleApi.deleteFromDB(Project.class,
+					ContentDescriptor.ProjectDesc.Cols.PRO_ID + "=?",
 					new String[] { p.getId() });
-			Log.i(Constants.TAG, "-------delete " + ret);
+			Log.i(Constants.TAG, "-------delete  project" + ret);
 		}
 	}
 
-	private void updateCheckpoint(ProjectCheckpoint pcp) {
-		ContentValues cv = new ContentValues();
-		cv
-				.put(ContentDescriptor.ProjectCheckpointDesc.Cols.NAME, pcp
-						.getName());
-		cv.put(ContentDescriptor.ProjectCheckpointDesc.Cols.DESCRIPTION, pcp
-				.getDescription());
-		cv.put(ContentDescriptor.ProjectCheckpointDesc.Cols.CHECKPOINT_ID, pcp
-				.getId());
-		cv.put(ContentDescriptor.ProjectCheckpointDesc.Cols.QC_COMMENT, pcp
-				.getQcComments());
-		cv.put(ContentDescriptor.ProjectCheckpointDesc.Cols.QC_STATUS, pcp
-				.getQcStatus());
-		cv.put(ContentDescriptor.ProjectCheckpointDesc.Cols.PRO_ID, pcp
-				.getProjectItem().getProject().getId());
-		cv.put(ContentDescriptor.ProjectCheckpointDesc.Cols.PRO_ORDER_ID, pcp
-				.getProjectItem().getId());
-		cv.put(ContentDescriptor.ProjectCheckpointDesc.Cols.CATEGORY, pcp
-				.getCategory());
-		cv.put(ContentDescriptor.ProjectCheckpointDesc.Cols.CHECK_TYPE, pcp
-				.getCheckType());
-		cv.put(ContentDescriptor.ProjectCheckpointDesc.Cols.QC_ACTION, pcp
-				.getQcAction());
-		cv.put(ContentDescriptor.ProjectCheckpointDesc.Cols.NUMBER_DEFECT, pcp
-				.getNumberDefect());
-		cv.put(ContentDescriptor.ProjectCheckpointDesc.Cols.PHOTO_NAME, pcp
-				.getPhotoName());
-		cv
-				.put(
-						ContentDescriptor.ProjectCheckpointDesc.Cols.PHOTO_LOCAL_SMALL_PATH,
-						pcp.getPhotoPath());
-		cv
-				.put(
-						ContentDescriptor.ProjectCheckpointDesc.Cols.PHOTO_LOCAL_BIG_PATH,
-						pcp.getPhotoPath());
-		cv.put(ContentDescriptor.ProjectCheckpointDesc.Cols.FLAG, "0");
-		int ret = this.getContentResolver().update(
-				ContentDescriptor.ProjectCheckpointDesc.CONTENT_URI, cv,
-				ContentDescriptor.ProjectCheckpointDesc.Cols.ID + "=?",
-				new String[] { pcp.getnID() + "" });
-		Log.i(Constants.TAG, "======================" + ret);
-	}
-
-	private void saveCheckpoint(ProjectCheckpoint pcp) {
-		ContentValues cv = new ContentValues();
-
-		cv
-				.put(ContentDescriptor.ProjectCheckpointDesc.Cols.NAME, pcp
-						.getName());
-		cv.put(ContentDescriptor.ProjectCheckpointDesc.Cols.DESCRIPTION, pcp
-				.getDescription());
-		cv.put(ContentDescriptor.ProjectCheckpointDesc.Cols.CHECKPOINT_ID, pcp
-				.getId());
-		cv.put(ContentDescriptor.ProjectCheckpointDesc.Cols.QC_COMMENT, pcp
-				.getQcComments());
-		cv.put(ContentDescriptor.ProjectCheckpointDesc.Cols.QC_STATUS, pcp
-				.getQcStatus());
-		cv.put(ContentDescriptor.ProjectCheckpointDesc.Cols.PRO_ID, pcp
-				.getProjectItem().getProject().getId());
-		cv.put(ContentDescriptor.ProjectCheckpointDesc.Cols.PRO_ORDER_ID, pcp
-				.getProjectItem().getId());
-		cv.put(ContentDescriptor.ProjectCheckpointDesc.Cols.CATEGORY, pcp
-				.getCategory());
-		cv.put(ContentDescriptor.ProjectCheckpointDesc.Cols.CHECK_TYPE, pcp
-				.getCheckType());
-		cv.put(ContentDescriptor.ProjectCheckpointDesc.Cols.QC_ACTION, pcp
-				.getQcAction());
-		cv.put(ContentDescriptor.ProjectCheckpointDesc.Cols.NUMBER_DEFECT, pcp
-				.getNumberDefect());
-		cv.put(ContentDescriptor.ProjectCheckpointDesc.Cols.PHOTO_NAME, pcp
-				.getPhotoName());
-		cv
-				.put(
-						ContentDescriptor.ProjectCheckpointDesc.Cols.PHOTO_LOCAL_SMALL_PATH,
-						pcp.getPhotoPath());
-		cv
-				.put(
-						ContentDescriptor.ProjectCheckpointDesc.Cols.PHOTO_LOCAL_BIG_PATH,
-						pcp.getPhotoPath());
-		cv.put(ContentDescriptor.ProjectCheckpointDesc.Cols.FLAG, "0");
-		Uri uri = this.getContentResolver().insert(
-				ContentDescriptor.ProjectCheckpointDesc.CONTENT_URI, cv);
-		long checkpointID = ContentUris.parseId(uri);
-		pcp.setnID((int) checkpointID);
-
-	}
-
-	private void doSync(Project p) throws APIException, SessionAPIException {
-		Cursor c =null;
+	private void doSync(Project p) throws APIException, SessionAPIException,
+			Exception {
+		Cursor c = null;
 		try {
 			c = this.getContentResolver().query(
 					ContentDescriptor.UpdateDesc.CONTENT_URI,
@@ -444,18 +307,18 @@ public class ProjectListScreen extends Activity {
 				String flag = c
 						.getString(c
 								.getColumnIndex(ContentDescriptor.UpdateDesc.Cols.FLAG));
-				
-				
+
 				String type = c
-				.getString(c
-						.getColumnIndex(ContentDescriptor.UpdateDesc.Cols.TYPE));
-				if(type.equals(ContentDescriptor.UpdateDesc.TYPE_ENUM_ORDER)) {
-					
+						.getString(c
+								.getColumnIndex(ContentDescriptor.UpdateDesc.Cols.TYPE));
+				if (type.equals(ContentDescriptor.UpdateDesc.TYPE_ENUM_ORDER)) {
+
 					Cursor orderCur = null;
-					orderCur = this.getContentResolver().query(ContentDescriptor.ProjectOrderDesc.CONTENT_URI,
+					orderCur = this.getContentResolver().query(
+							ContentDescriptor.ProjectOrderDesc.CONTENT_URI,
 							ContentDescriptor.ProjectOrderDesc.Cols.ALL_COLS,
-							ContentDescriptor.ProjectOrderDesc.Cols.ORD_ID + "=?",
-							new String[] {orderId }, null);
+							ContentDescriptor.ProjectOrderDesc.Cols.ORD_ID
+									+ "=?", new String[] { orderId }, null);
 					DateFormat dp = new SimpleDateFormat("yyyy-MM-dd");
 					if (orderCur.moveToNext()) {
 						ProjectOrder po = new ProjectOrder();
@@ -475,9 +338,10 @@ public class ProjectListScreen extends Activity {
 								.getColumnIndexOrThrow(ContentDescriptor.ProjectOrderDesc.Cols.QUANTITY)));
 						po.setQuantityChecked(orderCur.getString(orderCur
 								.getColumnIndexOrThrow(ContentDescriptor.ProjectOrderDesc.Cols.QUANTITY_CHECKED)));
-						String dateString  = orderCur.getString(orderCur
-								.getColumnIndexOrThrow(ContentDescriptor.ProjectOrderDesc.Cols.DATE_MODIFIED));
-						if(dateString != null) {
+						String dateString = orderCur
+								.getString(orderCur
+										.getColumnIndexOrThrow(ContentDescriptor.ProjectOrderDesc.Cols.DATE_MODIFIED));
+						if (dateString != null) {
 							try {
 								po.setDateDodified(dp.parse(dateString));
 							} catch (ParseException e) {
@@ -485,32 +349,25 @@ public class ProjectListScreen extends Activity {
 							}
 						}
 						orderCur.close();
-						
+
 						api.updateOrder(po);
 					}
-					
-					
-					
-					
-					//TODO update order
+
+					// TODO update order
 					continue;
 				}
-				
-				if (flag
-						.equals(ContentDescriptor.UpdateDesc.TYPE_ENUM_FLAG_DELETE)) {
+
+				if (flag.equals(ContentDescriptor.UpdateDesc.TYPE_ENUM_FLAG_DELETE)) {
 					try {
 						api.deleteCheckpoint(relatedId);
 					} catch (Exception e) {
 						e.printStackTrace();
 					}
-
-					this
-							.getContentResolver()
-							.delete(
-									ContentDescriptor.ProjectCheckpointDesc.CONTENT_URI,
+					this.moduleApi
+							.deleteFromDB(
+									ProjectCheckpoint.class,
 									ContentDescriptor.ProjectCheckpointDesc.Cols.CHECKPOINT_ID
 											+ "=?", new String[] { relatedId });
-
 				} else if (flag
 						.equals(ContentDescriptor.UpdateDesc.TYPE_ENUM_FLAG_CREATE)) {
 					ProjectOrder po = p.getOrder(orderId);
@@ -519,17 +376,17 @@ public class ProjectListScreen extends Activity {
 								+ orderId);
 						continue;
 					}
-					ProjectCheckpoint pc = po
+					ProjectCheckpoint pcp = po
 							.findProjectCheckpointById(relatedId);
-					if (po == null || pc == null) {
+					if (po == null || pcp == null) {
 						Log.e(Constants.TAG, "Can't find checkpoint data:"
 								+ relatedId);
 						continue;
 					}
 					// Clear temporary id to get new Id
-					pc.setId(null);
-					api.createCheckpoint(po, pc);
-					updateCheckpoint(pc);
+					pcp.setId(null);
+					api.createCheckpoint(po, pcp);
+					moduleApi.updateCheckpoint(pcp);
 				} else if (flag
 						.equals(ContentDescriptor.UpdateDesc.TYPE_ENUM_FLAG_UPDATE)) {
 					ProjectOrder po = p.getOrder(orderId);
@@ -553,14 +410,12 @@ public class ProjectListScreen extends Activity {
 			if (c != null)
 				c.close();
 		}
-
-		this.getContentResolver().delete(
-				ContentDescriptor.UpdateDesc.CONTENT_URI,
+		
+		this.moduleApi.deleteFromDB(UpdateRecord.class,
 				ContentDescriptor.UpdateDesc.Cols.PRO_ID + "=?",
 				new String[] { p.getId() });
 
 		p.setNeededUpdate(false);
-		// TODO update UI
 	}
 
 	private ProgressDialog dialog;
@@ -616,28 +471,31 @@ public class ProjectListScreen extends Activity {
 			case CMD_QUERY_PROJECT:
 
 				try {
-					Message.obtain(uiHandler, UI_START_WAITING)
-					.sendToTarget();
-					//TODO login fist
+					Message.obtain(uiHandler, UI_START_WAITING).sendToTarget();
+					// TODO login fist
 					SharedPreferences sp = context.getSharedPreferences(
 							Constants.SaveConfig.CONFIG, MODE_PRIVATE);
-					String userName = sp.getString(Constants.SaveConfig.USER_NAME, "");
-					String password = sp.getString(Constants.SaveConfig.PASSWORD, "");
-					if(userName == null || userName.equals("") || password ==null || password.equals("")) {
+					String userName = sp.getString(
+							Constants.SaveConfig.USER_NAME, "");
+					String password = sp.getString(
+							Constants.SaveConfig.PASSWORD, "");
+					if (userName == null || userName.equals("")
+							|| password == null || password.equals("")) {
 						Message.obtain(uiHandler, UI_END_WAITING)
-						.sendToTarget();
-						Toast.makeText(context, "please set user name and password first!",
+								.sendToTarget();
+						Toast.makeText(context,
+								"please set user name and password first!",
 								Toast.LENGTH_SHORT).show();
 						return;
 					}
-					 User user = api.login(userName, password);
-					 if(user ==null) {
-						 Message.obtain(uiHandler, UI_END_WAITING_WITH_ERROR)
-							.sendToTarget();
-						 return;
-					 }
-					 GlobalHolder.setCurrentUser(user);
-					
+					User user = api.login(userName, password);
+					if (user == null) {
+						Message.obtain(uiHandler, UI_END_WAITING_WITH_ERROR)
+								.sendToTarget();
+						return;
+					}
+					GlobalHolder.setCurrentUser(user);
+
 					ProjectList pl = api.loadProject((String) msg.obj);
 					if (pl == null) {
 						Message.obtain(uiHandler, UI_END_WAITING_WITH_ERROR)
@@ -647,7 +505,6 @@ public class ProjectListScreen extends Activity {
 								Toast.LENGTH_SHORT).show();
 					} else {
 
-						// FIXME remove project from cache and database
 						removeProjectFromDB(pl);
 						GlobalHolder.addProject(pl);
 						saveToDatabase(pl);
@@ -678,21 +535,23 @@ public class ProjectListScreen extends Activity {
 				}
 				Message.obtain(uiHandler, UI_START_WAITING).sendToTarget();
 				try {
-					
-					//TODO login fist
+
+					// TODO login fist
 					SharedPreferences sp = context.getSharedPreferences(
 							Constants.SaveConfig.CONFIG, MODE_PRIVATE);
-					String userName = sp.getString(Constants.SaveConfig.USER_NAME, "");
-					String password = sp.getString(Constants.SaveConfig.PASSWORD, "");
-					
-					 User user = api.login(userName, password);
-					 if(user ==null) {
-						 Message.obtain(uiHandler, UI_END_WAITING_WITH_ERROR)
-							.sendToTarget();
-						 return;
-					 }
-					 GlobalHolder.setCurrentUser(user);
-					
+					String userName = sp.getString(
+							Constants.SaveConfig.USER_NAME, "");
+					String password = sp.getString(
+							Constants.SaveConfig.PASSWORD, "");
+
+					User user = api.login(userName, password);
+					if (user == null) {
+						Message.obtain(uiHandler, UI_END_WAITING_WITH_ERROR)
+								.sendToTarget();
+						return;
+					}
+					GlobalHolder.setCurrentUser(user);
+
 					doSync(p);
 				} catch (SessionAPIException e) {
 					Toast.makeText(context, "sync error " + e.getMessage(),

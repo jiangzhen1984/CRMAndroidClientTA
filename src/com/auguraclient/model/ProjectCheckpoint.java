@@ -17,7 +17,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-public class ProjectCheckpoint implements ProjectJSONParser, Serializable, Comparable<ProjectCheckpoint> {
+public class ProjectCheckpoint  extends AbstractModel  implements ProjectJSONParser, Serializable, Comparable<ProjectCheckpoint> {
 
 	/**
      *
@@ -55,6 +55,8 @@ public class ProjectCheckpoint implements ProjectJSONParser, Serializable, Compa
 	private ProjectOrder projectItem;
 
 	private String uploadPhotoAbsPath;
+	
+	private String flag;
 
 	public ProjectCheckpoint() {
 
@@ -331,6 +333,14 @@ public class ProjectCheckpoint implements ProjectJSONParser, Serializable, Compa
 		}
 		
 		return 0;
+	}
+
+	public String getFlag() {
+		return flag;
+	}
+
+	public void setFlag(String flag) {
+		this.flag = flag;
 	}
 	
 	

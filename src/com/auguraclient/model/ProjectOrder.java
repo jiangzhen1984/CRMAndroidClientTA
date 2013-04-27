@@ -19,7 +19,7 @@ import com.auguraclient.util.Constants;
 import com.auguraclient.util.GlobalHolder;
 import com.auguraclient.util.Util;
 
-public class ProjectOrder implements ProjectJSONParser, Serializable {
+public class ProjectOrder  extends AbstractModel implements ProjectJSONParser, Serializable {
 
 	/**
      *

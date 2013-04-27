@@ -12,10 +12,8 @@ import java.util.UUID;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
-import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.Context;
-import android.content.CursorLoader;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
@@ -26,7 +24,6 @@ import android.os.Handler;
 import android.os.HandlerThread;
 import android.os.Looper;
 import android.os.Message;
-import android.provider.MediaStore;
 import android.text.Editable;
 import android.util.Log;
 import android.view.GestureDetector;
@@ -51,12 +48,15 @@ import android.widget.Toast;
 import com.auguraclient.R;
 import com.auguraclient.db.ContentDescriptor;
 import com.auguraclient.model.APIException;
+import com.auguraclient.model.AuguaModuleImpl;
 import com.auguraclient.model.AuguraRestAPIImpl;
+import com.auguraclient.model.IAuguraModule;
 import com.auguraclient.model.IAuguraRestAPI;
 import com.auguraclient.model.Project;
 import com.auguraclient.model.ProjectCheckpoint;
 import com.auguraclient.model.ProjectOrder;
 import com.auguraclient.model.SessionAPIException;
+import com.auguraclient.model.UpdateRecord;
 import com.auguraclient.util.Constants;
 import com.auguraclient.util.GlobalHolder;
 import com.auguraclient.util.Util;
@@ -95,6 +95,8 @@ public class CreateUpdateCheckpoint extends Activity implements
 	private Context mContext;
 
 	private IAuguraRestAPI api;
+	
+	private IAuguraModule moduleApi;
 
 	private UiHandler uiHandler;
 
@@ -134,6 +136,7 @@ public class CreateUpdateCheckpoint extends Activity implements
 				"projectOrder"));
 
 		api = new AuguraRestAPIImpl();
+		moduleApi = new AuguaModuleImpl(this);
 
 		uiHandler = new UiHandler();
 
@@ -170,8 +173,12 @@ public class CreateUpdateCheckpoint extends Activity implements
 //			checkpointPhoto.setImageBitmap(photo);
 //		} else 
 		if (projectCheckpoint.getPhotoPath() != null) {
-			checkpointPhoto.setImageURI(Uri.parse(projectCheckpoint
-					.getPhotoPath()));
+			if(photo != null ) {
+				photo.recycle();
+				photo = Util.decodeFile(projectCheckpoint
+					.getPhotoPath());
+			}
+			checkpointPhoto.setImageBitmap(photo);
 		}
 		checkpointPhoto.setOnClickListener(onOpenPhotoClickListener);
 		setQcStatus();
@@ -246,7 +253,9 @@ public class CreateUpdateCheckpoint extends Activity implements
 			e.printStackTrace();
 		} catch (SessionAPIException e) {
 			e.printStackTrace();
-		}
+		} catch (Exception e) {
+			e.printStackTrace();
+		} 
 		super.onBackPressed();
 		finish();
 	}
@@ -597,9 +606,12 @@ public class CreateUpdateCheckpoint extends Activity implements
 				photo.recycle();
 			}
 			FileOutputStream fo = null;
-			photo = (Bitmap) data.getExtras().get("data");
+			photo = Util.decodeBitmapFromUri(mContext, data.getData(), 2000, 2000);
+			checkpointPhoto.setImageBitmap(photo);
+			
+//			photo = (Bitmap) data.getExtras().get("data");
 			ByteArrayOutputStream bytes = new ByteArrayOutputStream();
-			photo.compress(Bitmap.CompressFormat.PNG, 100, bytes);
+			photo.compress(Bitmap.CompressFormat.JPEG, 100, bytes);
 			
 			
 			Random randomGenerator = new Random();
@@ -607,13 +619,10 @@ public class CreateUpdateCheckpoint extends Activity implements
 			String newimagename = randomGenerator.toString() + ".jpg";
 			File f = new File(Environment.getExternalStorageDirectory()
 					+ File.separator + newimagename);
-			try {
-				f.createNewFile();
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
+			
 
 			try {
+				f.createNewFile();
 				fo = new FileOutputStream(f.getAbsoluteFile());
 				fo.write(bytes.toByteArray());
 				projectCheckpoint.setPhotoPath(f.getAbsolutePath());
@@ -631,8 +640,7 @@ public class CreateUpdateCheckpoint extends Activity implements
 					e.printStackTrace();
 				}
 			}
-
-			checkpointPhoto.setImageBitmap(photo);
+		//	checkpointPhoto.setImageBitmap(photo);
 			
 			/*
 			  Uri selectedImageUri = data.getData();
@@ -650,19 +658,9 @@ public class CreateUpdateCheckpoint extends Activity implements
 			 */
 		}
 	}
+	
+	
 
-	private String getRealPathFromURI(Uri contentUri) {
-		String[] proj = { MediaStore.Images.Media.DATA };
-		CursorLoader loader = new CursorLoader(mContext, contentUri, proj,
-				null, null, null);
-		Cursor cursor = loader.loadInBackground();
-		int column_index = cursor
-				.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
-		cursor.moveToFirst();
-		String url = cursor.getString(column_index);
-		cursor.close();
-		return url;
-	}
 
 	private void doDeleteCheckpoint() {
 		Message.obtain(this.cmdHandler, UI_DELETE_CHECKPOINT).sendToTarget();
@@ -678,37 +676,27 @@ public class CreateUpdateCheckpoint extends Activity implements
 
 	public static final int UI_END_THIS_SESSION = 5;
 
-	private void submit() throws APIException, SessionAPIException {
+	private void submit() throws APIException, SessionAPIException, Exception {
 
 		if(projectCheckpoint.getName() == null ||projectCheckpoint.getName().equals("")) {
 			return;
 		}
 		
 		if (this.createFlag) {
-			// api.createCheckpoint(this.projectOrder, projectCheckpoint);
-			Uri uri = this
-					.getContentResolver()
-					.insert(ContentDescriptor.ProjectCheckpointDesc.CONTENT_URI,
-							getContentValues(ContentDescriptor.UpdateDesc.TYPE_ENUM_FLAG_CREATE));
-			long checkpointID = ContentUris.parseId(uri);
-			this.projectCheckpoint.setnID((int) checkpointID);
-			Log.i(Constants.TAG, " create checkpoint id:" + checkpointID);
-			if (checkpointID == -1) {
-				throw new APIException("Can't save data to database");
+			projectCheckpoint.setFlag(ContentDescriptor.UpdateDesc.TYPE_ENUM_FLAG_CREATE);
+			if (this.projectCheckpoint.getId() == null
+					|| this.projectCheckpoint.getId().equals("")) {
+				this.projectCheckpoint.setId(UUID.randomUUID().toString());
 			}
+			moduleApi.saveCheckpoint(projectCheckpoint);
+
 			projectOrder.addOrderCheckpoint(projectCheckpoint);
-			// this.projectOrder.addOrderCheckpoint(projectCheckpoint);
 			update(ContentDescriptor.UpdateDesc.TYPE_ENUM_FLAG_CREATE);
 			this.createFlag = false;
 		} else {
-			// api.updateCheckpoint(projectCheckpoint);
-			int ret = this
-					.getContentResolver()
-					.update(ContentDescriptor.ProjectCheckpointDesc.CONTENT_URI,
-							getContentValues(ContentDescriptor.UpdateDesc.TYPE_ENUM_FLAG_CREATE),
-							ContentDescriptor.ProjectCheckpointDesc.Cols.CHECKPOINT_ID
-									+ "=?",
-							new String[] { projectCheckpoint.getId() });
+			
+			projectCheckpoint.setFlag(ContentDescriptor.UpdateDesc.TYPE_ENUM_FLAG_CREATE);
+			int ret = moduleApi.updateCheckpoint(projectCheckpoint);
 			Log.i(Constants.TAG, " update checkpoint count:" + ret);
 			update(ContentDescriptor.UpdateDesc.TYPE_ENUM_FLAG_UPDATE);
 		}
@@ -717,7 +705,7 @@ public class CreateUpdateCheckpoint extends Activity implements
 
 	}
 
-	private void update(String flag) {
+	private void update(String flag) throws Exception{
 		if (!flag.equals(ContentDescriptor.UpdateDesc.TYPE_ENUM_FLAG_CREATE)) {
 			Cursor cur = this
 					.getContentResolver()
@@ -738,20 +726,17 @@ public class CreateUpdateCheckpoint extends Activity implements
 			}
 
 		}
-		ContentValues cv = new ContentValues();
 
-		cv.put(ContentDescriptor.UpdateDesc.Cols.TYPE,
-				ContentDescriptor.UpdateDesc.TYPE_ENUM_CHECKPOINT);
-		cv.put(ContentDescriptor.UpdateDesc.Cols.PRO_ID, projectCheckpoint
-				.getProjectItem().getProject().getId());
-		cv.put(ContentDescriptor.UpdateDesc.Cols.PRO_ORDER_ID,
-				projectCheckpoint.getProjectItem().getId());
-		cv.put(ContentDescriptor.UpdateDesc.Cols.RELATE_ID,
-				projectCheckpoint.getId());
-		cv.put(ContentDescriptor.UpdateDesc.Cols.FLAG, flag);
-		Uri uri = this.getContentResolver().insert(
-				ContentDescriptor.UpdateDesc.CONTENT_URI, cv);
-
+		
+		moduleApi.saveUpdateReocrd(new UpdateRecord(ContentDescriptor.UpdateDesc.TYPE_ENUM_CHECKPOINT,
+				 projectCheckpoint
+					.getProjectItem().getProject().getId(),
+					projectCheckpoint.getProjectItem().getId(),
+					projectCheckpoint.getId(),
+					flag
+					
+				));
+		
 		ContentValues update = new ContentValues();
 		update.put(ContentDescriptor.ProjectCheckpointDesc.Cols.FLAG, flag);
 		this.getContentResolver().update(
@@ -762,48 +747,9 @@ public class CreateUpdateCheckpoint extends Activity implements
 
 	}
 
-	private ContentValues getContentValues(String flag) {
-		ContentValues cv = new ContentValues();
-		cv.put(ContentDescriptor.ProjectCheckpointDesc.Cols.NAME,
-				this.projectCheckpoint.getName());
-		cv.put(ContentDescriptor.ProjectCheckpointDesc.Cols.DESCRIPTION,
-				this.projectCheckpoint.getDescription());
-		if (this.projectCheckpoint.getId() == null
-				|| this.projectCheckpoint.getId().equals("")) {
-			this.projectCheckpoint.setId(UUID.randomUUID().toString());
-		}
-		cv.put(ContentDescriptor.ProjectCheckpointDesc.Cols.CHECKPOINT_ID,
-				this.projectCheckpoint.getId());
-		cv.put(ContentDescriptor.ProjectCheckpointDesc.Cols.QC_COMMENT,
-				this.projectCheckpoint.getQcComments());
-		cv.put(ContentDescriptor.ProjectCheckpointDesc.Cols.QC_STATUS,
-				this.projectCheckpoint.getQcStatus());
-		cv.put(ContentDescriptor.ProjectCheckpointDesc.Cols.PRO_ID,
-				projectOrder.getProject().getId());
-		cv.put(ContentDescriptor.ProjectCheckpointDesc.Cols.PRO_ORDER_ID,
-				projectOrder.getId());
-		cv.put(ContentDescriptor.ProjectCheckpointDesc.Cols.CATEGORY,
-				this.projectCheckpoint.getCategory());
-		cv.put(ContentDescriptor.ProjectCheckpointDesc.Cols.CHECK_TYPE,
-				this.projectCheckpoint.getCheckType());
-		cv.put(ContentDescriptor.ProjectCheckpointDesc.Cols.QC_ACTION,
-				this.projectCheckpoint.getQcAction());
-		cv.put(ContentDescriptor.ProjectCheckpointDesc.Cols.NUMBER_DEFECT,
-				this.projectCheckpoint.getNumberDefect());
-		cv.put(ContentDescriptor.ProjectCheckpointDesc.Cols.PHOTO_NAME,
-				this.projectCheckpoint.getPhotoName());
-		cv.put(ContentDescriptor.ProjectCheckpointDesc.Cols.FLAG, flag);
-		cv.put(ContentDescriptor.ProjectCheckpointDesc.Cols.PHOTO_LOCAL_SMALL_PATH,
-				this.projectCheckpoint.getPhotoPath());
-		cv.put(ContentDescriptor.ProjectCheckpointDesc.Cols.PHOTO_LOCAL_BIG_PATH,
-				this.projectCheckpoint.getPhotoPath());
 
-		cv.put(ContentDescriptor.ProjectCheckpointDesc.Cols.PHOTO_LOCAL_PATH,
-				this.projectCheckpoint.getUploadPhotoAbsPath());
-		return cv;
-	}
 
-	private void deleteCheckpoint() throws APIException, SessionAPIException {
+	private void deleteCheckpoint() throws APIException, SessionAPIException, Exception {
 		// TODO select add first
 		int ret = this.getContentResolver().delete(
 				ContentDescriptor.UpdateDesc.CONTENT_URI,
@@ -816,13 +762,6 @@ public class CreateUpdateCheckpoint extends Activity implements
 		if (ret == 0) {
 			update(ContentDescriptor.UpdateDesc.TYPE_ENUM_FLAG_DELETE);
 		}
-		/*
-		 * api.deleteCheckpoint(projectCheckpoint.getId()); ContentResolver cr =
-		 * this.getContentResolver(); int ret = cr.delete(
-		 * ContentDescriptor.ProjectCheckpointDesc.CONTENT_URI,
-		 * ContentDescriptor.ProjectCheckpointDesc.Cols.CHECKPOINT_ID + "=?",
-		 * new String[] { projectCheckpoint.getId() });
-		 */
 	}
 
 	private void showDialog() {

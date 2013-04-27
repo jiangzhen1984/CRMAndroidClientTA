@@ -7,7 +7,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Project implements ProjectJSONParser,Serializable {
+public class Project extends AbstractModel implements ProjectJSONParser,Serializable {
 
     private Integer nID;
 
