@@ -130,7 +130,7 @@ public class CreateUpdateCheckpoint extends Activity implements
 
 		createFlag = this.getIntent().getBooleanExtra("create", true);
 		mContext = this;
-		Project project = GlobalHolder.getProjectById(this.getIntent()
+		Project project = GlobalHolder.getInstance().getProjectById(this.getIntent()
 				.getStringExtra("project"));
 		projectOrder = project.getOrder(this.getIntent().getStringExtra(
 				"projectOrder"));
@@ -152,6 +152,7 @@ public class CreateUpdateCheckpoint extends Activity implements
 			addOrUpdateTextView.setText(R.string.update_checkpoint);
 			projectCheckpoint = projectOrder.findProjectCheckpointById(this
 					.getIntent().getStringExtra("projectCheckpoint"));
+			submitButton.setVisibility(View.INVISIBLE);
 		}
 	}
 
@@ -175,20 +176,20 @@ public class CreateUpdateCheckpoint extends Activity implements
 		if (projectCheckpoint.getPhotoPath() != null) {
 			if(photo != null ) {
 				photo.recycle();
-				photo = Util.decodeFile(projectCheckpoint
-					.getPhotoPath());
 			}
+			photo = Util.decodeFile(GlobalHolder.getInstance().getStoragePath() + projectCheckpoint
+				.getPhotoPath());
 			checkpointPhoto.setImageBitmap(photo);
 		}
 		checkpointPhoto.setOnClickListener(onOpenPhotoClickListener);
 		setQcStatus();
 
 		categorySpinner.setAdapter(new ArrayAdapter(this, R.layout.spinner_ite,
-				GlobalHolder.CATEGORY_ENUM));
+				GlobalHolder.getInstance().getCategoryLabel()));
 		if (this.projectCheckpoint.getCategory() != null) {
-			for (int i = 0; i < GlobalHolder.CATEGORY_ENUM_VALUE.length; i++) {
+			for (int i = 0; i < GlobalHolder.getInstance().getCategoryValue().length; i++) {
 				if (this.projectCheckpoint.getCategory().equals(
-						GlobalHolder.CATEGORY_ENUM_VALUE[i])) {
+						GlobalHolder.getInstance().getCategoryValue()[i])) {
 					categorySpinner.setSelection(i);
 					this.categorySpinnPos = i;
 				}
@@ -196,11 +197,11 @@ public class CreateUpdateCheckpoint extends Activity implements
 		}
 
 		checkTypeSpinner.setAdapter(new ArrayAdapter(this,
-				R.layout.spinner_ite, GlobalHolder.CHECK_TYPE_ENUM));
+				R.layout.spinner_ite, GlobalHolder.getInstance().getChecktypeLabel()));
 		if (this.projectCheckpoint.getCheckType() != null) {
-			for (int i = 0; i < GlobalHolder.CHECK_TYPE_ENUM_VALUE.length; i++) {
+			for (int i = 0; i < GlobalHolder.getInstance().getChecktypeValue().length; i++) {
 				if (this.projectCheckpoint.getCheckType().equals(
-						GlobalHolder.CHECK_TYPE_ENUM_VALUE[i])) {
+						GlobalHolder.getInstance().getChecktypeValue()[i])) {
 					checkTypeSpinner.setSelection(i);
 					this.checktypeSpinnPos = i;
 				}
@@ -208,11 +209,11 @@ public class CreateUpdateCheckpoint extends Activity implements
 		}
 
 		qcActionSpinner.setAdapter(new ArrayAdapter(this, R.layout.spinner_ite,
-				GlobalHolder.QC_ACTION_ENUM));
+				GlobalHolder.getInstance().getQcActionLabel()));
 		if (this.projectCheckpoint.getQcAction() != null) {
-			for (int i = 0; i < GlobalHolder.QC_ACTION_ENUM_VALUE.length; i++) {
+			for (int i = 0; i < GlobalHolder.getInstance().getQcActionLabel().length; i++) {
 				if (this.projectCheckpoint.getQcAction().equals(
-						GlobalHolder.QC_ACTION_ENUM_VALUE[i])) {
+						GlobalHolder.getInstance().getQcActionValue()[i])) {
 					qcActionSpinner.setSelection(i);
 					qcActionSpinnPos = i;
 				}
@@ -584,13 +585,13 @@ public class CreateUpdateCheckpoint extends Activity implements
 
 	private void recordData() {
 		projectCheckpoint
-				.setCategory(GlobalHolder.CATEGORY_ENUM_VALUE[categorySpinner
+				.setCategory(GlobalHolder.getInstance().getCategoryValue()[categorySpinner
 						.getSelectedItemPosition()]);
 		projectCheckpoint
-				.setCheckType(GlobalHolder.CHECK_TYPE_ENUM_VALUE[this.checkTypeSpinner
+				.setCheckType(GlobalHolder.getInstance().getChecktypeValue()[this.checkTypeSpinner
 						.getSelectedItemPosition()]);
 		projectCheckpoint
-				.setQcAction(GlobalHolder.QC_ACTION_ENUM_VALUE[this.qcActionSpinner
+				.setQcAction(GlobalHolder.getInstance().getQcActionValue()[this.qcActionSpinner
 						.getSelectedItemPosition()]);
 		projectCheckpoint.setName(nameEditText.getText().toString());
 		projectCheckpoint.setDescription(detailEditText.getText().toString());
@@ -615,9 +616,8 @@ public class CreateUpdateCheckpoint extends Activity implements
 			
 			
 			Random randomGenerator = new Random();
-			randomGenerator.nextInt();
-			String newimagename = randomGenerator.toString() + ".jpg";
-			File f = new File(Environment.getExternalStorageDirectory()
+			String newimagename = randomGenerator.nextInt() + ".jpg";
+			File f = new File(GlobalHolder.getInstance().getStoragePath()+Constants.CommonConfig.PIC_DIR
 					+ File.separator + newimagename);
 			
 
@@ -625,7 +625,7 @@ public class CreateUpdateCheckpoint extends Activity implements
 				f.createNewFile();
 				fo = new FileOutputStream(f.getAbsoluteFile());
 				fo.write(bytes.toByteArray());
-				projectCheckpoint.setPhotoPath(f.getAbsolutePath());
+				projectCheckpoint.setPhotoPath(Constants.CommonConfig.PIC_DIR + newimagename);
 				projectCheckpoint.setUploadPhotoAbsPath(f.getAbsolutePath());
 			//	projectCheckpoint.setUploadPhotoAbsPath(getRealPathFromURI(data .getData()));
 			} catch (FileNotFoundException e) {

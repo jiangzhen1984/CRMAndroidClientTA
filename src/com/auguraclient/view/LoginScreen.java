@@ -239,7 +239,7 @@ public class LoginScreen extends Activity {
                             Message.obtain(progressHandler, PROGRESS_START_TO_LOG_IN_ERROR_WITH_USER_INVALID, " Log in failed")
                             .sendToTarget();
                         } else {
-                            GlobalHolder.setCurrentUser(user);
+                            GlobalHolder.getInstance().setCurrentUser(user);
                             SharedPreferences sp = context.getSharedPreferences(Constants.SaveConfig.CONFIG, MODE_PRIVATE);
                             Editor edit = sp.edit();
                             edit.putString(Constants.SaveConfig.USER_ID, user.getUseID());

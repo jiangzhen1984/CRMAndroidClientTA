@@ -78,7 +78,7 @@ public class ProjectOrderListView extends Activity {
 	    
         projectItemList = (ListView)this.findViewById(R.id.projectItemList);
         currentProjectPosition = (Integer)this.getIntent().getExtras().get("project");
-        project = GlobalHolder.getProject(currentProjectPosition);
+        project = GlobalHolder.getInstance().getProject(currentProjectPosition);
 
         mContext = this;
         adapter = new ListAdapter(this);
@@ -383,7 +383,7 @@ public class ProjectOrderListView extends Activity {
             itemNameTV.setText(pi.getName());
             qcStatusTV.setText("QC Status :" + pi.getQcStatus());
             quantityTV.setText("Quantity :" + pi.getQuantity());
-            itemPhotoIV.setImageURI(Uri.fromFile(new File(GlobalHolder.GLOBAL_STORAGE_PATH
+            itemPhotoIV.setImageURI(Uri.fromFile(new File(GlobalHolder.getInstance().getStoragePath()
                     + pi.getPhotoPath())));
             itemPhotoIV.setOnClickListener(orderPhotoClickListener);
             photoPath = pi.getOriginPhotoPath();
@@ -409,7 +409,7 @@ public class ProjectOrderListView extends Activity {
     			Intent intent = new Intent(Intent.ACTION_VIEW);
     			intent
     					.setDataAndType(Uri.fromFile(new File(
-    							GlobalHolder.GLOBAL_STORAGE_PATH
+    							GlobalHolder.getInstance().getStoragePath()
     									+ photoPath)),
     							"image/*");
     			intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);

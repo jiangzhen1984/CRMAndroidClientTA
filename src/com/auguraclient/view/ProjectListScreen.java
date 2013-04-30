@@ -169,7 +169,7 @@ public class ProjectListScreen extends Activity {
 				Constants.SaveConfig.CONFIG, MODE_PRIVATE);
 		etName.setText(sp.getString(Constants.SaveConfig.USER_NAME, ""));
 		etPwd.setText(sp.getString(Constants.SaveConfig.PASSWORD, ""));
-		etAPI.setText(sp.getString(Constants.SaveConfig.API, Constants.API_URL));
+		etAPI.setText(sp.getString(Constants.SaveConfig.API, Constants.HOST));
 		setButton.setOnClickListener(new OnClickListener() {
 			public void onClick(View v) {
 				if (etName.getText() == null
@@ -494,7 +494,7 @@ public class ProjectListScreen extends Activity {
 								.sendToTarget();
 						return;
 					}
-					GlobalHolder.setCurrentUser(user);
+					GlobalHolder.getInstance().setCurrentUser(user);
 
 					ProjectList pl = api.loadProject((String) msg.obj);
 					if (pl == null) {
@@ -506,7 +506,7 @@ public class ProjectListScreen extends Activity {
 					} else {
 
 						removeProjectFromDB(pl);
-						GlobalHolder.addProject(pl);
+						GlobalHolder.getInstance().addProject(pl);
 						saveToDatabase(pl);
 					}
 					Message.obtain(uiHandler, UI_END_WAITING).sendToTarget();
@@ -527,7 +527,7 @@ public class ProjectListScreen extends Activity {
 				break;
 			case CMD_SYNC_PROJECT:
 				String id = (String) msg.obj;
-				Project p = GlobalHolder.getProjectById(id);
+				Project p = GlobalHolder.getInstance().getProjectById(id);
 				if (id == null || id.equals("") || p == null) {
 					Toast.makeText(context, "Can't get project information",
 							Toast.LENGTH_SHORT);
@@ -550,7 +550,7 @@ public class ProjectListScreen extends Activity {
 								.sendToTarget();
 						return;
 					}
-					GlobalHolder.setCurrentUser(user);
+					GlobalHolder.getInstance().setCurrentUser(user);
 
 					doSync(p);
 				} catch (SessionAPIException e) {
@@ -579,12 +579,12 @@ public class ProjectListScreen extends Activity {
 		}
 
 		public int getCount() {
-			return GlobalHolder.getPl() == null ? 0 : GlobalHolder.getPl()
+			return GlobalHolder.getInstance().getPl() == null ? 0 : GlobalHolder.getInstance().getPl()
 					.getResultCount();
 		}
 
 		public Object getItem(int position) {
-			return GlobalHolder.getProject(position);
+			return GlobalHolder.getInstance().getProject(position);
 		}
 
 		public long getItemId(int position) {
@@ -594,10 +594,10 @@ public class ProjectListScreen extends Activity {
 		public View getView(int position, View convertView, ViewGroup parent) {
 			if (convertView == null) {
 				ItemView appView = new ItemView(context);
-				appView.updateView(GlobalHolder.getProject(position));
+				appView.updateView(GlobalHolder.getInstance().getProject(position));
 				convertView = appView;
 			} else {
-				((ItemView) convertView).updateView(GlobalHolder
+				((ItemView) convertView).updateView(GlobalHolder.getInstance()
 						.getProject(position));
 			}
 			return convertView;
@@ -636,7 +636,7 @@ public class ProjectListScreen extends Activity {
 				public void onClick(View v) {
 					Intent i = new Intent();
 					i.setClass(context, ProjectOrderListView.class);
-					i.putExtra("project", GlobalHolder.getIndex(p));
+					i.putExtra("project", GlobalHolder.getInstance().getIndex(p));
 					context.startActivity(i);
 				}
 

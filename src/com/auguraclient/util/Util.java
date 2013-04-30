@@ -307,8 +307,8 @@ public class Util {
 		try {
 			is = new FileInputStream(new File(filePath));
 			BitmapFactory.Options options = new BitmapFactory.Options();
-			options.inJustDecodeBounds = false;
-			options.inSampleSize = 10; // width��hight��Ϊԭ����ʮ��һ
+			//options.inJustDecodeBounds = false;
+			options.inSampleSize = 4; // width��hight��Ϊԭ����ʮ��һ
 			return BitmapFactory.decodeStream(is, null, options);
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
@@ -329,10 +329,10 @@ public class Util {
 	public static Bitmap decodeBitmapFromUri(Context context, Uri uri, int width, int height) {
 		String file = getRealPathFromURI(context, uri);
 		BitmapFactory.Options options = new BitmapFactory.Options();
-		//options.outHeight = width;
-		//options.outWidth = height;
-		options.inScaled = true;
-		options.inSampleSize = 4;
+		options.outHeight = width;
+		options.outWidth = height;
+		options.inScaled = false;
+		options.inSampleSize = 3;
 		return BitmapFactory.decodeFile(file, options);
 	}
 

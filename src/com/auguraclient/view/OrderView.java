@@ -106,6 +106,8 @@ public class OrderView extends Activity {
 	private List<View> tView;
 	
 	private int currentQcStatusPos;
+	
+	private Bitmap photo;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -123,7 +125,7 @@ public class OrderView extends Activity {
 		Integer itemPosition = (Integer) this.getIntent().getExtras()
 				.get("itemPosition");
 
-		project = GlobalHolder.getProject(position);
+		project = GlobalHolder.getInstance().getProject(position);
 
 		projectItem = project.getOrder(itemPosition);
 
@@ -150,17 +152,22 @@ public class OrderView extends Activity {
 				: projectItem.getQcComment());
 		qcCheckedED.setText(projectItem.getQuantityChecked());
 		qcDateED.setText(projectItem.getModifiedDateString());
-
-		projectItemPhotoIV.setImageURI(Uri.fromFile(new File(
-				GlobalHolder.GLOBAL_STORAGE_PATH
-						+ projectItem.getPhotoBigPath())));
+		if(photo != null) {
+			photo.recycle();
+		}
+		
+		photo = Util.decodeFile(GlobalHolder.getInstance().getStoragePath() +projectItem.getPhotoBigPath());
+		projectItemPhotoIV.setImageBitmap(photo);
+		//projectItemPhotoIV.setImageURI(Uri.fromFile(new File(
+			//	GlobalHolder.getInstance().getStoragePath()
+				//		+ projectItem.getPhotoBigPath())));
 
 		qcCheckedED.setText(projectItem.getQuantityChecked());
 
 		if (this.projectItem.getQcStatus() != null) {
-			for (int i = 0; i < GlobalHolder.QC_Status_ENUM.length; i++) {
+			for (int i = 0; i < GlobalHolder.getInstance().getQcStatus().length; i++) {
 				if (this.projectItem.getQcStatus().equals(
-						GlobalHolder.QC_Status_ENUM[i])) {
+						GlobalHolder.getInstance().getQcStatus()[i])) {
 					qcStatusSpinner.setSelection(i);
 					currentQcStatusPos = i;
 				}
@@ -206,7 +213,7 @@ public class OrderView extends Activity {
 		qcStatusSpinner = (Spinner) this.findViewById(R.id.qcStatusSpinner);
 
 		qcStatusSpinner.setAdapter(new ArrayAdapter(this, R.layout.spinner_ite,
-				GlobalHolder.QC_Status_ENUM));
+				GlobalHolder.getInstance().getQcStatus()));
 
 		qcDateED = (EditText) this.findViewById(R.id.order_detal_qc_date_edit);
 
@@ -336,7 +343,7 @@ public class OrderView extends Activity {
 		public void onClick(View v) {
 			Intent intent = new Intent(Intent.ACTION_VIEW);
 			intent.setDataAndType(
-					Uri.fromFile(new File(GlobalHolder.GLOBAL_STORAGE_PATH
+					Uri.fromFile(new File(GlobalHolder.getInstance().getStoragePath()
 							+ projectItem.getOriginPhotoPath())), "image/*");
 			intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 			startActivity(Intent.createChooser(intent, "Select Picture"));
@@ -511,7 +518,7 @@ public class OrderView extends Activity {
 		
 		projectItem.setQcComment(itemOrderCommentED.getText().toString());
 		projectItem.setDescription(itemOrderDescriptionED.getText().toString());
-		projectItem.setQcStatus(GlobalHolder.QC_Status_ENUM[qcStatusSpinner.getSelectedItemPosition()]);
+		projectItem.setQcStatus(GlobalHolder.getInstance().getQcStatus()[qcStatusSpinner.getSelectedItemPosition()]);
 		projectItem.setQuantityChecked(qcCheckedED.getText().toString());
 		
 		ContentValues cv = new ContentValues();
@@ -533,9 +540,9 @@ public class OrderView extends Activity {
 					projectItem.getId());
 			orderCV.put(ContentDescriptor.UpdateDesc.Cols.RELATE_ID,
 					projectItem.getId());
-			cv.put(ContentDescriptor.UpdateDesc.Cols.FLAG, ContentDescriptor.UpdateDesc.TYPE_ENUM_FLAG_UPDATE);
+			orderCV.put(ContentDescriptor.UpdateDesc.Cols.FLAG, ContentDescriptor.UpdateDesc.TYPE_ENUM_FLAG_UPDATE);
 			Uri uri = this.getContentResolver().insert(
-					ContentDescriptor.UpdateDesc.CONTENT_URI, cv);
+					ContentDescriptor.UpdateDesc.CONTENT_URI, orderCV);
 		}
 		
 	}
@@ -726,13 +733,15 @@ public class OrderView extends Activity {
 				//itemOperationIV.setImageResource(R.drawable.missing);
 				parent.setBackgroundColor(mContext.getResources().getColor(R.color.checkpoint_incomplete_bg));
 			}
+			
+			if(photo != null) {
+				photo.recycle();
+			}
 			if (pi.getPhotoPath() != null && !pi.getPhotoPath().equals("")) {
-				itemOperationIV.setImageURI(	Uri.parse(pi
-						.getPhotoPath()));
-//			
-//				photo = Util.decodeFile(photo, GlobalHolder.GLOBAL_STORAGE_PATH
-//						+ pi.getPhotoPath());
-//				itemOperationIV.setImageBitmap(photo);
+				
+				photo = Util.decodeFile(GlobalHolder.getInstance().getStoragePath()
+						+ pi.getPhotoPath());
+				itemOperationIV.setImageBitmap(photo);
 			} else if (pi.getUploadPhotoAbsPath() != null
 					&& !pi.getUploadPhotoAbsPath().equals("")) {
 				photo = Util.decodeFile(photo, pi.getUploadPhotoAbsPath());

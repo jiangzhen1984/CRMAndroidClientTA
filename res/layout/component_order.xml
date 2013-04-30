@@ -71,6 +71,7 @@
             android:layout_centerVertical="true"
         android:layout_alignParentRight="true"
         android:layout_marginRight="7dip"
+        android:visibility="invisible"
              android:contentDescription="@string/order_information_required"/>
 
 

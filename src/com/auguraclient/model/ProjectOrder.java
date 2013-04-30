@@ -103,14 +103,14 @@ public class ProjectOrder  extends AbstractModel implements ProjectJSONParser, S
 
 			this.originPhotoPath = Constants.CommonConfig.PIC_DIR + photoName;
 			Util.loadImageFromURL(new URL(Constants.PHTOT_API_URL + photoName),
-					GlobalHolder.GLOBAL_STORAGE_PATH + this.originPhotoPath);
+					GlobalHolder.getInstance().getStoragePath()+ this.originPhotoPath);
 
 			Util.loadImageFromURL(new URL(Constants.PHTOT_COMPRESSED_API_URL
 					+ photoName + "&h=70&w=70"),
-					GlobalHolder.GLOBAL_STORAGE_PATH + this.photoPath);
+					GlobalHolder.getInstance().getStoragePath()+ this.photoPath);
 			Util.loadImageFromURL(new URL(Constants.PHTOT_COMPRESSED_API_URL
 					+ photoName + "&h=150&w=150"),
-					GlobalHolder.GLOBAL_STORAGE_PATH + this.photoBigPath);
+					GlobalHolder.getInstance().getStoragePath() + this.photoBigPath);
 
 		} catch (JSONException e) {
 			throw new JSONParserException(e);

@@ -109,7 +109,7 @@ public class ProjectCheckpoint  extends AbstractModel  implements ProjectJSONPar
 			if (this.photoName != null && !this.photoName.isEmpty()) {
 				this.photoPath = Constants.CommonConfig.PIC_DIR + photoName;
 				Util.loadImageFromURL(new URL(Constants.PHTOT_API_URL
-						+ photoName), GlobalHolder.GLOBAL_STORAGE_PATH
+						+ photoName), GlobalHolder.getInstance().getStoragePath()
 						+ this.photoPath);
 			} else {
 				this.photoPath = null;
@@ -167,11 +167,11 @@ public class ProjectCheckpoint  extends AbstractModel  implements ProjectJSONPar
 	}
 
 	public String getCategoryLabel() {
-		for (int i = 0; i < GlobalHolder.CATEGORY_ENUM_VALUE.length; i++) {
+		for (int i = 0; i < GlobalHolder.getInstance().getCategoryValue().length; i++) {
 			if (this.category != null
 					&& this.category
-							.equals(GlobalHolder.CATEGORY_ENUM_VALUE[i])) {
-				return GlobalHolder.CATEGORY_ENUM[i];
+							.equals(GlobalHolder.getInstance().getCategoryValue()[i])) {
+				return GlobalHolder.getInstance().getCategoryLabel()[i];
 			}
 		}
 		return null;
@@ -186,11 +186,11 @@ public class ProjectCheckpoint  extends AbstractModel  implements ProjectJSONPar
 	}
 
 	public String getCheckTypeLabel() {
-		for (int i = 0; i < GlobalHolder.CHECK_TYPE_ENUM_VALUE.length; i++) {
+		for (int i = 0; i < GlobalHolder.getInstance().getChecktypeValue().length; i++) {
 			if (this.checkType != null
 					&& this.checkType
-							.equals(GlobalHolder.CHECK_TYPE_ENUM_VALUE[i])) {
-				return GlobalHolder.CHECK_TYPE_ENUM[i];
+							.equals(GlobalHolder.getInstance().getChecktypeValue()[i])) {
+				return GlobalHolder.getInstance().getChecktypeLabel()[i];
 			}
 		}
 		return null;

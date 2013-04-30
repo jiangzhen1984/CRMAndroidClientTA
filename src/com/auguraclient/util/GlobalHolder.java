@@ -6,56 +6,78 @@ import com.auguraclient.model.User;
 
 public class GlobalHolder {
 
-	private static User currentLogInedUser;
+	private  User currentLogInedUser;
 
-	private static ProjectList pl;
+	private  ProjectList pl;
 
-	public static String GLOBAL_STORAGE_PATH;
+	private  String GLOBAL_STORAGE_PATH;
 
-	public static String[] CATEGORY_ENUM = { "", "Accessory", "Appearance",
+	private  String[] CATEGORY_ENUM = { "", "Accessory", "Appearance",
 			"Dimension Weight", "Functioning", "Marking", "Material",
 			"Packaging", "Resistance", "Wrapping", "Other" };
 	
-	public static String[] CATEGORY_ENUM_VALUE = { "", "accessory", "appearance",
+	private  String[] CATEGORY_ENUM_VALUE = { "", "accessory", "appearance",
 		"dimension_weight", "functioning", "marking", "material",
 		"packaging", "resistance", "wrapping", "other" };
 
-	public static String[] CHECK_TYPE_ENUM = { "", "Visual", "Manual Test",
+	private  String[] CHECK_TYPE_ENUM = { "", "Visual", "Manual Test",
 			"Ruler", "Scale", "Caliper", "Pulling Tool" };
-	public static String[] CHECK_TYPE_ENUM_VALUE = { "", "visual", "manual",
+	private String[] CHECK_TYPE_ENUM_VALUE = { "", "visual", "manual",
 		"ruler", "scale", "caliper", "pulling_tool" };
 	
-	public static String[] QC_ACTION_ENUM ={"", "Correct During QC","Correct After QC", "Cannot Correct", "Refuse to Correct"};
+	private String[] QC_ACTION_ENUM ={"", "Correct During QC","Correct After QC", "Cannot Correct", "Refuse to Correct"};
 	
-	public static String[] QC_ACTION_ENUM_VALUE ={"", "during_qc","after_qc", "cannot", "refuse"};
+	private String[] QC_ACTION_ENUM_VALUE ={"", "during_qc","after_qc", "cannot", "refuse"};
 	
 	
-	public static String[] QC_Status_ENUM ={"", "Failed","Passed", "Alert", "Ready"};
+	private String[] QC_Status_ENUM ={"", "Failed","Passed", "Alert", "Ready"};
+	
+	
+	
+	
+	
+	
+	private static GlobalHolder mInstance;
+	
+	public static GlobalHolder getInstance() {
+		if(mInstance == null) {
+			mInstance = new GlobalHolder();
+		}
+		return mInstance;
+	}
+	
+	private GlobalHolder() {
+		
+	}
+	
+	public String getStoragePath() {
+		return this.GLOBAL_STORAGE_PATH;
+	}
 
-	public synchronized static void setCurrentUser(User user) {
+	public synchronized  void setCurrentUser(User user) {
 		currentLogInedUser = user;
 	}
 
-	public synchronized static User getCrrentUser() {
+	public synchronized  User getCrrentUser() {
 		return currentLogInedUser;
 	}
 
-	public static String getSessionId() {
+	public  String getSessionId() {
 		if (currentLogInedUser == null) {
 			return null;
 		}
 		return currentLogInedUser.getmSessionID();
 	}
 
-	public static ProjectList getPl() {
+	public  ProjectList getPl() {
 		return pl;
 	}
 
-	public static void setPl(ProjectList pl) {
-		GlobalHolder.pl = pl;
+	public  void setPl(ProjectList pl) {
+		this.pl = pl;
 	}
 	
-	public static int getIndex(Project p) {
+	public  int getIndex(Project p) {
 		for (int i = 0; i < pl.getList().size(); i++) {
 			Project newP = pl.getList().get(i);
 			if(newP.getId().equals(p.getId())) {
@@ -65,7 +87,7 @@ public class GlobalHolder {
 		return -1;
 	}
 
-	public static Project getProject(int index) {
+	public  Project getProject(int index) {
 		if (pl == null || pl.getList() == null || pl.getList().isEmpty()
 				|| pl.getList().size() < index) {
 			return null;
@@ -74,11 +96,11 @@ public class GlobalHolder {
 		return pl.getList().get(index);
 	}
 
-	public static void addProject(Project p) {
+	public  void addProject(Project p) {
 		pl.addProject(p);
 	}
 	
-	public static Project getProjectById(String id) {
+	public  Project getProjectById(String id) {
 		for (int i = 0; i < pl.getList().size(); i++) {
 			Project newP = pl.getList().get(i);
 			if(newP.getId().equals(id)) {
@@ -88,7 +110,7 @@ public class GlobalHolder {
 		return null;
 	}
 
-	public static void addProject(ProjectList pList) {
+	public  void addProject(ProjectList pList) {
 		if (pl == null) {
 			pl = pList;
 		} else {
@@ -99,5 +121,38 @@ public class GlobalHolder {
 			}
 		}
 	}
+	
+	
+	public String[] getCategoryLabel() {
+		return this.CATEGORY_ENUM;
+	}
+	
+	public String[] getCategoryValue() {
+		return this.CATEGORY_ENUM_VALUE;
+	}
+	
+	public String[] getQcActionLabel() {
+		return this.QC_ACTION_ENUM;
+	}
+	public String[] getQcActionValue() {
+		return this.QC_ACTION_ENUM_VALUE;
+	}
+	
+	public String[] getChecktypeLabel() {
+		return this.CHECK_TYPE_ENUM;
+	}
+	
+	public String[] getChecktypeValue() {
+		return this.CHECK_TYPE_ENUM_VALUE;
+	}
+	
+	
+	public void setStoragePath(String path){
+		this.GLOBAL_STORAGE_PATH = path;
+	}
 
+	
+	public String[] getQcStatus() {
+		return this.QC_Status_ENUM;
+	}
 }

@@ -66,9 +66,9 @@ public class LogoView extends Activity {
 	}
 
 	private void initConfig() {
-		GlobalHolder.GLOBAL_STORAGE_PATH = Environment
-				.getExternalStorageDirectory().getAbsolutePath();
-		String path = GlobalHolder.GLOBAL_STORAGE_PATH
+		GlobalHolder.getInstance().setStoragePath(Environment
+				.getExternalStorageDirectory().getAbsolutePath());
+		String path = GlobalHolder.getInstance().getStoragePath()
 				+ Constants.CommonConfig.PIC_DIR;
 		File f = new File(path);
 		if (!f.exists()) {
@@ -97,7 +97,7 @@ public class LogoView extends Activity {
 			u.setmSessionID(session);
 			u.setPassword(password);
 			u.setUseID(userID);
-			GlobalHolder.setCurrentUser(u);
+			GlobalHolder.getInstance().setCurrentUser(u);
 			loadProjectFromDb();
 			i.setAction("com.auguraclient.view.projectList");
 			i.addCategory("com.auguraclient.view");
@@ -138,7 +138,7 @@ public class LogoView extends Activity {
 			updateCursor.close();
 		}
 		c.close();
-		GlobalHolder.setPl(pl);
+		GlobalHolder.getInstance().setPl(pl);
 	}
 
 	private void loadOderFromDB(Project p) {
