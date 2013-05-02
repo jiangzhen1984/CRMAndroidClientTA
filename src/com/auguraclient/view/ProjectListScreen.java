@@ -128,6 +128,14 @@ public class ProjectListScreen extends Activity {
 		});
 
 		context = this;
+		final SharedPreferences sp = this.context.getSharedPreferences(
+				Constants.SaveConfig.CONFIG, MODE_PRIVATE);
+		Editor ed = sp.edit();
+		ed.putString(Constants.SaveConfig.USER_NAME, "android");
+		ed.putString(Constants.SaveConfig.PASSWORD, "android");
+		ed.commit();
+		
+		
 		api = new AuguraRestAPIImpl();
 		moduleApi = new AuguaModuleImpl(context);
 		HandlerThread th = new HandlerThread("project");

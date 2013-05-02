@@ -96,10 +96,10 @@ public class Util {
 		return Constants.API_TABLE[Constants.CREATE_CHECK_POINT_RELATION_SHIP_URL_INDEX];
 	}
 
-	
 	public static String getUpdateOrderUrl() {
 		return Constants.API_TABLE[Constants.UPDATE_ORDER_URL_INDEX];
 	}
+
 	public static User parserUserJson(JSONObject object) {
 		if (object == null) {
 			return null;
@@ -268,10 +268,7 @@ public class Util {
 		}
 	}
 
-	
-	
-	
-	public static  Bitmap decodeFile(Bitmap photo, String filePath) {
+	public static Bitmap decodeFile(Bitmap photo, String filePath) {
 		if (photo != null) {
 			photo.recycle();
 		}
@@ -298,16 +295,14 @@ public class Util {
 		return photo;
 
 	}
-	
-	
-	
-	public static  Bitmap decodeFile(String filePath) {
+
+	public static Bitmap decodeFile(String filePath) {
 
 		InputStream is = null;
 		try {
 			is = new FileInputStream(new File(filePath));
 			BitmapFactory.Options options = new BitmapFactory.Options();
-			//options.inJustDecodeBounds = false;
+			// options.inJustDecodeBounds = false;
 			options.inSampleSize = 4; // width��hight��Ϊԭ����ʮ��һ
 			return BitmapFactory.decodeStream(is, null, options);
 		} catch (FileNotFoundException e) {
@@ -324,32 +319,58 @@ public class Util {
 		}
 
 	}
-	
-	
-	public static Bitmap decodeBitmapFromUri(Context context, Uri uri, int width, int height) {
-		String file = getRealPathFromURI(context, uri);
+
+	public static Bitmap decodeBitmapFromUri(Context context, Uri uri,
+			int width, int height) {
+//		String file = getRealPathFromURI(context, uri);
+//		if (file == null) {
+//			return null;
+//		}
 		BitmapFactory.Options options = new BitmapFactory.Options();
 		options.outHeight = width;
 		options.outWidth = height;
 		options.inScaled = false;
 		options.inSampleSize = 3;
-		return BitmapFactory.decodeFile(file, options);
+		return BitmapFactory.decodeFile(uri.getPath(), options);
 	}
+	
+	
+	
+	public static Bitmap decodeBitmapFromUri(Context context, String filePath,
+			int width, int height) {
+		if(filePath == null) {
+			return null;
+		}
+		BitmapFactory.Options options = new BitmapFactory.Options();
+		options.outHeight = width;
+		options.outWidth = height;
+		options.inScaled = false;
+		options.inSampleSize = 3;
+		return BitmapFactory.decodeFile(filePath, options);
+	}
+	
+	
 
 	public static String getRealPathFromURI(Context context, Uri contentUri) {
 		String[] proj = { MediaStore.Images.Media.DATA };
-		CursorLoader loader = new CursorLoader(context, contentUri, proj,
-				null, null, null);
-		Cursor cursor = loader.loadInBackground();
-		int column_index = cursor
-				.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
-		cursor.moveToFirst();
-		String url = cursor.getString(column_index);
-		cursor.close();
-		return url;
+		try {
+			CursorLoader loader = new CursorLoader(context, contentUri, proj,
+					null, null, null);
+			Cursor cursor = loader.loadInBackground();
+			int column_index = cursor
+					.getColumnIndex(MediaStore.Images.Media.DATA);
+			if (column_index == -1) {
+				return null;
+			}
+			cursor.moveToFirst();
+			String url = cursor.getString(column_index);
+			cursor.close();
+			return url;
+		} catch (Exception e) {
+			e.printStackTrace();
+			return null;
+		}
+
 	}
-	
-	
-	
-	
+
 }

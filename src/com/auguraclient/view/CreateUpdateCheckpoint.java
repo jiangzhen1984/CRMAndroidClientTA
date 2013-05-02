@@ -19,11 +19,11 @@ import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Environment;
 import android.os.Handler;
 import android.os.HandlerThread;
 import android.os.Looper;
 import android.os.Message;
+import android.provider.MediaStore;
 import android.text.Editable;
 import android.util.Log;
 import android.view.GestureDetector;
@@ -95,7 +95,7 @@ public class CreateUpdateCheckpoint extends Activity implements
 	private Context mContext;
 
 	private IAuguraRestAPI api;
-	
+
 	private IAuguraModule moduleApi;
 
 	private UiHandler uiHandler;
@@ -130,8 +130,8 @@ public class CreateUpdateCheckpoint extends Activity implements
 
 		createFlag = this.getIntent().getBooleanExtra("create", true);
 		mContext = this;
-		Project project = GlobalHolder.getInstance().getProjectById(this.getIntent()
-				.getStringExtra("project"));
+		Project project = GlobalHolder.getInstance().getProjectById(
+				this.getIntent().getStringExtra("project"));
 		projectOrder = project.getOrder(this.getIntent().getStringExtra(
 				"projectOrder"));
 
@@ -167,18 +167,19 @@ public class CreateUpdateCheckpoint extends Activity implements
 		detailEditText.setText(projectCheckpoint.getDescription());
 		qcCommentEditText.setText(projectCheckpoint.getQcComments());
 		qcDefectEditText.setText(projectCheckpoint.getNumberDefect());
-//		if (projectCheckpoint.getUploadPhotoAbsPath() != null
-//				&& !projectCheckpoint.getUploadPhotoAbsPath().equals("")) {
-//			photo = Util.decodeFile(photo,
-//					projectCheckpoint.getUploadPhotoAbsPath());
-//			checkpointPhoto.setImageBitmap(photo);
-//		} else 
+		if (photo != null) {
+			photo.recycle();
+		}
+
+		// if (projectCheckpoint.getUploadPhotoAbsPath() != null
+		// && !projectCheckpoint.getUploadPhotoAbsPath().equals("")) {
+		// photo = Util.decodeFile(photo,
+		// projectCheckpoint.getUploadPhotoAbsPath());
+		// checkpointPhoto.setImageBitmap(photo);
+		// } else
 		if (projectCheckpoint.getPhotoPath() != null) {
-			if(photo != null ) {
-				photo.recycle();
-			}
-			photo = Util.decodeFile(GlobalHolder.getInstance().getStoragePath() + projectCheckpoint
-				.getPhotoPath());
+			photo = Util.decodeFile(GlobalHolder.getInstance().getStoragePath()
+					+ projectCheckpoint.getPhotoPath());
 			checkpointPhoto.setImageBitmap(photo);
 		}
 		checkpointPhoto.setOnClickListener(onOpenPhotoClickListener);
@@ -197,7 +198,8 @@ public class CreateUpdateCheckpoint extends Activity implements
 		}
 
 		checkTypeSpinner.setAdapter(new ArrayAdapter(this,
-				R.layout.spinner_ite, GlobalHolder.getInstance().getChecktypeLabel()));
+				R.layout.spinner_ite, GlobalHolder.getInstance()
+						.getChecktypeLabel()));
 		if (this.projectCheckpoint.getCheckType() != null) {
 			for (int i = 0; i < GlobalHolder.getInstance().getChecktypeValue().length; i++) {
 				if (this.projectCheckpoint.getCheckType().equals(
@@ -256,7 +258,7 @@ public class CreateUpdateCheckpoint extends Activity implements
 			e.printStackTrace();
 		} catch (Exception e) {
 			e.printStackTrace();
-		} 
+		}
 		super.onBackPressed();
 		finish();
 	}
@@ -284,7 +286,7 @@ public class CreateUpdateCheckpoint extends Activity implements
 			if (pos < projectOrder.getCheckpointCount() - 1) {
 				startSwitch = true;
 				pos++;
-				
+
 				toRight = true;
 			} else {
 				Toast.makeText(mContext, "This is last one", Toast.LENGTH_SHORT)
@@ -311,11 +313,12 @@ public class CreateUpdateCheckpoint extends Activity implements
 					.getOrderCheckpointrByIndex(pos).getId());
 			i.setClass(mContext, CreateUpdateCheckpoint.class);
 			startActivity(i);
-			if(toRight) {
-				CreateUpdateCheckpoint.this.overridePendingTransition(R.anim.view_checkpoint_in,
-						R.anim.view_checkpoint_out);
+			if (toRight) {
+				CreateUpdateCheckpoint.this.overridePendingTransition(
+						R.anim.view_checkpoint_in, R.anim.view_checkpoint_out);
 			} else {
-				CreateUpdateCheckpoint.this.overridePendingTransition(R.anim.to_right_view_checkpoint_in,
+				CreateUpdateCheckpoint.this.overridePendingTransition(
+						R.anim.to_right_view_checkpoint_in,
 						R.anim.to_right_view_checkpoint_out);
 			}
 			finish();
@@ -350,8 +353,6 @@ public class CreateUpdateCheckpoint extends Activity implements
 		return false;
 	}
 
-	
-	
 	private void initListener() {
 		returnButton.setOnClickListener(returnButtonListener);
 		submitButton.setOnClickListener(submitListener);
@@ -435,11 +436,25 @@ public class CreateUpdateCheckpoint extends Activity implements
 
 	};
 
+
 	private OnClickListener selectPhotoListener = new OnClickListener() {
 
 		public void onClick(View arg0) {
 			recordData();
 			Intent intent = new Intent("android.media.action.IMAGE_CAPTURE");
+			File tempFile = new File(GlobalHolder.getInstance().getStoragePath()
+					+ Constants.CommonConfig.PIC_DIR + File.separator
+					+ "temp.jpg");
+			try {
+				if (!tempFile.exists()) {
+					boolean b = tempFile.createNewFile();
+
+					System.out.println("========================" + b);
+				}
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			intent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(tempFile));
 			startActivityForResult(intent, 100);
 		}
 	};
@@ -476,8 +491,8 @@ public class CreateUpdateCheckpoint extends Activity implements
 				intent.setDataAndType(Uri.fromFile(new File(projectCheckpoint
 						.getUploadPhotoAbsPath())), "image/*");
 			} else if (projectCheckpoint.getPhotoPath() != null) {
-				intent.setDataAndType(Uri.parse(projectCheckpoint
-						.getPhotoPath()), "image/*");
+				intent.setDataAndType(
+						Uri.fromFile(new File(GlobalHolder.getInstance().getStoragePath() + projectCheckpoint.getPhotoPath())), "image/*");
 			}
 			intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 			startActivity(Intent.createChooser(intent, "Select Picture"));
@@ -584,15 +599,14 @@ public class CreateUpdateCheckpoint extends Activity implements
 	}
 
 	private void recordData() {
-		projectCheckpoint
-				.setCategory(GlobalHolder.getInstance().getCategoryValue()[categorySpinner
-						.getSelectedItemPosition()]);
-		projectCheckpoint
-				.setCheckType(GlobalHolder.getInstance().getChecktypeValue()[this.checkTypeSpinner
-						.getSelectedItemPosition()]);
-		projectCheckpoint
-				.setQcAction(GlobalHolder.getInstance().getQcActionValue()[this.qcActionSpinner
-						.getSelectedItemPosition()]);
+		projectCheckpoint.setCategory(GlobalHolder.getInstance()
+				.getCategoryValue()[categorySpinner.getSelectedItemPosition()]);
+		projectCheckpoint.setCheckType(GlobalHolder.getInstance()
+				.getChecktypeValue()[this.checkTypeSpinner
+				.getSelectedItemPosition()]);
+		projectCheckpoint.setQcAction(GlobalHolder.getInstance()
+				.getQcActionValue()[this.qcActionSpinner
+				.getSelectedItemPosition()]);
 		projectCheckpoint.setName(nameEditText.getText().toString());
 		projectCheckpoint.setDescription(detailEditText.getText().toString());
 		projectCheckpoint.setQcComments(qcCommentEditText.getText().toString());
@@ -602,65 +616,69 @@ public class CreateUpdateCheckpoint extends Activity implements
 
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-		if (resultCode == Activity.RESULT_OK && requestCode == 100) {
-			if (photo != null) {
-				photo.recycle();
-			}
-			FileOutputStream fo = null;
-			photo = Util.decodeBitmapFromUri(mContext, data.getData(), 2000, 2000);
-			checkpointPhoto.setImageBitmap(photo);
-			
-//			photo = (Bitmap) data.getExtras().get("data");
-			ByteArrayOutputStream bytes = new ByteArrayOutputStream();
-			photo.compress(Bitmap.CompressFormat.JPEG, 100, bytes);
-			
-			
-			Random randomGenerator = new Random();
-			String newimagename = randomGenerator.nextInt() + ".jpg";
-			File f = new File(GlobalHolder.getInstance().getStoragePath()+Constants.CommonConfig.PIC_DIR
-					+ File.separator + newimagename);
-			
+		try {
+			if (resultCode == Activity.RESULT_OK && requestCode == 100) {
+				if (photo != null) {
+					photo.recycle();
+				}
+				FileOutputStream fo = null;
+				if (data == null) {
+					File tempFile = new File(GlobalHolder.getInstance().getStoragePath()
+							+ Constants.CommonConfig.PIC_DIR + File.separator
+							+ "temp.jpg");
+					photo = Util.decodeBitmapFromUri(mContext,
+							tempFile.getAbsolutePath(), 2000, 2000);
+				} else {
+					photo = Util.decodeBitmapFromUri(mContext, data.getData(),
+							2000, 2000);
+				}
+				if (photo == null) {
+					Toast.makeText(mContext, "can't load photo from camera!",
+							Toast.LENGTH_LONG).show();
+					return;
+				}
+				checkpointPhoto.setImageBitmap(photo);
 
-			try {
-				f.createNewFile();
-				fo = new FileOutputStream(f.getAbsoluteFile());
-				fo.write(bytes.toByteArray());
-				projectCheckpoint.setPhotoPath(Constants.CommonConfig.PIC_DIR + newimagename);
-				projectCheckpoint.setUploadPhotoAbsPath(f.getAbsolutePath());
-			//	projectCheckpoint.setUploadPhotoAbsPath(getRealPathFromURI(data .getData()));
-			} catch (FileNotFoundException e) {
-				e.printStackTrace();
-			} catch (IOException e) {
-				e.printStackTrace();
-			} finally {
+				// photo = (Bitmap) data.getExtras().get("data");
+				ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+				photo.compress(Bitmap.CompressFormat.JPEG, 100, bytes);
+
+				Random randomGenerator = new Random();
+				String newimagename = randomGenerator.nextInt() + ".jpg";
+				File f = new File(GlobalHolder.getInstance().getStoragePath()
+						+ Constants.CommonConfig.PIC_DIR + File.separator
+						+ newimagename);
+
 				try {
-					if (fo != null)
-						fo.close();
+					f.createNewFile();
+					fo = new FileOutputStream(f.getAbsoluteFile());
+					fo.write(bytes.toByteArray());
+					projectCheckpoint
+							.setPhotoPath(Constants.CommonConfig.PIC_DIR
+									+ newimagename);
+					projectCheckpoint
+							.setUploadPhotoAbsPath(f.getAbsolutePath());
+				} catch (FileNotFoundException e) {
+					e.printStackTrace();
 				} catch (IOException e) {
 					e.printStackTrace();
+				} finally {
+					try {
+						if (fo != null)
+							fo.close();
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
 				}
+				autoSave();
+
 			}
-		//	checkpointPhoto.setImageBitmap(photo);
-			
-			/*
-			  Uri selectedImageUri = data.getData();
-			  checkpointPhoto.setImageURI(selectedImageUri);
-			  projectCheckpoint.setPhotoPath(selectedImageUri.toString());
-			  projectCheckpoint.setUploadPhotoAbsPath(getRealPathFromURI(data .getData()));
-			  */
-			autoSave();
-			/*
-			 * 
-			 * Uri selectedImageUri = data.getData();
-			 * checkpointPhoto.setImageURI(selectedImageUri);
-			 * projectCheckpoint.setUploadPhotoAbsPath(getRealPathFromURI(data
-			 * .getData()));
-			 */
+		} catch (Exception e) {
+			Toast.makeText(mContext, "can't catch photo from camera",
+					Toast.LENGTH_LONG).show();
+			e.printStackTrace();
 		}
 	}
-	
-	
-
 
 	private void doDeleteCheckpoint() {
 		Message.obtain(this.cmdHandler, UI_DELETE_CHECKPOINT).sendToTarget();
@@ -676,14 +694,16 @@ public class CreateUpdateCheckpoint extends Activity implements
 
 	public static final int UI_END_THIS_SESSION = 5;
 
-	private void submit() throws APIException, SessionAPIException, Exception {
+	private void submit() throws Exception {
 
-		if(projectCheckpoint.getName() == null ||projectCheckpoint.getName().equals("")) {
+		if (projectCheckpoint.getName() == null
+				|| projectCheckpoint.getName().equals("")) {
 			return;
 		}
-		
+
 		if (this.createFlag) {
-			projectCheckpoint.setFlag(ContentDescriptor.UpdateDesc.TYPE_ENUM_FLAG_CREATE);
+			projectCheckpoint
+					.setFlag(ContentDescriptor.UpdateDesc.TYPE_ENUM_FLAG_CREATE);
 			if (this.projectCheckpoint.getId() == null
 					|| this.projectCheckpoint.getId().equals("")) {
 				this.projectCheckpoint.setId(UUID.randomUUID().toString());
@@ -694,8 +714,9 @@ public class CreateUpdateCheckpoint extends Activity implements
 			update(ContentDescriptor.UpdateDesc.TYPE_ENUM_FLAG_CREATE);
 			this.createFlag = false;
 		} else {
-			
-			projectCheckpoint.setFlag(ContentDescriptor.UpdateDesc.TYPE_ENUM_FLAG_CREATE);
+
+			projectCheckpoint
+					.setFlag(ContentDescriptor.UpdateDesc.TYPE_ENUM_FLAG_CREATE);
 			int ret = moduleApi.updateCheckpoint(projectCheckpoint);
 			Log.i(Constants.TAG, " update checkpoint count:" + ret);
 			update(ContentDescriptor.UpdateDesc.TYPE_ENUM_FLAG_UPDATE);
@@ -705,7 +726,7 @@ public class CreateUpdateCheckpoint extends Activity implements
 
 	}
 
-	private void update(String flag) throws Exception{
+	private void update(String flag) throws Exception {
 		if (!flag.equals(ContentDescriptor.UpdateDesc.TYPE_ENUM_FLAG_CREATE)) {
 			Cursor cur = this
 					.getContentResolver()
@@ -727,16 +748,14 @@ public class CreateUpdateCheckpoint extends Activity implements
 
 		}
 
-		
-		moduleApi.saveUpdateReocrd(new UpdateRecord(ContentDescriptor.UpdateDesc.TYPE_ENUM_CHECKPOINT,
-				 projectCheckpoint
-					.getProjectItem().getProject().getId(),
-					projectCheckpoint.getProjectItem().getId(),
-					projectCheckpoint.getId(),
-					flag
-					
-				));
-		
+		moduleApi.saveUpdateReocrd(new UpdateRecord(
+				ContentDescriptor.UpdateDesc.TYPE_ENUM_CHECKPOINT,
+				projectCheckpoint.getProjectItem().getProject().getId(),
+				projectCheckpoint.getProjectItem().getId(), projectCheckpoint
+						.getId(), flag
+
+		));
+
 		ContentValues update = new ContentValues();
 		update.put(ContentDescriptor.ProjectCheckpointDesc.Cols.FLAG, flag);
 		this.getContentResolver().update(
@@ -747,9 +766,8 @@ public class CreateUpdateCheckpoint extends Activity implements
 
 	}
 
-
-
-	private void deleteCheckpoint() throws APIException, SessionAPIException, Exception {
+	private void deleteCheckpoint() throws APIException, SessionAPIException,
+			Exception {
 		// TODO select add first
 		int ret = this.getContentResolver().delete(
 				ContentDescriptor.UpdateDesc.CONTENT_URI,
@@ -791,7 +809,8 @@ public class CreateUpdateCheckpoint extends Activity implements
 				Message.obtain(uiHandler, UI_START_SUBMIT).sendToTarget();
 				try {
 					submit();
-					//Toast.makeText(mContext, "Saved", Toast.LENGTH_LONG).show();
+					// Toast.makeText(mContext, "Saved",
+					// Toast.LENGTH_LONG).show();
 				} catch (Exception e) {
 					e.printStackTrace();
 					Toast.makeText(mContext, e.getMessage(), Toast.LENGTH_SHORT)
