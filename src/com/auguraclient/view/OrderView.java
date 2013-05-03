@@ -389,6 +389,13 @@ public class OrderView extends Activity {
 					tView.add(appView);
 				}
 			}
+			//means do filp and return
+		} else if(resultCode == 0) {
+			projectOrderCheckpointList.removeAllViews();
+			for(int i =0;i <tView.size(); i++) {
+				((ItemView)tView.get(i)).recycle();
+			}
+			initAdapterView();
 		}
 	}
 
@@ -661,7 +668,6 @@ public class OrderView extends Activity {
 		c.close();
 	}
 
-	static boolean a;
 	class ItemView extends LinearLayout {
 
 		private Context mContext;
@@ -761,6 +767,13 @@ public class OrderView extends Activity {
 				}
 
 			});
+		}
+		
+		public void recycle() {
+			if(photo != null) {
+				photo.recycle();
+			}
+			
 		}
 
 	}
