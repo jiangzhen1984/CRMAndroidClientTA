@@ -16,28 +16,32 @@ import android.os.Handler;
 import android.os.HandlerThread;
 import android.os.Looper;
 import android.os.Message;
+import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.view.ViewGroup;
-import android.view.Window;
-import android.view.WindowManager;
+import android.view.View.OnClickListener;
 import android.widget.AdapterView;
-import android.widget.AdapterView.OnItemClickListener;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.PopupMenu;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.AdapterView.OnItemClickListener;
 
 import com.auguraclient.R;
 import com.auguraclient.db.ContentDescriptor;
-import com.auguraclient.model.AuguraRestAPIImpl;
-import com.auguraclient.model.IAuguraRestAPI;
+import com.auguraclient.model.AuguaModuleImpl;
+import com.auguraclient.model.IAuguraModule;
 import com.auguraclient.model.Project;
 import com.auguraclient.model.ProjectCheckpoint;
+import com.auguraclient.model.ProjectList;
 import com.auguraclient.model.ProjectOrder;
+import com.auguraclient.model.UpdateRecord;
+import com.auguraclient.util.Constants;
 import com.auguraclient.util.GlobalHolder;
 
 public class ProjectOrderListView extends Activity {
@@ -47,6 +51,12 @@ public class ProjectOrderListView extends Activity {
     private static final int END_WAITING = 2;
 
     private static final int END_WAITING_WITH_ERROR = 3;
+    
+    private static final int END_WAITING_END_SESSION = 4;
+    
+    private static final int LOAD_PROJECT_ITEM = 1;
+    
+    private static final int DELETE_PROJECT = 2;
 
     private Context mContext;
 
@@ -54,9 +64,7 @@ public class ProjectOrderListView extends Activity {
 
     private Project project;
 
-    private IAuguraRestAPI api;
-
-    private static final int LOAD_PROJECT_ITEM = 1;
+    private IAuguraModule moduleApi;
 
     private LoaderHandler handler;
 
@@ -67,6 +75,8 @@ public class ProjectOrderListView extends Activity {
     private TextView itemTitleTV;
     
     private LinearLayout returnButton;
+    
+    private ImageView showMenuButton;
     
     private ListAdapter adapter;
     
@@ -81,13 +91,16 @@ public class ProjectOrderListView extends Activity {
         project = GlobalHolder.getInstance().getProject(currentProjectPosition);
 
         mContext = this;
+        moduleApi = new AuguaModuleImpl(mContext);
         adapter = new ListAdapter(this);
         projectItemList.setAdapter(adapter);
 
         itemTitleTV = (TextView)this.findViewById(R.id.itemTitle);
         returnButton = (LinearLayout) this.findViewById(R.id.order_list_return_button);
+        
+        showMenuButton = (ImageView) findViewById(R.id.imgShowDeleteProjectMenu);
+        
         returnButton.setOnClickListener(returnButtonListener);
-        api = new AuguraRestAPIImpl();
 
         HandlerThread ht = new HandlerThread("it");
         ht.start();
@@ -105,6 +118,9 @@ public class ProjectOrderListView extends Activity {
                 mContext.startActivity(i);
             }
         });
+        
+        showMenuButton.setOnClickListener(showMenuListener);
+
     }
 
     @Override
@@ -113,6 +129,30 @@ public class ProjectOrderListView extends Activity {
         itemTitleTV.setText(this.project.getName());
         adapter.notifyDataSetChanged();
     }
+
+    
+    private OnClickListener showMenuListener = new OnClickListener() {
+
+		public void onClick(View arg0) {
+			PopupMenu popupMenu = new PopupMenu(mContext, showMenuButton);
+			popupMenu.getMenuInflater().inflate(
+					R.layout.menu_item_order_list, popupMenu.getMenu());
+			popupMenu
+					.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+
+						public boolean onMenuItemClick(MenuItem item) {
+
+							if (item.getItemId() == R.id.delete_project) {
+								doDeleteProject();
+							}
+							return true;
+						}
+					});
+
+			popupMenu.show();
+		}
+
+	};
     
     private OnClickListener returnButtonListener = new OnClickListener() {
 
@@ -123,15 +163,10 @@ public class ProjectOrderListView extends Activity {
     };
     
     
-
-    public void setfullScreen() {
-        requestWindowFeature(Window.FEATURE_NO_TITLE);
-        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
-                WindowManager.LayoutParams.FLAG_FULLSCREEN);
-        getWindow().setFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON,
-                WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
-    }
     
+    private void doDeleteProject() {
+    	Message.obtain(handler, DELETE_PROJECT).sendToTarget();
+    }
     
 
     private ProgressDialog dialog;
@@ -156,9 +191,16 @@ public class ProjectOrderListView extends Activity {
                         dialog.cancel();
                         dialog.dismiss();
                     }
-                    // TODO show toast
                     Toast.makeText(dialog.getContext(), "errorr ---------------",
                             Toast.LENGTH_SHORT).show();
+                    break;
+                case END_WAITING_END_SESSION:
+                	if (dialog != null) {
+                        dialog.cancel();
+                        dialog.dismiss();
+                    }
+                	finish();
+                	break;
             }
         }
     }
@@ -189,10 +231,37 @@ public class ProjectOrderListView extends Activity {
                         Message.obtain(uiHandler, END_WAITING_WITH_ERROR).sendToTarget();
                     }
                     break;
+                case DELETE_PROJECT:
+                	Message.obtain(uiHandler, START_WAITING).sendToTarget();
+                	removeProjectFromDB();
+                	GlobalHolder.getInstance().getPl().removeProject(project);
+                	Message.obtain(uiHandler, END_WAITING_END_SESSION).sendToTarget();
+                	break;
             }
         }
 
     }
+    
+    
+    private void removeProjectFromDB() {
+			int ret = this.moduleApi.deleteFromDB(ProjectCheckpoint.class,
+					ContentDescriptor.ProjectCheckpointDesc.Cols.PRO_ID + "=?",
+					new String[] { project.getId() });
+			Log.i(Constants.TAG, "-------delete project checkpoint " + ret);
+			ret = this.moduleApi.deleteFromDB(ProjectOrder.class,
+					ContentDescriptor.ProjectOrderDesc.Cols.PRO_ID + "=?",
+					new String[] { project.getId() });
+			Log.i(Constants.TAG, "-------delete order" + ret);
+			ret = this.moduleApi.deleteFromDB(Project.class,
+					ContentDescriptor.ProjectDesc.Cols.PRO_ID + "=?",
+					new String[] { project.getId() });
+			Log.i(Constants.TAG, "-------delete  project" + ret);
+			ret = this.moduleApi.deleteFromDB(UpdateRecord.class,
+					ContentDescriptor.UpdateDesc.Cols.PRO_ID + "=?",
+					new String[] { project.getId() });
+			Log.i(Constants.TAG, "-------delete  project" + ret);
+	}
+    
 
     private void loadOrderFromDB() {
        ContentResolver  cr =this.getContentResolver();

@@ -23,6 +23,7 @@ import org.apache.http.protocol.BasicHttpContext;
 import android.util.Log;
 
 import com.auguraclient.util.Constants;
+import com.auguraclient.util.LogRecorder;
 
 public class HttpWrapper {
 
@@ -176,6 +177,7 @@ public class HttpWrapper {
 				os = conn.getOutputStream();
 
 				Log.i(Constants.TAG, message1);
+				LogRecorder.i(message1);
 				os.write(message1.getBytes());
 
 				// FIXME
@@ -205,9 +207,14 @@ public class HttpWrapper {
 					}
 				} while (len > 0);
 
+				Log.i(Constants.TAG, "=========================");
 				Log.i(Constants.TAG, sb.toString());
+				Log.i(Constants.TAG, "=========================");
+				LogRecorder.i("=========================");
+				LogRecorder.i(sb.toString());
 			} catch (Exception e) {
 				e.printStackTrace();
+				LogRecorder.i(e.getMessage());
 			} finally {
 				try {
 					os.close();
@@ -258,6 +265,7 @@ public class HttpWrapper {
 			HttpGet httpget = null;
 			try {
 				Log.i(Constants.TAG, "sending url:  " + url);
+				LogRecorder.i(url);
 				httpget = new HttpGet(url);
 
 				HttpResponse response = null;
@@ -278,9 +286,11 @@ public class HttpWrapper {
 				response = httpClient.execute(httpget, new BasicHttpContext());
 				msg.response = request(response);
 				Log.i(Constants.TAG, "get data " + msg.response);
+				LogRecorder.i(msg.response);
 			} catch (Exception e) {
 				msg.flag = -2;
 				Log.e(Constants.TAG, "", e);
+				LogRecorder.i(e.getMessage());
 			} finally {
 				synchronized (msg) {
 					msg.notify();
@@ -308,6 +318,7 @@ public class HttpWrapper {
 				}
 				return str.toString();
 			} catch (Exception ex) {
+				LogRecorder.i(ex.getMessage());
 				throw ex;
 			} finally {
 				if (in != null)

@@ -95,6 +95,15 @@ public class AuguraDatabaseHelper extends SQLiteOpenHelper {
             );
         
         
+        db.execSQL("CREATE TABLE " + ContentDescriptor.AuguraLog.NAME+ " ( " +
+                ContentDescriptor.AuguraLog.Cols.ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                ContentDescriptor.AuguraLog.Cols.LOG_DESC +" TEXT NOT NULL," +
+                "UNIQUE (" +
+                    ContentDescriptor.AuguraLog.Cols.ID +
+                ") ON CONFLICT REPLACE)"
+            );
+        
+        
     }
 
     @Override

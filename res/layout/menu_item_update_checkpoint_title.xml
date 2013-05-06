@@ -1,0 +1,9 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android" >
+    <item
+        android:id="@+id/delete_checkpoint"
+        android:itemBackground="@color/menu_background"
+        android:showAsAction="always"
+        android:textSize="10sp"
+        android:title="@string/menu_delete"/>
+
+</menu>

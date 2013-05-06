@@ -38,7 +38,7 @@ public class Util {
 	private static MessageDigest digest = null;
 
 	public static String encryptMD5(String sum) {
-		if (sum == null || sum.isEmpty()) {
+		if (sum == null || sum.equals("")) {
 			Log.w("AUGURACLIENT", "can't encrype empty string ");
 			return null;
 		}

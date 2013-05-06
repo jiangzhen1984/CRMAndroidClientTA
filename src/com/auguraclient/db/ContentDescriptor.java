@@ -197,5 +197,24 @@ public class ContentDescriptor {
 		}
 
 	}
+	
+	
+	
+	public static class AuguraLog {
+		public static final String PATH = "augura_log";
+
+		public static final int TOKEN = 5;
+
+		public static final String NAME = PATH;
+
+		public static final Uri CONTENT_URI = BASE_URI.buildUpon().appendPath(
+				PATH).build();
+		public static class Cols {
+			public static final String ID = BaseColumns._ID;
+
+			public static final String LOG_DESC = "log";
+		}
+		
+	}
 
 }

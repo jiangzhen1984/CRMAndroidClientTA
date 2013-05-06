@@ -38,6 +38,9 @@ public class AuguraContentProvider extends ContentProvider {
 		case ContentDescriptor.UpdateDesc.TOKEN:
 			qb.setTables(ContentDescriptor.UpdateDesc.NAME);
 			break;
+		case ContentDescriptor.AuguraLog.TOKEN:
+			qb.setTables(ContentDescriptor.AuguraLog.NAME);
+			break;
 		}
 
 		SQLiteDatabase db = auguraHelper.getReadableDatabase();
@@ -83,6 +86,13 @@ public class AuguraContentProvider extends ContentProvider {
 					values);
 			getContext().getContentResolver().notifyChange(uri, null);
 			return ContentDescriptor.UpdateDesc.CONTENT_URI
+					.buildUpon().appendPath(String.valueOf(id)).build();
+			
+		case ContentDescriptor.AuguraLog.TOKEN:
+			id = db.insert(ContentDescriptor.AuguraLog.NAME, null,
+					values);
+			getContext().getContentResolver().notifyChange(uri, null);
+			return ContentDescriptor.AuguraLog.CONTENT_URI
 					.buildUpon().appendPath(String.valueOf(id)).build();
 		default: {
 			throw new UnsupportedOperationException("URI: " + uri

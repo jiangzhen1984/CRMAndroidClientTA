@@ -77,6 +77,16 @@ public class LogoView extends Activity {
 						Toast.LENGTH_SHORT).show();
 			}
 		}
+		
+		String logDir = GlobalHolder.getInstance().getStoragePath()
+		+ Constants.CommonConfig.LOG_DIR;
+		f = new File(logDir);
+		if(!f.exists()) {
+			f.mkdirs();
+		}
+		
+		
+		
 		SharedPreferences sp = mContext.getSharedPreferences(
 				Constants.SaveConfig.CONFIG, MODE_PRIVATE);
 		String userName = sp.getString(Constants.SaveConfig.USER_NAME, "");
@@ -175,7 +185,7 @@ public class LogoView extends Activity {
 					.getColumnIndexOrThrow(ContentDescriptor.ProjectOrderDesc.Cols.QUANTITY_CHECKED)));
 			String dateString  = c.getString(c
 					.getColumnIndexOrThrow(ContentDescriptor.ProjectOrderDesc.Cols.DATE_MODIFIED));
-			if(dateString != null) {
+			if(dateString != null && !dateString.equals("")) {
 				try {
 					po.setDateDodified(dp.parse(dateString));
 				} catch (ParseException e) {

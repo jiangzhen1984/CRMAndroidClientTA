@@ -167,7 +167,7 @@ public class OrderView extends Activity {
 		if (this.projectItem.getQcStatus() != null) {
 			for (int i = 0; i < GlobalHolder.getInstance().getQcStatus().length; i++) {
 				if (this.projectItem.getQcStatus().equals(
-						GlobalHolder.getInstance().getQcStatus()[i])) {
+						GlobalHolder.getInstance().getQcStatusValue()[i])) {
 					qcStatusSpinner.setSelection(i);
 					currentQcStatusPos = i;
 				}
@@ -525,7 +525,7 @@ public class OrderView extends Activity {
 		
 		projectItem.setQcComment(itemOrderCommentED.getText().toString());
 		projectItem.setDescription(itemOrderDescriptionED.getText().toString());
-		projectItem.setQcStatus(GlobalHolder.getInstance().getQcStatus()[qcStatusSpinner.getSelectedItemPosition()]);
+		projectItem.setQcStatus(GlobalHolder.getInstance().getQcStatusValue()[qcStatusSpinner.getSelectedItemPosition()]);
 		projectItem.setQuantityChecked(qcCheckedED.getText().toString());
 		
 		ContentValues cv = new ContentValues();
@@ -554,119 +554,7 @@ public class OrderView extends Activity {
 		
 	}
 
-	private void saveDataToDB() {
-		ContentValues cv = new ContentValues();
-		for (int z = 0; z < projectItem.getCheckpointCount(); z++) {
-			cv.clear();
-			ProjectCheckpoint pcp = projectItem.getOrderCheckpointrByIndex(z);
-			cv.put(ContentDescriptor.ProjectCheckpointDesc.Cols.NAME,
-					pcp.getName());
-			cv.put(ContentDescriptor.ProjectCheckpointDesc.Cols.DESCRIPTION,
-					pcp.getDescription());
-			cv.put(ContentDescriptor.ProjectCheckpointDesc.Cols.CHECKPOINT_ID,
-					pcp.getId());
-			cv.put(ContentDescriptor.ProjectCheckpointDesc.Cols.QC_COMMENT,
-					pcp.getQcComments());
-			cv.put(ContentDescriptor.ProjectCheckpointDesc.Cols.QC_STATUS,
-					pcp.getQcStatus());
-			cv.put(ContentDescriptor.ProjectCheckpointDesc.Cols.PRO_ID,
-					projectItem.getProject().getId());
-			cv.put(ContentDescriptor.ProjectCheckpointDesc.Cols.PRO_ORDER_ID,
-					projectItem.getId());
-			cv.put(ContentDescriptor.ProjectCheckpointDesc.Cols.CATEGORY,
-					pcp.getCategory());
-			cv.put(ContentDescriptor.ProjectCheckpointDesc.Cols.CHECK_TYPE,
-					pcp.getCheckType());
-			cv.put(ContentDescriptor.ProjectCheckpointDesc.Cols.QC_ACTION,
-					pcp.getQcAction());
-			cv.put(ContentDescriptor.ProjectCheckpointDesc.Cols.NUMBER_DEFECT,
-					pcp.getNumberDefect());
-			cv.put(ContentDescriptor.ProjectCheckpointDesc.Cols.PHOTO_NAME,
-					pcp.getPhotoName());
-			cv.put(ContentDescriptor.ProjectCheckpointDesc.Cols.PHOTO_LOCAL_SMALL_PATH,
-					pcp.getPhotoPath());
-			cv.put(ContentDescriptor.ProjectCheckpointDesc.Cols.PHOTO_LOCAL_BIG_PATH,
-					pcp.getPhotoPath());
-			Uri uri = this.getContentResolver().insert(
-					ContentDescriptor.ProjectCheckpointDesc.CONTENT_URI, cv);
-			long checkpointID = ContentUris.parseId(uri);
-			pcp.setnID((int) checkpointID);
-		}
-	}
-
-	private void loadCheckpointFromDB() {
-		ContentResolver cr = this.getContentResolver();
-		Cursor c = null;
-		c = cr.query(ContentDescriptor.ProjectCheckpointDesc.CONTENT_URI,
-				ContentDescriptor.ProjectCheckpointDesc.Cols.ALL_COLS,
-				ContentDescriptor.ProjectCheckpointDesc.Cols.PRO_ORDER_ID
-						+ "=? and "
-						+ ContentDescriptor.ProjectCheckpointDesc.Cols.FLAG
-						+ "<>?", new String[] { this.projectItem.getId(),
-						ContentDescriptor.UpdateDesc.TYPE_ENUM_FLAG_DELETE },
-				null);
-
-		while (c.moveToNext()) {
-			ProjectCheckpoint pcp = new ProjectCheckpoint();
-			pcp.setnID(c.getInt(c
-					.getColumnIndexOrThrow(ContentDescriptor.ProjectCheckpointDesc.Cols.ID)));
-			pcp.setId(c.getString(c
-					.getColumnIndexOrThrow(ContentDescriptor.ProjectCheckpointDesc.Cols.CHECKPOINT_ID)));
-			pcp.setName(c.getString(c
-					.getColumnIndexOrThrow(ContentDescriptor.ProjectCheckpointDesc.Cols.NAME)));
-
-			pcp.setPhotoPath(c.getString(c
-					.getColumnIndexOrThrow(ContentDescriptor.ProjectCheckpointDesc.Cols.PHOTO_LOCAL_SMALL_PATH)));
-
-			pcp.setPhotoName(c.getString(c
-					.getColumnIndexOrThrow(ContentDescriptor.ProjectCheckpointDesc.Cols.PHOTO_NAME)));
-
-			if (c.getColumnIndex(ContentDescriptor.ProjectCheckpointDesc.Cols.DESCRIPTION) > 0) {
-				pcp.setDescription(c.getString(c
-						.getColumnIndexOrThrow(ContentDescriptor.ProjectCheckpointDesc.Cols.DESCRIPTION)));
-			}
-
-			if (c.getColumnIndex(ContentDescriptor.ProjectCheckpointDesc.Cols.CATEGORY) >= 0) {
-				pcp.setCategory(c.getString(c
-						.getColumnIndexOrThrow(ContentDescriptor.ProjectCheckpointDesc.Cols.CATEGORY)));
-			}
-
-			if (c.getColumnIndex(ContentDescriptor.ProjectCheckpointDesc.Cols.QC_COMMENT) >= 0) {
-				pcp.setQcComments(c.getString(c
-						.getColumnIndexOrThrow(ContentDescriptor.ProjectCheckpointDesc.Cols.QC_COMMENT)));
-			}
-			if (c.getColumnIndex(ContentDescriptor.ProjectCheckpointDesc.Cols.QC_COMMENT) >= 0) {
-				pcp.setQcComments(c.getString(c
-						.getColumnIndexOrThrow(ContentDescriptor.ProjectCheckpointDesc.Cols.QC_COMMENT)));
-			}
-			if (c.getColumnIndex(ContentDescriptor.ProjectCheckpointDesc.Cols.QC_STATUS) >= 0) {
-				pcp.setQcStatus(c.getString(c
-						.getColumnIndexOrThrow(ContentDescriptor.ProjectCheckpointDesc.Cols.QC_STATUS)));
-			}
-			if (c.getColumnIndex(ContentDescriptor.ProjectCheckpointDesc.Cols.DESCRIPTION) >= 0) {
-				pcp.setDescription(c.getString(c
-						.getColumnIndexOrThrow(ContentDescriptor.ProjectCheckpointDesc.Cols.DESCRIPTION)));
-			}
-			if (c.getColumnIndex(ContentDescriptor.ProjectCheckpointDesc.Cols.NUMBER_DEFECT) >= 0) {
-				pcp.setNumberDefect(c.getString(c
-						.getColumnIndexOrThrow(ContentDescriptor.ProjectCheckpointDesc.Cols.NUMBER_DEFECT)));
-			}
-			if (c.getColumnIndex(ContentDescriptor.ProjectCheckpointDesc.Cols.CHECK_TYPE) >= 0) {
-				pcp.setCheckType(c.getString(c
-						.getColumnIndexOrThrow(ContentDescriptor.ProjectCheckpointDesc.Cols.CHECK_TYPE)));
-			}
-			if (c.getColumnIndex(ContentDescriptor.ProjectCheckpointDesc.Cols.QC_ACTION) >= 0) {
-				pcp.setQcAction(c.getString(c
-						.getColumnIndexOrThrow(ContentDescriptor.ProjectCheckpointDesc.Cols.QC_ACTION)));
-				pcp.setUploadPhotoAbsPath(c.getString(c
-						.getColumnIndexOrThrow(ContentDescriptor.ProjectCheckpointDesc.Cols.PHOTO_LOCAL_PATH)));
-			}
-			projectItem.addOrderCheckpoint(pcp);
-		}
-
-		projectItem.setLoadedCheckpointFromDB(true);
-		c.close();
-	}
+	
 
 	class ItemView extends LinearLayout {
 

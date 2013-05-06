@@ -4,7 +4,9 @@ package com.auguraclient.util;
 public class Constants {
 
     public class CommonConfig {
-        public static final String PIC_DIR = "/augura/pic/";
+        public static final String PIC_DIR = "/AsiactionMobile/pic/";
+        
+        public static final String LOG_DIR = "/AsiactionMobile/log/";
     }
 
     public class SaveConfig {

@@ -4,17 +4,14 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 
-import android.app.ActionBar;
 import android.app.Activity;
 import android.app.Dialog;
 import android.app.ProgressDialog;
-import android.content.ContentUris;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.database.Cursor;
-import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.HandlerThread;
@@ -24,10 +21,9 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.view.Window;
-import android.view.WindowManager;
+import android.view.View.OnClickListener;
 import android.widget.BaseAdapter;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -98,16 +94,13 @@ public class ProjectListScreen extends Activity {
 		addProjectLayout.setOnClickListener(addProjectListener);
 		showMenuButton = (ImageView) findViewById(R.id.imgShowMenu);
 
-		ActionBar bar = getActionBar();
-		if (bar != null)
-			bar.hide();
-
+		
 		showMenuButton.setOnClickListener(new OnClickListener() {
 
 			public void onClick(View arg0) {
 				PopupMenu popupMenu = new PopupMenu(context, showMenuButton);
 				popupMenu.getMenuInflater().inflate(
-						R.layout.project_list_title_menu, popupMenu.getMenu());
+						R.layout.menu_item_project_list_title, popupMenu.getMenu());
 				popupMenu
 						.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
 
@@ -349,7 +342,7 @@ public class ProjectListScreen extends Activity {
 						String dateString = orderCur
 								.getString(orderCur
 										.getColumnIndexOrThrow(ContentDescriptor.ProjectOrderDesc.Cols.DATE_MODIFIED));
-						if (dateString != null) {
+						if (dateString != null && !dateString.equals("")) {
 							try {
 								po.setDateDodified(dp.parse(dateString));
 							} catch (ParseException e) {
@@ -406,6 +399,7 @@ public class ProjectListScreen extends Activity {
 						continue;
 					}
 					api.updateCheckpoint(pc);
+					moduleApi.updateCheckpoint(pc);
 				} else {
 					Log.e(Constants.TAG, "Incorrect type:" + flag);
 				}

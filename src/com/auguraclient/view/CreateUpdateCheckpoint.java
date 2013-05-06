@@ -146,8 +146,9 @@ public class CreateUpdateCheckpoint extends Activity implements
 
 		if (createFlag) {
 			projectCheckpoint = new ProjectCheckpoint();
+			projectCheckpoint.setProjectItem(this.projectOrder);
 			addOrUpdateTextView.setText(R.string.create_checkpoint);
-			submitButton.setVisibility(View.VISIBLE);
+			submitButton.setVisibility(View.INVISIBLE);
 		} else {
 			addOrUpdateTextView.setText(R.string.update_checkpoint);
 			projectCheckpoint = projectOrder.findProjectCheckpointById(this
@@ -161,6 +162,7 @@ public class CreateUpdateCheckpoint extends Activity implements
 	@Override
 	protected void onResume() {
 		super.onResume();
+		
 		// categoryEditText.setText(projectCheckpoint.getCategory());
 		// checkpointEditText.setText(projectCheckpoint.getCheckType());
 		nameEditText.setText(projectCheckpoint.getName());
@@ -233,14 +235,14 @@ public class CreateUpdateCheckpoint extends Activity implements
 			photo.recycle();
 			System.gc();
 		}
-
-		ProjectCheckpoint pc = projectOrder
-				.findProjectCheckpointById(projectCheckpoint.getId());
-		if (projectCheckpoint.getId() != null) {
-			if (pc == null) {
-				projectOrder.addOrderCheckpoint(projectCheckpoint);
-			}
-		}
+//
+//		ProjectCheckpoint pc = projectOrder
+//				.findProjectCheckpointById(projectCheckpoint.getId());
+//		if (projectCheckpoint.getId() != null) {
+//			if (pc == null) {
+//				projectOrder.addOrderCheckpoint(projectCheckpoint);
+//			}
+//		}
 	}
 
 	@Override
@@ -429,7 +431,7 @@ public class CreateUpdateCheckpoint extends Activity implements
 
 		public void onClick(View view) {
 			projectCheckpoint.setQcStatus(((TextView) view).getText()
-					.toString().trim());
+					.toString().trim().toLowerCase());
 			setQcStatus();
 			autoSave();
 		}
@@ -464,7 +466,7 @@ public class CreateUpdateCheckpoint extends Activity implements
 		public void onClick(View arg0) {
 			final PopupMenu popupMenu = new PopupMenu(mContext, showMenuButton);
 			popupMenu.getMenuInflater().inflate(
-					R.layout.update_checkpoint_title_menu, popupMenu.getMenu());
+					R.layout.menu_item_update_checkpoint_title, popupMenu.getMenu());
 			popupMenu
 					.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
 
@@ -641,7 +643,7 @@ public class CreateUpdateCheckpoint extends Activity implements
 
 				// photo = (Bitmap) data.getExtras().get("data");
 				ByteArrayOutputStream bytes = new ByteArrayOutputStream();
-				photo.compress(Bitmap.CompressFormat.JPEG, 100, bytes);
+				photo.compress(Bitmap.CompressFormat.JPEG, 80, bytes);
 
 				Random randomGenerator = new Random();
 				String newimagename = randomGenerator.nextInt() + ".jpg";
@@ -824,6 +826,7 @@ public class CreateUpdateCheckpoint extends Activity implements
 				Message.obtain(uiHandler, UI_START_SUBMIT).sendToTarget();
 				try {
 					deleteCheckpoint();
+					projectCheckpoint.getProjectItem().getProject().setNeededUpdate(true);
 					message = "Delete successfully";
 				} catch (Exception e) {
 					e.printStackTrace();

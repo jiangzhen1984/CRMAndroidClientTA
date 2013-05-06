@@ -440,18 +440,7 @@ public class AuguraRestAPIImpl implements IAuguraRestAPI {
 			response = http.sendHttpGetRequest(relationShipUrl
 					+ URLEncoder.encode(rel.toString()));
 			Log.i(Constants.TAG, response);
-			
-			String photoPath = checkpoint.getUploadPhotoAbsPath();
-			if(photoPath != null && photoPath.length()>0) {
-				String localPath = GlobalHolder.getInstance().getStoragePath() + Constants.CommonConfig.PIC_DIR +"agr_qccheckpoints_"+ id +"_visual.jpg";
-				File f = new File(photoPath);
-				if(! f.renameTo(new File(localPath))) {
-					Log.e(Constants.TAG, " can't rename file to local dir");
-				}
-				http.sendUploadPhotoRequest(Constants.UPLOAD_PHOTO_URL, localPath);
-				
-				checkpoint.setPhotoName("agr_qccheckpoints_"+id +"_visual.jpg");
-				checkpoint.setPhotoPath(Constants.CommonConfig.PIC_DIR +"agr_qccheckpoints_"+ id +"_visual.jpg");
+			if(checkpoint.getUploadPhotoAbsPath() != null && !checkpoint.getUploadPhotoAbsPath().equals("")) {
 				this.updateCheckpoint(checkpoint);
 			}
 
@@ -465,6 +454,19 @@ public class AuguraRestAPIImpl implements IAuguraRestAPI {
 		String sessionId = GlobalHolder.getInstance().getSessionId();
 		if (sessionId == null || sessionId.isEmpty()) {
 			return;
+		}
+		
+		String photoPath = checkpoint.getUploadPhotoAbsPath();
+		if(photoPath != null && photoPath.length()>0) {
+			String localPath = GlobalHolder.getInstance().getStoragePath() + Constants.CommonConfig.PIC_DIR +"agr_qccheckpoints_"+ checkpoint.getId() +"_visual.jpg";
+			File f = new File(photoPath);
+			if(! f.renameTo(new File(localPath))) {
+				Log.e(Constants.TAG, " can't rename file to local dir");
+			}
+			http.sendUploadPhotoRequest(Constants.UPLOAD_PHOTO_URL, localPath);
+			
+			checkpoint.setPhotoName("agr_qccheckpoints_"+checkpoint.getId() +"_visual.jpg");
+			checkpoint.setPhotoPath(Constants.CommonConfig.PIC_DIR +"agr_qccheckpoints_"+ checkpoint.getId() +"_visual.jpg");
 		}
 
 		// "name_value_list":[{"name":"visual","value":""},{"name":"id",
