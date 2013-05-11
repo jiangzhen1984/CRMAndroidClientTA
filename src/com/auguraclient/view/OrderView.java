@@ -615,7 +615,7 @@ public class OrderView extends Activity {
 					 + pi.getName()+" ( "+ pi.getCheckTypeLabel()+" )");
 			itemOrderDefectAlert.setText(
 					(pi.getQcStatus() == null ? "" : pi.getQcStatus()) + 
-					(pi.getNumberDefect() == null ? " " : (pi.getNumberDefect()+" defect "))+
+					((pi.getNumberDefect() == null  ||  pi.getNumberDefect().equals("")) ? " " : (pi.getNumberDefect()+" defect "))+
 					(pi.getQcAction()==null?"":pi.getQcAction()));
 			itemOrderQcComments.setText(pi.getQcComments() == null ? "" : pi
 					.getQcComments());

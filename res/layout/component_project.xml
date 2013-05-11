@@ -36,6 +36,8 @@
             android:layout_marginLeft="5dip"
             android:layout_marginRight="5dip"
             android:layout_marginTop="5dip"
+            android:paddingLeft="10dip"
+            android:paddingRight="10dip"
              />
     </RelativeLayout>
 

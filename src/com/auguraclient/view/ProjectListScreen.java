@@ -49,7 +49,6 @@ import com.auguraclient.model.UpdateRecord;
 import com.auguraclient.model.User;
 import com.auguraclient.util.Constants;
 import com.auguraclient.util.GlobalHolder;
-import com.auguraclient.util.SoundEngine;
 
 public class ProjectListScreen extends Activity {
 
@@ -214,8 +213,6 @@ public class ProjectListScreen extends Activity {
 
 	OnClickListener addProjectListener = new OnClickListener() {
 		public void onClick(View v) {
-			SoundEngine.sharedEngine().playEffect(getApplicationContext(),
-					R.raw.button);
 			// custom dialog
 			final Dialog dialog = new Dialog(context);
 			dialog.setCanceledOnTouchOutside(true);
@@ -648,8 +645,10 @@ public class ProjectListScreen extends Activity {
 				operation.setOnClickListener(new OnClickListener() {
 					@Override
 					public void onClick(View v) {
-						Message.obtain(handler, CMD_SYNC_PROJECT, p.getId())
-								.sendToTarget();
+						if (p.isNeededUpdate()) {
+							Message.obtain(handler, CMD_SYNC_PROJECT, p.getId())
+									.sendToTarget();
+						}
 					}
 
 				});

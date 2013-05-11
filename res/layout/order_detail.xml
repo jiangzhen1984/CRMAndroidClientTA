@@ -1,8 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent">
+
+   
+
+<ScrollView 
     android:id="@+id/scroll"
     android:layout_width="fill_parent"
-    android:layout_height="fill_parent" >
+   android:layout_height="fill_parent"
+        android:layout_weight="1"
+    
+    >
 
     <LinearLayout
         android:layout_width="fill_parent"
@@ -97,7 +108,7 @@
                     android:layout_height="wrap_content"
                     android:text="@string/order_detal_qc_date"
                     android:textSize="15sp"
-                    android:textStyle="bold" />
+                    android:textStyle="bold" android:layout_marginTop="8sp"/>
 
                 <EditText
                     android:id="@+id/order_detal_qc_date_edit"
@@ -117,7 +128,7 @@
                     android:layout_height="wrap_content"
                     android:text="@string/order_detal_qc_checked"
                     android:textSize="15sp"
-                    android:textStyle="bold" />
+                    android:textStyle="bold" android:layout_marginTop="8sp"/>
 
                 <EditText
                     android:id="@+id/order_detal_qc_checked_edit"
@@ -127,7 +138,7 @@
                     android:layout_marginRight="5dp"
                     android:background="@drawable/edit_text_background"
                     android:inputType="number"
-                    android:textSize="12sp"
+                    android:textSize="15sp"
                     android:textStyle="bold" />
             </LinearLayout>
 
@@ -135,15 +146,14 @@
                 android:id="@+id/qtLin1"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/qtLin" >
+                android:layout_below="@id/qtLin" android:baselineAligned="false">
 
                 <TextView
                     android:id="@+id/order_detal_qc_status"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
                     android:text="@string/order_detal_qc_status"
                     android:textSize="15sp"
-                    android:textStyle="bold" />
+                    android:textStyle="bold" android:layout_height="match_parent" android:layout_gravity="center" android:layout_marginTop="8sp"/>
 
                 <Spinner
                     android:id="@+id/qcStatusSpinner"
@@ -156,7 +166,7 @@
                     android:gravity="center"
                     android:height="20dp"
                     android:textColor="@color/login_text_color"
-                    android:textSize="12sp" />
+                    android:textSize="15sp" />
             </LinearLayout>
 
             <TextView
@@ -175,8 +185,9 @@
                 android:layout_below="@id/commentTV"
                 android:background="@drawable/edit_text_background"
                 android:inputType="text|textMultiLine"
+                android:gravity="top|left"
                 android:minLines="8"
-                android:textSize="12sp"
+                android:textSize="15sp"
                 android:textStyle="bold" />
         </RelativeLayout>
 
@@ -188,18 +199,28 @@
             android:background="@color/content_background"
             android:orientation="vertical" />
 
+    </LinearLayout>
+
+</ScrollView>
+
+
+
         <LinearLayout
             android:id="@+id/bottom_add_checpoint_layout"
             android:layout_width="fill_parent"
-            android:layout_height="fill_parent"
+            android:layout_height="wrap_content"
             android:background="@color/add_project_background"
-            android:orientation="vertical" >
+            android:layout_alignParentBottom="true"
+            android:layout_below="@id/scroll"
+             android:orientation="horizontal"
+             android:gravity="center"
+             >
 
             <TextView
                 android:id="@+id/bottom_add_checpoint"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:gravity="center"
                 android:background="@color/add_project_background"
                 android:padding="4dp"
                 android:text="@string/add_checkpoint"
@@ -207,6 +228,5 @@
                 android:textSize="24dp"
                 android:textStyle="bold" />
         </LinearLayout>
-    </LinearLayout>
-
-</ScrollView>
+ 
+</LinearLayout>

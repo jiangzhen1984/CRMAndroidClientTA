@@ -450,8 +450,6 @@ public class CreateUpdateCheckpoint extends Activity implements
 			try {
 				if (!tempFile.exists()) {
 					boolean b = tempFile.createNewFile();
-
-					System.out.println("========================" + b);
 				}
 			} catch (IOException e) {
 				e.printStackTrace();
