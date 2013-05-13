@@ -614,9 +614,9 @@ public class OrderView extends Activity {
 			itemOrderCategoryCheckType.setText(pi.getCategoryLabel() + " > "
 					 + pi.getName()+" ( "+ pi.getCheckTypeLabel()+" )");
 			itemOrderDefectAlert.setText(
-					(pi.getQcStatus() == null ? "" : pi.getQcStatus()) + 
+					(pi.getQcStatusLabel()) + 
 					((pi.getNumberDefect() == null  ||  pi.getNumberDefect().equals("")) ? " " : (pi.getNumberDefect()+" defect "))+
-					(pi.getQcAction()==null?"":pi.getQcAction()));
+					(pi.getQcActionLable()));
 			itemOrderQcComments.setText(pi.getQcComments() == null ? "" : pi
 					.getQcComments());
 			

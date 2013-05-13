@@ -211,6 +211,16 @@ public class ProjectCheckpoint  extends AbstractModel  implements ProjectJSONPar
 	public String getQcStatus() {
 		return qcStatus;
 	}
+	
+	public String getQcStatusLabel() {
+		for (int i = 0; i < GlobalHolder.getInstance().getQcStatus().length; i++) {
+			if (this.projectItem.getQcStatus().equals(
+					GlobalHolder.getInstance().getQcStatusValue()[i])) {
+				return GlobalHolder.getInstance().getQcStatusValue()[i];
+			}
+		}
+		return " ";
+	}
 
 	public void setQcStatus(String qcStatus) {
 		this.qcStatus = qcStatus;
@@ -226,6 +236,16 @@ public class ProjectCheckpoint  extends AbstractModel  implements ProjectJSONPar
 
 	public String getQcAction() {
 		return qcAction;
+	}
+	
+	public String getQcActionLable() {
+		for (int i = 0; i < GlobalHolder.getInstance().getQcActionValue().length; i++) {
+			if (this.qcAction.equals(
+					GlobalHolder.getInstance().getQcActionValue()[i])) {
+				return GlobalHolder.getInstance().getQcActionValue()[i];
+			}
+		}
+		return " ";
 	}
 
 	public void setQcAction(String qcAction) {
