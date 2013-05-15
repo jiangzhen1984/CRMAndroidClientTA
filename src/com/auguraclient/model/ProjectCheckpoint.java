@@ -239,6 +239,9 @@ public class ProjectCheckpoint  extends AbstractModel  implements ProjectJSONPar
 	}
 	
 	public String getQcActionLable() {
+		if (this.qcAction == null) {
+			return " ";
+		}
 		for (int i = 0; i < GlobalHolder.getInstance().getQcActionValue().length; i++) {
 			if (this.qcAction.equals(
 					GlobalHolder.getInstance().getQcActionValue()[i])) {

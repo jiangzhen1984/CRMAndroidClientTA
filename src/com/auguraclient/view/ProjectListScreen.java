@@ -120,14 +120,6 @@ public class ProjectListScreen extends Activity {
 		});
 
 		context = this;
-		final SharedPreferences sp = this.context.getSharedPreferences(
-				Constants.SaveConfig.CONFIG, MODE_PRIVATE);
-		Editor ed = sp.edit();
-		ed.putString(Constants.SaveConfig.USER_NAME, "android");
-		ed.putString(Constants.SaveConfig.PASSWORD, "android");
-		ed.commit();
-		
-		
 		api = new AuguraRestAPIImpl();
 		moduleApi = new AuguaModuleImpl(context);
 		HandlerThread th = new HandlerThread("project");
@@ -191,6 +183,8 @@ public class ProjectListScreen extends Activity {
 					return;
 				}
 				Editor ed = sp.edit();
+
+				
 				ed.putString(Constants.SaveConfig.USER_NAME, etName.getText()
 						.toString());
 				ed.putString(Constants.SaveConfig.PASSWORD, etPwd.getText()
@@ -478,8 +472,8 @@ public class ProjectListScreen extends Activity {
 							Constants.SaveConfig.USER_NAME, "");
 					String password = sp.getString(
 							Constants.SaveConfig.PASSWORD, "");
-					if (userName == null || userName.equals("")
-							|| password == null || password.equals("")) {
+					if (userName == null || userName.trim().equals("")
+							|| password == null || password.trim().equals("")) {
 						Message.obtain(uiHandler, UI_END_WAITING)
 								.sendToTarget();
 						Toast.makeText(context,
@@ -542,7 +536,15 @@ public class ProjectListScreen extends Activity {
 							Constants.SaveConfig.USER_NAME, "");
 					String password = sp.getString(
 							Constants.SaveConfig.PASSWORD, "");
-
+					if (userName == null || userName.trim().equals("")
+							|| password == null || password.trim().equals("")) {
+						Message.obtain(uiHandler, UI_END_WAITING)
+								.sendToTarget();
+						Toast.makeText(context,
+								"please set user name and password first!",
+								Toast.LENGTH_SHORT).show();
+						return;
+					}
 					User user = api.login(userName, password);
 					if (user == null) {
 						Message.obtain(uiHandler, UI_END_WAITING_WITH_ERROR)

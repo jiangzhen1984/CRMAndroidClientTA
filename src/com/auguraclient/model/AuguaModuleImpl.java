@@ -248,6 +248,7 @@ public class AuguaModuleImpl implements IAuguraModule {
 				pcp.getPhotoPath());
 		cv.put(ContentDescriptor.ProjectCheckpointDesc.Cols.PHOTO_LOCAL_BIG_PATH,
 				pcp.getPhotoPath());
+		cv.put(ContentDescriptor.ProjectCheckpointDesc.Cols.PHOTO_LOCAL_PATH, pcp.getUploadPhotoAbsPath());
 		cv.put(ContentDescriptor.ProjectCheckpointDesc.Cols.FLAG,
 				pcp.getFlag() == null ? "0" : pcp.getFlag());
 		return cv;

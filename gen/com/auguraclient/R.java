@@ -168,18 +168,21 @@ public final class R {
         public static final int component_checkpoint=0x7f030002;
         public static final int component_order=0x7f030003;
         public static final int component_project=0x7f030004;
-        public static final int date_picker_dialog=0x7f030005;
-        public static final int loginscreen=0x7f030006;
-        public static final int logo_view=0x7f030007;
-        public static final int menu_item_order_list=0x7f030008;
-        public static final int menu_item_project_list_title=0x7f030009;
-        public static final int menu_item_update_checkpoint_title=0x7f03000a;
-        public static final int order_detail=0x7f03000b;
-        public static final int order_list=0x7f03000c;
-        public static final int order_list_with_whole_scroll=0x7f03000d;
-        public static final int projectlist=0x7f03000e;
-        public static final int setting_dialog=0x7f03000f;
-        public static final int spinner_ite=0x7f030010;
+        public static final int component_spinner_item=0x7f030005;
+        public static final int date_picker_dialog=0x7f030006;
+        public static final int loginscreen=0x7f030007;
+        public static final int logo_view=0x7f030008;
+        public static final int menu_item_order_list=0x7f030009;
+        public static final int menu_item_project_list_title=0x7f03000a;
+        public static final int menu_item_update_checkpoint_title=0x7f03000b;
+        public static final int order_detail=0x7f03000c;
+        public static final int order_list=0x7f03000d;
+        public static final int order_list_with_whole_scroll=0x7f03000e;
+        public static final int project_list_title_menu=0x7f03000f;
+        public static final int projectlist=0x7f030010;
+        public static final int setting_dialog=0x7f030011;
+        public static final int spinner_ite=0x7f030012;
+        public static final int update_checkpoint_title_menu=0x7f030013;
     }
     public static final class raw {
         public static final int button=0x7f050000;

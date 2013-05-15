@@ -44,8 +44,9 @@
 				android:layout_width="wrap_content" android:layout_height="wrap_content"
 				android:layout_marginLeft="20dip" android:layout_marginRight="20dip"
 				android:layout_marginTop="5dip" android:layout_toRightOf="@+id/catetoryTextView"
-				android:gravity="center" android:height="20dp" android:textColor="@color/login_text_color"
-				android:textSize="16sp" android:background="@drawable/edit_text_background" />
+				android:gravity="center" android:textColor="@color/login_text_color"
+				android:textSize="16sp" android:background="@drawable/edit_text_background"
+				android:anyDensity="false" />
 
 			<!--
 				<EditText android:id="@+id/categoryEditText"
@@ -218,7 +219,7 @@
 				android:orientation="horizontal">
 
 				<Spinner android:id="@+id/qcActionSpinner"
-					android:layout_width="wrap_content" android:layout_height="match_parent"
+					android:layout_width="wrap_content" android:layout_height="wrap_content"
 					android:layout_gravity="center" android:layout_marginLeft="20dip"
 					android:layout_marginRight="20dip" android:gravity="center"
 					android:height="20dp" android:textColor="@color/login_text_color"

@@ -187,8 +187,11 @@ public class CreateUpdateCheckpoint extends Activity implements
 		checkpointPhoto.setOnClickListener(onOpenPhotoClickListener);
 		setQcStatus();
 
-		categorySpinner.setAdapter(new ArrayAdapter(this, R.layout.spinner_ite,
-				GlobalHolder.getInstance().getCategoryLabel()));
+		
+		ArrayAdapter adapter = new ArrayAdapter(this, R.layout.spinner_ite,
+				GlobalHolder.getInstance().getCategoryLabel());
+		adapter.setDropDownViewResource(R.layout.component_spinner_item);
+		categorySpinner.setAdapter(adapter);
 		if (this.projectCheckpoint.getCategory() != null) {
 			for (int i = 0; i < GlobalHolder.getInstance().getCategoryValue().length; i++) {
 				if (this.projectCheckpoint.getCategory().equals(
@@ -199,9 +202,14 @@ public class CreateUpdateCheckpoint extends Activity implements
 			}
 		}
 
-		checkTypeSpinner.setAdapter(new ArrayAdapter(this,
+		
+		
+		adapter = new ArrayAdapter(this,
 				R.layout.spinner_ite, GlobalHolder.getInstance()
-						.getChecktypeLabel()));
+				.getChecktypeLabel());
+		adapter.setDropDownViewResource(R.layout.component_spinner_item);
+		
+		checkTypeSpinner.setAdapter(adapter);
 		if (this.projectCheckpoint.getCheckType() != null) {
 			for (int i = 0; i < GlobalHolder.getInstance().getChecktypeValue().length; i++) {
 				if (this.projectCheckpoint.getCheckType().equals(
@@ -212,8 +220,11 @@ public class CreateUpdateCheckpoint extends Activity implements
 			}
 		}
 
-		qcActionSpinner.setAdapter(new ArrayAdapter(this, R.layout.spinner_ite,
-				GlobalHolder.getInstance().getQcActionLabel()));
+		adapter = new ArrayAdapter(this, R.layout.spinner_ite,
+				GlobalHolder.getInstance().getQcActionLabel());
+		adapter.setDropDownViewResource(R.layout.component_spinner_item);
+		
+		qcActionSpinner.setAdapter(adapter);
 		if (this.projectCheckpoint.getQcAction() != null) {
 			for (int i = 0; i < GlobalHolder.getInstance().getQcActionLabel().length; i++) {
 				if (this.projectCheckpoint.getQcAction().equals(
@@ -806,7 +817,7 @@ public class CreateUpdateCheckpoint extends Activity implements
 		public void handleMessage(Message msg) {
 			switch (msg.what) {
 			case UI_COMMIT:
-				Message.obtain(uiHandler, UI_START_SUBMIT).sendToTarget();
+				//Message.obtain(uiHandler, UI_START_SUBMIT).sendToTarget();
 				try {
 					submit();
 					// Toast.makeText(mContext, "Saved",
@@ -816,12 +827,12 @@ public class CreateUpdateCheckpoint extends Activity implements
 					Toast.makeText(mContext, e.getMessage(), Toast.LENGTH_SHORT)
 							.show();
 				}
-				Message.obtain(uiHandler, UI_END_COMMIT).sendToTarget();
+				//Message.obtain(uiHandler, UI_END_COMMIT).sendToTarget();
 				break;
 
 			case UI_DELETE_CHECKPOINT:
 				String message = null;
-				Message.obtain(uiHandler, UI_START_SUBMIT).sendToTarget();
+				//Message.obtain(uiHandler, UI_START_SUBMIT).sendToTarget();
 				try {
 					deleteCheckpoint();
 					projectCheckpoint.getProjectItem().getProject().setNeededUpdate(true);
