@@ -179,6 +179,7 @@ public class CreateUpdateCheckpoint extends Activity implements
 		qcDefectEditText.setText(projectCheckpoint.getNumberDefect());
 		if (photo != null) {
 			photo.recycle();
+			photo = null;
 		}
 
 		// if (projectCheckpoint.getUploadPhotoAbsPath() != null
@@ -252,18 +253,18 @@ public class CreateUpdateCheckpoint extends Activity implements
 	@Override
 	protected void onStop() {
 		super.onStop();
+	}
+	
+	
+
+	@Override
+	protected void onDestroy() {
 		if (photo != null) {
 			photo.recycle();
 			System.gc();
+			photo = null;
 		}
-//
-//		ProjectCheckpoint pc = projectOrder
-//				.findProjectCheckpointById(projectCheckpoint.getId());
-//		if (projectCheckpoint.getId() != null) {
-//			if (pc == null) {
-//				projectOrder.addOrderCheckpoint(projectCheckpoint);
-//			}
-//		}
+		super.onDestroy();
 	}
 
 	@Override

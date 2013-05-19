@@ -38,7 +38,6 @@ import com.auguraclient.model.AuguaModuleImpl;
 import com.auguraclient.model.IAuguraModule;
 import com.auguraclient.model.Project;
 import com.auguraclient.model.ProjectCheckpoint;
-import com.auguraclient.model.ProjectList;
 import com.auguraclient.model.ProjectOrder;
 import com.auguraclient.model.UpdateRecord;
 import com.auguraclient.util.Constants;
@@ -89,7 +88,10 @@ public class ProjectOrderListView extends Activity {
         projectItemList = (ListView)this.findViewById(R.id.projectItemList);
         currentProjectPosition = (Integer)this.getIntent().getExtras().get("project");
         project = GlobalHolder.getInstance().getProject(currentProjectPosition);
-
+        if(project == null) {
+        	finish();
+        	return;
+        }
         mContext = this;
         moduleApi = new AuguaModuleImpl(mContext);
         adapter = new ListAdapter(this);
@@ -387,7 +389,7 @@ public class ProjectOrderListView extends Activity {
         }
 
         public int getCount() {
-            return project.getOrderCount();
+            return project == null? 0 :project.getOrderCount();
         }
 
         public Object getItem(int position) {

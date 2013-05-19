@@ -126,6 +126,11 @@ public class OrderView extends Activity {
 				"itemPosition");
 
 		project = GlobalHolder.getInstance().getProject(position);
+		if(project == null) {
+			Log.e(Constants.TAG, "can't find project:"+position);
+			finish();
+			return;
+		}
 
 		projectItem = project.getOrder(itemPosition);
 
@@ -181,6 +186,17 @@ public class OrderView extends Activity {
 	public void onBackPressed() {
 		saveOrder();
 		super.onBackPressed();
+	}
+
+	
+	
+	
+	@Override
+	protected void onStop() {
+		if(photo != null) {
+			photo.recycle();
+		}
+		super.onStop();
 	}
 
 	private void initView() {
