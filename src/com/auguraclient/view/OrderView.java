@@ -212,8 +212,11 @@ public class OrderView extends Activity {
 
 		qcStatusSpinner = (Spinner) this.findViewById(R.id.qcStatusSpinner);
 
-		qcStatusSpinner.setAdapter(new ArrayAdapter(this, R.layout.spinner_ite,
-				GlobalHolder.getInstance().getQcStatus()));
+		
+		ArrayAdapter adapter = new ArrayAdapter(this, R.layout.component_spinner_item,
+				GlobalHolder.getInstance().getQcStatus());
+		adapter.setDropDownViewResource(R.layout.component_spinner_item);
+		qcStatusSpinner.setAdapter(adapter);
 
 		qcDateED = (EditText) this.findViewById(R.id.order_detal_qc_date_edit);
 

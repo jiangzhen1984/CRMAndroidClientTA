@@ -5,6 +5,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.List;
 import java.util.Random;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -17,6 +18,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
@@ -27,15 +29,16 @@ import android.provider.MediaStore;
 import android.text.Editable;
 import android.util.Log;
 import android.view.GestureDetector;
-import android.view.GestureDetector.OnGestureListener;
+import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewGroup;
+import android.view.GestureDetector.OnGestureListener;
 import android.view.View.OnClickListener;
 import android.view.View.OnFocusChangeListener;
 import android.view.View.OnTouchListener;
 import android.widget.AdapterView;
-import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -44,6 +47,7 @@ import android.widget.PopupMenu;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.AdapterView.OnItemSelectedListener;
 
 import com.auguraclient.R;
 import com.auguraclient.db.ContentDescriptor;
@@ -187,8 +191,10 @@ public class CreateUpdateCheckpoint extends Activity implements
 		checkpointPhoto.setOnClickListener(onOpenPhotoClickListener);
 		setQcStatus();
 
+		//ArrayAdapter adapter = ArrayAdapter.createFromResource(this, R.layout.component_spinner_item, R.layout.component_spinner_item);
+		//adapter.addAll(GlobalHolder.getInstance().getCategoryLabel());
 		
-		ArrayAdapter adapter = new ArrayAdapter(this, R.layout.spinner_ite,
+		ArrayAdapter adapter = new ArrayAdapter(this, R.layout.component_spinner_item,
 				GlobalHolder.getInstance().getCategoryLabel());
 		adapter.setDropDownViewResource(R.layout.component_spinner_item);
 		categorySpinner.setAdapter(adapter);
@@ -205,7 +211,7 @@ public class CreateUpdateCheckpoint extends Activity implements
 		
 		
 		adapter = new ArrayAdapter(this,
-				R.layout.spinner_ite, GlobalHolder.getInstance()
+				R.layout.component_spinner_item, GlobalHolder.getInstance()
 				.getChecktypeLabel());
 		adapter.setDropDownViewResource(R.layout.component_spinner_item);
 		
@@ -220,7 +226,7 @@ public class CreateUpdateCheckpoint extends Activity implements
 			}
 		}
 
-		adapter = new ArrayAdapter(this, R.layout.spinner_ite,
+		adapter = new ArrayAdapter(this, R.layout.component_spinner_item,
 				GlobalHolder.getInstance().getQcActionLabel());
 		adapter.setDropDownViewResource(R.layout.component_spinner_item);
 		
@@ -872,5 +878,6 @@ public class CreateUpdateCheckpoint extends Activity implements
 		}
 
 	}
-
+	
+	
 }

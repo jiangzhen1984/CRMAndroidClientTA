@@ -48,7 +48,7 @@
                 android:text="@string/return_sy"
                 android:textColor="@color/font_color"
                 android:textSize="16sp"
-                android:textStyle="bold" />
+                android:textStyle="bold"   android:paddingLeft="5sp" android:paddingRight="5sp"/>
 
         </LinearLayout>
         

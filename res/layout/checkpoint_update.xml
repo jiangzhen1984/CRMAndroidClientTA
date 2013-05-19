@@ -20,7 +20,7 @@
 				android:layout_width="wrap_content" android:layout_height="wrap_content"
 				android:layout_centerVertical="true" android:layout_marginLeft="10dip"
 				android:text="@string/return_sy" android:textColor="@color/font_color"
-				android:textSize="16sp" android:textStyle="bold" />
+				android:textSize="16sp" android:textStyle="bold" android:paddingLeft="5sp" android:paddingRight="5sp"/>
 
 
 			<ImageView android:id="@+id/showUpdateCheckpointMenu"
@@ -46,7 +46,7 @@
 				android:layout_marginTop="5dip" android:layout_toRightOf="@+id/catetoryTextView"
 				android:gravity="center" android:textColor="@color/login_text_color"
 				android:textSize="16sp" android:background="@drawable/edit_text_background"
-				android:anyDensity="false" />
+				android:anyDensity="true" />
 
 			<!--
 				<EditText android:id="@+id/categoryEditText"

@@ -90,7 +90,7 @@ public class ContentDescriptor {
 
 			public static final String PHOTO_LOCAL_BIG_PATH = "big_path";
 
-			public static final String DESCRIPTION = "description";
+			public static final String DESCRIPTION = "o_desc_t";
 
 			public static final String[] ALL_COLS = { ID, NAME, PRO_ID, ORD_ID,
 					QUANTITY, QC_STATUS, QUANTITY_CHECKED, QC_COMMENT,
@@ -139,7 +139,7 @@ public class ContentDescriptor {
 			
 			public static final String PHOTO_LOCAL_PATH = "abs_big_path";
 
-			public static final String DESCRIPTION = "description";
+			public static final String DESCRIPTION = "o_desc_t";
 
 			public static final String QC_COMMENT = "qc_comment";
 
