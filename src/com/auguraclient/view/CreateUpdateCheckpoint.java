@@ -5,7 +5,6 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.List;
 import java.util.Random;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -18,7 +17,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
-import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
@@ -27,13 +25,12 @@ import android.os.Looper;
 import android.os.Message;
 import android.provider.MediaStore;
 import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.GestureDetector;
-import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.GestureDetector.OnGestureListener;
 import android.view.View.OnClickListener;
 import android.view.View.OnFocusChangeListener;
@@ -123,6 +120,10 @@ public class CreateUpdateCheckpoint extends Activity implements
 	private int categorySpinnPos = -1;
 
 	private int checktypeSpinnPos = -1;
+	
+	private TextView headerTV;
+	
+	private boolean needSave = false;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -169,6 +170,9 @@ public class CreateUpdateCheckpoint extends Activity implements
 		
 		// categoryEditText.setText(projectCheckpoint.getCategory());
 		// checkpointEditText.setText(projectCheckpoint.getCheckType());
+		if(projectCheckpoint != null && projectCheckpoint.getProjectItem()!=null && projectCheckpoint.getProjectItem().getProject() !=null) {
+			headerTV.setText(projectCheckpoint.getProjectItem().getProject().getName());
+		}
 		nameEditText.setText(projectCheckpoint.getName());
 		detailEditText.setText(projectCheckpoint.getDescription());
 		qcCommentEditText.setText(projectCheckpoint.getQcComments());
@@ -323,6 +327,14 @@ public class CreateUpdateCheckpoint extends Activity implements
 			}
 		}
 		if (startSwitch) {
+			if(needSave) {
+				recordData();
+				try {
+					submit();
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
 			Intent i = new Intent();
 			i.putExtra("create", false);
 			i.putExtra("direct", toRight);
@@ -386,6 +398,11 @@ public class CreateUpdateCheckpoint extends Activity implements
 		detailEditText.setOnFocusChangeListener(textChangeListener);
 		qcCommentEditText.setOnFocusChangeListener(textChangeListener);
 		qcDefectEditText.setOnFocusChangeListener(textChangeListener);
+		nameEditText.addTextChangedListener(textChangedListener);
+		detailEditText.addTextChangedListener(textChangedListener);
+		qcCommentEditText.addTextChangedListener(textChangedListener);
+		qcDefectEditText.addTextChangedListener(textChangedListener);
+		
 		categorySpinner.setOnItemSelectedListener(spinnerItemSelectedListener);
 		checkTypeSpinner.setOnItemSelectedListener(spinnerItemSelectedListener);
 		qcActionSpinner.setOnItemSelectedListener(spinnerItemSelectedListener);
@@ -404,6 +421,8 @@ public class CreateUpdateCheckpoint extends Activity implements
 
 		addOrUpdateTextView = (TextView) this
 				.findViewById(R.id.bottom_tab_add_or_update_checkpoint);
+		
+		headerTV =(TextView)this.findViewById(R.id.update_checkpoint_header);
 
 		submitButton = (LinearLayout) findViewById(R.id.bottom_tab_add_or_update_checkpoint_layout);
 
@@ -449,6 +468,7 @@ public class CreateUpdateCheckpoint extends Activity implements
 		public void onClick(View view) {
 			projectCheckpoint.setQcStatus(((TextView) view).getText()
 					.toString().trim().toLowerCase());
+			needSave = true;
 			setQcStatus();
 			autoSave();
 		}
@@ -521,6 +541,17 @@ public class CreateUpdateCheckpoint extends Activity implements
 
 		public void onClick(View arg0) {
 			Intent i = new Intent();
+			recordData();
+			try {
+				submit();
+			} catch (APIException e) {
+				e.printStackTrace();
+			} catch (SessionAPIException e) {
+				e.printStackTrace();
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			
 			if (projectCheckpoint.getId() != null)
 				i.putExtra("checkpoint", projectCheckpoint.getId());
 			setResult(4, i);
@@ -574,6 +605,7 @@ public class CreateUpdateCheckpoint extends Activity implements
 				Log.e(Constants.TAG, " Invalid id ");
 				return;
 			}
+			needSave = true;
 			autoSave();
 		}
 
@@ -594,6 +626,16 @@ public class CreateUpdateCheckpoint extends Activity implements
 		}
 
 	};
+	
+	
+	private TextWatcher textChangedListener = new  TextWatcher(){
+        public void afterTextChanged(Editable s) {
+            needSave = true;
+        }
+        public void beforeTextChanged(CharSequence s, int start, int count, int after){}
+        public void onTextChanged(CharSequence s, int start, int before, int count){ needSave  = true;}
+    };
+    
 
 	private Timer timer;
 
@@ -712,7 +754,7 @@ public class CreateUpdateCheckpoint extends Activity implements
 	public static final int UI_END_THIS_SESSION = 5;
 
 	private void submit() throws Exception {
-
+		
 		if (projectCheckpoint.getName() == null
 				|| projectCheckpoint.getName().equals("")) {
 			return;
@@ -739,6 +781,8 @@ public class CreateUpdateCheckpoint extends Activity implements
 			update(ContentDescriptor.UpdateDesc.TYPE_ENUM_FLAG_UPDATE);
 		}
 		projectCheckpoint.getProjectItem().getProject().setNeededUpdate(true);
+		
+		needSave = false;
 		//
 
 	}
@@ -806,9 +850,11 @@ public class CreateUpdateCheckpoint extends Activity implements
 	}
 
 	private void closeDialog() {
-		dialog.cancel();
-		dialog.dismiss();
-		dialog = null;
+		if(dialog != null) {
+			dialog.cancel();
+			dialog.dismiss();
+			dialog = null;
+		}
 	}
 
 	private ProgressDialog dialog;

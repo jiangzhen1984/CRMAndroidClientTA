@@ -104,9 +104,9 @@ public class OrderView extends Activity {
 	private EditText qcDateED;
 
 	private List<View> tView;
-	
+
 	private int currentQcStatusPos;
-	
+
 	private Bitmap photo;
 
 	@Override
@@ -122,8 +122,8 @@ public class OrderView extends Activity {
 
 		Integer position = (Integer) this.getIntent().getExtras()
 				.get("project");
-		Integer itemPosition = (Integer) this.getIntent().getExtras()
-				.get("itemPosition");
+		Integer itemPosition = (Integer) this.getIntent().getExtras().get(
+				"itemPosition");
 
 		project = GlobalHolder.getInstance().getProject(position);
 
@@ -152,15 +152,16 @@ public class OrderView extends Activity {
 				: projectItem.getQcComment());
 		qcCheckedED.setText(projectItem.getQuantityChecked());
 		qcDateED.setText(projectItem.getModifiedDateString());
-		if(photo != null) {
+		if (photo != null) {
 			photo.recycle();
 		}
-		
-		photo = Util.decodeFile(GlobalHolder.getInstance().getStoragePath() +projectItem.getPhotoBigPath());
+
+		photo = Util.decodeFile(GlobalHolder.getInstance().getStoragePath()
+				+ projectItem.getPhotoBigPath());
 		projectItemPhotoIV.setImageBitmap(photo);
-		//projectItemPhotoIV.setImageURI(Uri.fromFile(new File(
-			//	GlobalHolder.getInstance().getStoragePath()
-				//		+ projectItem.getPhotoBigPath())));
+		// projectItemPhotoIV.setImageURI(Uri.fromFile(new File(
+		// GlobalHolder.getInstance().getStoragePath()
+		// + projectItem.getPhotoBigPath())));
 
 		qcCheckedED.setText(projectItem.getQuantityChecked());
 
@@ -176,8 +177,6 @@ public class OrderView extends Activity {
 
 	}
 
-	
-	
 	@Override
 	public void onBackPressed() {
 		saveOrder();
@@ -212,9 +211,9 @@ public class OrderView extends Activity {
 
 		qcStatusSpinner = (Spinner) this.findViewById(R.id.qcStatusSpinner);
 
-		
-		ArrayAdapter adapter = new ArrayAdapter(this, R.layout.component_spinner_item,
-				GlobalHolder.getInstance().getQcStatus());
+		ArrayAdapter adapter = new ArrayAdapter(this,
+				R.layout.component_spinner_item, GlobalHolder.getInstance()
+						.getQcStatus());
 		adapter.setDropDownViewResource(R.layout.component_spinner_item);
 		qcStatusSpinner.setAdapter(adapter);
 
@@ -229,22 +228,21 @@ public class OrderView extends Activity {
 
 		addCheckpointButton.setOnClickListener(addCheckpointListener);
 		projectItemPhotoIV.setOnClickListener(onOrderPhotoClickListener);
-		
+
 		itemOrderCommentED.setOnFocusChangeListener(textChangeListener);
 		itemOrderDescriptionED.setOnFocusChangeListener(textChangeListener);
 		qcCheckedED.setOnFocusChangeListener(textChangeListener);
 		qcStatusSpinner.setOnItemSelectedListener(spinnerItemSelectedListener);
-		
-	}
 
+	}
 
 	private OnItemSelectedListener spinnerItemSelectedListener = new OnItemSelectedListener() {
 
 		@Override
 		public void onItemSelected(AdapterView<?> parent, View arg1, int pos,
 				long arg3) {
-			if(parent.getId() == R.id.qcStatusSpinner) {
-				if(pos == currentQcStatusPos) {
+			if (parent.getId() == R.id.qcStatusSpinner) {
+				if (pos == currentQcStatusPos) {
 					Log.e(Constants.TAG, "no Change");
 					return;
 				}
@@ -258,13 +256,10 @@ public class OrderView extends Activity {
 
 		@Override
 		public void onNothingSelected(AdapterView<?> arg0) {
-			
+
 		}
 	};
-	
-	
-	
-	
+
 	private OnClickListener returnButtonListener = new OnClickListener() {
 
 		public void onClick(View arg0) {
@@ -299,14 +294,16 @@ public class OrderView extends Activity {
 			}
 
 			year = c.get(Calendar.YEAR);
-			month = c.get(Calendar.MONTH);
+			month = c.get(Calendar.MONTH) + 1;
 			day = c.get(Calendar.DAY_OF_MONTH);
 
 			dp.init(year, month, day, new OnDateChangedListener() {
 				@Override
 				public void onDateChanged(DatePicker dp, int year, int month,
 						int day) {
-					qcDateED.setText(year + "-" + (month + 1) + "-" + day);
+					month += 1;
+					qcDateED.setText(year + "-"
+							+ (month < 10 ? "0" + month : month) + "-" + day);
 				}
 
 			});
@@ -327,27 +324,25 @@ public class OrderView extends Activity {
 		}
 
 	};
-	
+
 	private OnFocusChangeListener textChangeListener = new OnFocusChangeListener() {
 
 		@Override
 		public void onFocusChange(View v, boolean hasFocus) {
-			if(!hasFocus) {
+			if (!hasFocus) {
 				startAutoSaveTimer();
 			}
 		}
 
-		
-		
 	};
 
 	private OnClickListener onOrderPhotoClickListener = new OnClickListener() {
 
 		public void onClick(View v) {
 			Intent intent = new Intent(Intent.ACTION_VIEW);
-			intent.setDataAndType(
-					Uri.fromFile(new File(GlobalHolder.getInstance().getStoragePath()
-							+ projectItem.getOriginPhotoPath())), "image/*");
+			intent.setDataAndType(Uri.fromFile(new File(GlobalHolder
+					.getInstance().getStoragePath()
+					+ projectItem.getOriginPhotoPath())), "image/*");
 			intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 			startActivity(Intent.createChooser(intent, "Select Picture"));
 		}
@@ -392,11 +387,11 @@ public class OrderView extends Activity {
 					tView.add(appView);
 				}
 			}
-			//means do filp and return
-		} else if(resultCode == 0) {
+			// means do filp and return
+		} else if (resultCode == 0) {
 			projectOrderCheckpointList.removeAllViews();
-			for(int i =0;i <tView.size(); i++) {
-				((ItemView)tView.get(i)).recycle();
+			for (int i = 0; i < tView.size(); i++) {
+				((ItemView) tView.get(i)).recycle();
 			}
 			initAdapterView();
 		}
@@ -455,7 +450,6 @@ public class OrderView extends Activity {
 		}
 	}
 
-
 	class LoaderHandler extends Handler {
 
 		public LoaderHandler(Looper looper) {
@@ -485,38 +479,39 @@ public class OrderView extends Activity {
 							e.getMessage()).sendToTarget();
 				}
 				break;
-				
-				
+
 			case AUTO_SAVE_ORDER_DETAIL:
 				saveOrder();
-			//	Toast.makeText(mContext, "Order detail is auto saved", Toast.LENGTH_SHORT).show();
+				// Toast.makeText(mContext, "Order detail is auto saved",
+				// Toast.LENGTH_SHORT).show();
 				break;
 			}
 		}
 
 	}
-	
-	
+
 	private Timer timer;
+
 	private void startAutoSaveTimer() {
-		if(timer != null) {
+		if (timer != null) {
 			timer.cancel();
 			timer = null;
 		}
-		timer =  new Timer();
+		timer = new Timer();
 		timer.schedule(new TimerTask() {
 
 			@Override
 			public void run() {
 				Message.obtain(handler, AUTO_SAVE_ORDER_DETAIL).sendToTarget();
 			}
-			
+
 		}, 300);
 	}
-	
+
 	private void saveOrder() {
-		if(qcDateED.getText().toString()!=null && !qcDateED.getText().toString().equals("")) {
-			DateFormat  df = new SimpleDateFormat("yyyy-MM-dd");
+		if (qcDateED.getText().toString() != null
+				&& !qcDateED.getText().toString().equals("")) {
+			DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
 			Date d;
 			try {
 				d = df.parse(qcDateED.getText().toString());
@@ -525,39 +520,47 @@ public class OrderView extends Activity {
 				e.printStackTrace();
 			}
 		}
-		
+
 		projectItem.setQcComment(itemOrderCommentED.getText().toString());
 		projectItem.setDescription(itemOrderDescriptionED.getText().toString());
-		projectItem.setQcStatus(GlobalHolder.getInstance().getQcStatusValue()[qcStatusSpinner.getSelectedItemPosition()]);
+		projectItem
+				.setQcStatus(GlobalHolder.getInstance().getQcStatusValue()[qcStatusSpinner
+						.getSelectedItemPosition()]);
 		projectItem.setQuantityChecked(qcCheckedED.getText().toString());
-		
+
 		ContentValues cv = new ContentValues();
-		cv.put(ContentDescriptor.ProjectOrderDesc.Cols.QC_COMMENT, projectItem.getQcComment());
-		cv.put(ContentDescriptor.ProjectOrderDesc.Cols.QC_STATUS, projectItem.getQcStatus());
-		cv.put(ContentDescriptor.ProjectOrderDesc.Cols.DATE_MODIFIED, qcDateED.getText().toString());
-		cv.put(ContentDescriptor.ProjectOrderDesc.Cols.QUANTITY_CHECKED, qcCheckedED.getText().toString());
+		cv.put(ContentDescriptor.ProjectOrderDesc.Cols.QC_COMMENT, projectItem
+				.getQcComment());
+		cv.put(ContentDescriptor.ProjectOrderDesc.Cols.QC_STATUS, projectItem
+				.getQcStatus());
+		cv.put(ContentDescriptor.ProjectOrderDesc.Cols.DATE_MODIFIED, qcDateED
+				.getText().toString());
+		cv.put(ContentDescriptor.ProjectOrderDesc.Cols.QUANTITY_CHECKED,
+				qcCheckedED.getText().toString());
 		int ret = this.getContentResolver().update(
-				ContentDescriptor.ProjectOrderDesc.CONTENT_URI, cv, ContentDescriptor.ProjectOrderDesc.Cols.ID+"=?", new String[]{projectItem.getnID()+""});
-		Log.i(Constants.TAG, " update order count:"+ret);
-		
-		if(ret > 0) {
+				ContentDescriptor.ProjectOrderDesc.CONTENT_URI, cv,
+				ContentDescriptor.ProjectOrderDesc.Cols.ID + "=?",
+				new String[] { projectItem.getnID() + "" });
+		Log.i(Constants.TAG, " update order count:" + ret);
+
+		if (ret > 0) {
 			ContentValues orderCV = new ContentValues();
 
 			orderCV.put(ContentDescriptor.UpdateDesc.Cols.TYPE,
 					ContentDescriptor.UpdateDesc.TYPE_ENUM_ORDER);
-			orderCV.put(ContentDescriptor.UpdateDesc.Cols.PRO_ID, projectItem.getProject().getId());
+			orderCV.put(ContentDescriptor.UpdateDesc.Cols.PRO_ID, projectItem
+					.getProject().getId());
 			orderCV.put(ContentDescriptor.UpdateDesc.Cols.PRO_ORDER_ID,
 					projectItem.getId());
 			orderCV.put(ContentDescriptor.UpdateDesc.Cols.RELATE_ID,
 					projectItem.getId());
-			orderCV.put(ContentDescriptor.UpdateDesc.Cols.FLAG, ContentDescriptor.UpdateDesc.TYPE_ENUM_FLAG_UPDATE);
+			orderCV.put(ContentDescriptor.UpdateDesc.Cols.FLAG,
+					ContentDescriptor.UpdateDesc.TYPE_ENUM_FLAG_UPDATE);
 			Uri uri = this.getContentResolver().insert(
 					ContentDescriptor.UpdateDesc.CONTENT_URI, orderCV);
 		}
-		
-	}
 
-	
+	}
 
 	class ItemView extends LinearLayout {
 
@@ -576,7 +579,7 @@ public class OrderView extends Activity {
 		private String id;
 
 		private Bitmap photo;
-		
+
 		private View parent;
 
 		public ItemView(Context context) {
@@ -609,34 +612,39 @@ public class OrderView extends Activity {
 
 		public void updateView(final ProjectCheckpoint pi) {
 			if (pi == null) {
-				Log.e(Constants.TAG,
-						" can't update view for order view ProjectItemOrder is null");
+				Log
+						.e(Constants.TAG,
+								" can't update view for order view ProjectItemOrder is null");
 				return;
 			}
 			id = pi.getId();
 			itemOrderCategoryCheckType.setText(pi.getCategoryLabel() + " > "
-					 + pi.getName()+" ( "+ pi.getCheckTypeLabel()+" )");
-			itemOrderDefectAlert.setText(
-					(pi.getQcStatusLabel()) + 
-					((pi.getNumberDefect() == null  ||  pi.getNumberDefect().equals("")) ? " " : (pi.getNumberDefect()+" defect "))+
-					(pi.getQcActionLable()));
+					+ pi.getName() + " ( " + pi.getCheckTypeLabel() + " )");
+			itemOrderDefectAlert.setText((pi.getQcStatusLabel())
+					+ ((pi.getNumberDefect() == null || pi.getNumberDefect()
+							.equals("")) ? " "
+							: (" : " + pi.getNumberDefect() + " defect "))
+					+ (pi.getQcActionLable()));
 			itemOrderQcComments.setText(pi.getQcComments() == null ? "" : pi
 					.getQcComments());
-			
+
 			if (pi.isCompleted()) {
-				//itemOperationIV.setImageResource(R.drawable.completed);
-				parent.setBackgroundColor(mContext.getResources().getColor(R.color.white_background));
+				// itemOperationIV.setImageResource(R.drawable.completed);
+				parent.setBackgroundColor(mContext.getResources().getColor(
+						R.color.white_background));
 			} else {
-				//itemOperationIV.setImageResource(R.drawable.missing);
-				parent.setBackgroundColor(mContext.getResources().getColor(R.color.checkpoint_incomplete_bg));
+				// itemOperationIV.setImageResource(R.drawable.missing);
+				parent.setBackgroundColor(mContext.getResources().getColor(
+						R.color.checkpoint_incomplete_bg));
 			}
-			
-			if(photo != null) {
+
+			if (photo != null) {
 				photo.recycle();
 			}
 			if (pi.getPhotoPath() != null && !pi.getPhotoPath().equals("")) {
-				
-				photo = Util.decodeFile(GlobalHolder.getInstance().getStoragePath()
+
+				photo = Util.decodeFile(GlobalHolder.getInstance()
+						.getStoragePath()
 						+ pi.getPhotoPath());
 				itemOperationIV.setImageBitmap(photo);
 			} else if (pi.getUploadPhotoAbsPath() != null
@@ -659,12 +667,12 @@ public class OrderView extends Activity {
 
 			});
 		}
-		
+
 		public void recycle() {
-			if(photo != null) {
+			if (photo != null) {
 				photo.recycle();
 			}
-			
+
 		}
 
 	}

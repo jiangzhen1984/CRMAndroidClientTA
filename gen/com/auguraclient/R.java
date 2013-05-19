@@ -33,6 +33,7 @@ public final class R {
         public static final int main_background=0x7f060000;
         public static final int menu_background=0x7f060010;
         public static final int order_background=0x7f06000c;
+        public static final int order_incomplete_bg=0x7f060014;
         public static final int project_background=0x7f06000b;
         public static final int red_background=0x7f060011;
         public static final int select_background=0x7f060012;

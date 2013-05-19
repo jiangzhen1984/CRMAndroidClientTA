@@ -30,7 +30,9 @@
      
      <color name="select_background">#d3d0fd</color>
      
-     <color name="checkpoint_incomplete_bg">#faf0f1</color>
+     <color name="checkpoint_incomplete_bg">#fa9d9d</color>
+     
+     <color name="order_incomplete_bg">#fa9d9d</color>
      
     
 </resources>

@@ -213,10 +213,13 @@ public class ProjectCheckpoint  extends AbstractModel  implements ProjectJSONPar
 	}
 	
 	public String getQcStatusLabel() {
+		if (qcStatus == null || qcStatus.equals("")) {
+			return " ";
+		}
 		for (int i = 0; i < GlobalHolder.getInstance().getQcStatus().length; i++) {
-			if (this.projectItem.getQcStatus().equals(
+			if (this.qcStatus.equals(
 					GlobalHolder.getInstance().getQcStatusValue()[i])) {
-				return GlobalHolder.getInstance().getQcStatusValue()[i];
+				return GlobalHolder.getInstance().getQcStatus()[i]+" ";
 			}
 		}
 		return " ";
@@ -245,7 +248,7 @@ public class ProjectCheckpoint  extends AbstractModel  implements ProjectJSONPar
 		for (int i = 0; i < GlobalHolder.getInstance().getQcActionValue().length; i++) {
 			if (this.qcAction.equals(
 					GlobalHolder.getInstance().getQcActionValue()[i])) {
-				return GlobalHolder.getInstance().getQcActionValue()[i];
+				return GlobalHolder.getInstance().getQcActionLabel()[i];
 			}
 		}
 		return " ";
