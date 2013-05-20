@@ -21,14 +21,14 @@
 		</activity>
 
 
-		<activity android:name=".view.LoginScreen" android:label="@string/app_name">
+<!-- 		<activity android:name=".view.LoginScreen" android:label="@string/app_name">
 			<intent-filter>
 				<action android:name="com.auguraclient.view.login" />
 				<category android:name="com.auguraclient.view" />
 				<category android:name="android.intent.category.DEFAULT" />
 			</intent-filter>
 		</activity>
-
+ -->
 		<activity android:name=".view.ProjectListScreen"
 			android:label="@string/app_name">
 			<intent-filter>
