@@ -21,6 +21,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
@@ -319,7 +320,7 @@ public class OrderView extends Activity {
 						int day) {
 					month += 1;
 					qcDateED.setText(year + "-"
-							+ (month < 10 ? "0" + month : month) + "-" + day);
+							+ (month < 10 ? "0" + month : month) + "-" + (day<10? ("0"+day):day));
 				}
 
 			});
@@ -641,6 +642,18 @@ public class OrderView extends Activity {
 							.equals("")) ? " "
 							: (" : " + pi.getNumberDefect() + " defect "))
 					+ (pi.getQcActionLable()));
+			if(GlobalHolder.getInstance().getQcStatusValue()[1].equals(pi.getQcStatus())) {
+				//set failed color
+				itemOrderDefectAlert.setTextColor(Color.RED);
+			}else if(GlobalHolder.getInstance().getQcStatusValue()[2].equals(pi.getQcStatus())) {
+				//set pass color
+				itemOrderDefectAlert.setTextColor(Color.GREEN);
+			}else if(GlobalHolder.getInstance().getQcStatusValue()[3].equals(pi.getQcStatus())) {
+				//set alert color
+				itemOrderDefectAlert.setTextColor(Color.YELLOW);
+			}
+			
+			
 			itemOrderQcComments.setText(pi.getQcComments() == null ? "" : pi
 					.getQcComments());
 

@@ -1,266 +1,386 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-	android:layout_width="fill_parent" android:layout_height="fill_parent"
-	android:orientation="vertical">
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:orientation="vertical" >
 
-	<RelativeLayout android:layout_width="fill_parent"
-		android:background="@color/title_background" android:layout_height="wrap_content">
+    <RelativeLayout
+        android:layout_width="fill_parent"
+        android:layout_height="50dp"
+        android:background="@color/title_background" >
 
-		<TextView android:id="@+id/update_checkpoint_header"
-			android:layout_width="wrap_content" android:layout_height="wrap_content"
-			android:layout_centerInParent="true" android:text="@string/title"
-			android:textColor="@color/font_color" android:textSize="20sp"
-			android:textStyle="bold" />
-		<TextView android:id="@+id/updateCheckpointReturn"
-			android:layout_width="wrap_content" android:layout_height="wrap_content"
-			android:layout_centerVertical="true" android:layout_marginLeft="10dip"
-			android:text="@string/return_sy" android:textColor="@color/font_color"
-			android:textSize="16sp" android:textStyle="bold" android:paddingLeft="5sp"
-			android:paddingRight="5sp" />
+        <TextView
+            android:id="@+id/update_checkpoint_header"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:text="@string/title"
+            android:textColor="@color/font_color"
+            android:textSize="24sp"
+            android:textStyle="bold" />
 
-		<ImageView android:id="@+id/showUpdateCheckpointMenu"
-			android:src="@drawable/menu" android:layout_width="wrap_content"
-			android:layout_height="wrap_content" android:layout_alignParentRight="true"
-			android:layout_alignParentTop="true" android:gravity="right" />
-	</RelativeLayout>
+        <TextView
+            android:id="@+id/updateCheckpointReturn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="10dip"
+            android:paddingLeft="5sp"
+            android:paddingRight="5sp"
+            android:text="@string/return_sy"
+            android:textColor="@color/font_color"
+            android:textSize="16sp"
+            android:textStyle="bold" />
 
+        <ImageView
+            android:id="@+id/showUpdateCheckpointMenu"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentTop="true"
+            android:gravity="right"
+            android:src="@drawable/menu" />
+    </RelativeLayout>
 
-	<ScrollView android:layout_width="fill_parent"
-		android:layout_height="fill_parent" android:layout_weight="1">
+    <ScrollView
+        android:layout_width="fill_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1" >
 
-		<LinearLayout android:layout_width="match_parent"
-			android:layout_height="wrap_content" android:gravity="top"
-			android:orientation="vertical">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="top"
+            android:orientation="vertical" >
 
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:background="@color/white_background"
+                android:focusable="true"
+                android:focusableInTouchMode="true"
+                android:gravity="center"
+                android:orientation="vertical"
+                android:paddingTop="10dip" >
 
-			<RelativeLayout android:layout_width="match_parent"
-				android:layout_height="0dp" android:layout_weight="1"
-				android:background="@color/white_background" android:gravity="center"
-				android:orientation="vertical" android:paddingTop="10dip">
+                <TextView
+                    android:id="@+id/catetoryTextView"
+                    android:layout_width="100dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="10dip"
+                    android:layout_marginTop="13dp"
+                    android:height="20dp"
+                    android:text="Category"
+                    android:textSize="16sp" >
+                </TextView>
 
-				<TextView android:id="@+id/catetoryTextView"
-					android:layout_width="100dp" android:layout_height="wrap_content"
-					android:layout_marginLeft="10dip" android:layout_marginTop="13dp"
-					android:height="20dp" android:text="Category" android:textSize="16sp">
-				</TextView>
+                <Spinner
+                    android:id="@+id/categoryEditText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="20dip"
+                    android:layout_marginRight="20dip"
+                    android:layout_marginTop="5dip"
+                    android:layout_toRightOf="@+id/catetoryTextView"
+                    android:anyDensity="true"
+                    android:background="@drawable/edit_text_background"
+                    android:gravity="center"
+                    android:textColor="@color/login_text_color"
+                    android:textSize="16sp" >
+                </Spinner>
 
-				<Spinner android:id="@+id/categoryEditText"
-					android:layout_width="wrap_content" android:layout_height="wrap_content"
-					android:layout_marginLeft="20dip" android:layout_marginRight="20dip"
-					android:layout_marginTop="5dip" android:layout_toRightOf="@+id/catetoryTextView"
-					android:gravity="center" android:textColor="@color/login_text_color"
-					android:textSize="16sp" android:background="@drawable/edit_text_background"
-					android:anyDensity="true" />
+                <TextView
+                    android:id="@+id/checkpointTextView"
+                    android:layout_width="100dp"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/catetoryTextView"
+                    android:layout_marginLeft="10dip"
+                    android:layout_marginTop="18dp"
+                    android:height="20dp"
+                    android:text="Checktype"
+                    android:textSize="16sp" >
+                </TextView>
 
-				<!--
-					<EditText android:id="@+id/categoryEditText"
-					android:layout_width="wrap_content"
-					android:layout_height="wrap_content"
-					android:layout_marginLeft="20dip"
-					android:layout_marginRight="20dip" android:layout_marginTop="5dip"
-					android:layout_toRightOf="@+id/catetoryTextView"
-					android:background="@drawable/login_screen_button"
-					android:gravity="center" android:height="20dp"
-					android:inputType="text" android:text="android"
-					android:textColor="@color/login_text_color" android:textSize="12sp"
-					/>
-				-->
+                <Spinner
+                    android:id="@+id/checkpointEditText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/categoryEditText"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginLeft="21dip"
+                    android:layout_marginRight="20dip"
+                    android:layout_marginTop="5dip"
+                    android:layout_toRightOf="@+id/checkpointTextView"
+                    android:background="@drawable/edit_text_background"
+                    android:gravity="center"
+                    android:textSize="16sp" />
 
-				<TextView android:id="@+id/checkpointTextView"
-					android:layout_width="100dp" android:layout_height="wrap_content"
-					android:layout_below="@+id/catetoryTextView"
-					android:layout_marginLeft="10dip" android:layout_marginTop="18dp"
-					android:height="20dp" android:text="Checktype" android:textSize="16sp">
-				</TextView>
+                <TextView
+                    android:id="@+id/nameTextView"
+                    android:layout_width="100dp"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/checkpointTextView"
+                    android:layout_marginLeft="10dip"
+                    android:layout_marginTop="18dip"
+                    android:height="20dp"
+                    android:text="Name"
+                    android:textSize="16sp" >
+                </TextView>
 
-				<Spinner android:id="@+id/checkpointEditText"
-					android:layout_width="wrap_content" android:layout_height="wrap_content"
-					android:layout_below="@+id/categoryEditText"
-					android:layout_centerHorizontal="true" android:layout_marginLeft="21dip"
-					android:layout_marginRight="20dip" android:layout_marginTop="5dip"
-					android:layout_toRightOf="@+id/checkpointTextView"
-					android:background="@drawable/edit_text_background"
-					android:gravity="center" android:textSize="16sp" />
-				<!--
-					<EditText android:id="@+id/checkpointEditText"
-					android:layout_width="wrap_content"
-					android:layout_height="wrap_content"
-					android:layout_below="@+id/categoryEditText"
-					android:layout_centerHorizontal="true"
-					android:layout_marginLeft="22dip"
-					android:layout_marginRight="20dip" android:layout_marginTop="5dip"
-					android:layout_toRightOf="@+id/checkpointTextView"
-					android:background="@drawable/login_screen_button"
-					android:gravity="center" android:inputType="text"
-					android:text="android" android:textColor="@color/login_text_color"
-					android:textSize="12sp" />
-				-->
+                <EditText
+                    android:id="@+id/nameEditText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/checkpointEditText"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginLeft="21dp"
+                    android:layout_marginRight="20dip"
+                    android:layout_marginTop="5dip"
+                    android:layout_toRightOf="@+id/checkpointTextView"
+                    android:background="@drawable/edit_text_background"
+                    android:gravity="left|center"
+                    android:inputType="text"
+                    android:textSize="16sp" />
 
-				<TextView android:id="@+id/nameTextView"
-					android:layout_width="100dp" android:layout_height="wrap_content"
-					android:layout_below="@+id/checkpointTextView"
-					android:layout_marginLeft="10dip" android:layout_marginTop="18dip"
-					android:height="20dp" android:text="Name" android:textSize="16sp">
-				</TextView>
+                <TextView
+                    android:id="@+id/detailTextView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/nameTextView"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginTop="18dip"
+                    android:text="Detail"
+                    android:textSize="16sp" >
+                </TextView>
 
-				<EditText android:id="@+id/nameEditText"
-					android:layout_width="wrap_content" android:layout_height="wrap_content"
-					android:layout_below="@+id/checkpointEditText"
-					android:layout_centerHorizontal="true" android:layout_marginLeft="21dp"
-					android:layout_marginRight="20dip" android:layout_marginTop="5dip"
-					android:layout_toRightOf="@+id/checkpointTextView"
-					android:background="@drawable/edit_text_background"
-					android:gravity="left|center" android:inputType="text"
-					android:text="android" android:textSize="16sp" />
+                <EditText
+                    android:id="@+id/detailEditText"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/detailTextView"
+                    android:layout_marginLeft="10dip"
+                    android:layout_marginRight="10dip"
+                    android:layout_marginTop="5dip"
+                    android:background="@drawable/edit_text_background"
+                    android:gravity="top|left"
+                    android:inputType="text|textMultiLine"
+                    android:minLines="4"
+                    android:text="android"
+                    android:textSize="16sp" />
 
-				<TextView android:id="@+id/detailTextView"
-					android:layout_width="wrap_content" android:layout_height="wrap_content"
-					android:layout_below="@+id/nameTextView" android:layout_marginLeft="10dp"
-					android:layout_marginTop="18dip" android:text="Detail"
-					android:textSize="16sp">
-				</TextView>
+                <ImageView
+                    android:id="@+id/checkpointPhoto"
+                    android:layout_width="150dp"
+                    android:layout_height="150dp"
+                    android:layout_below="@+id/detailEditText"
+                    android:layout_centerInParent="true"
+                    android:layout_margin="10dip"
+                    android:src="@drawable/logo_asiaction" />
 
-				<EditText android:id="@+id/detailEditText"
-					android:layout_width="fill_parent" android:layout_height="wrap_content"
-					android:layout_below="@+id/detailTextView"
-					android:layout_marginLeft="10dip" android:layout_marginRight="10dip"
-					android:layout_marginTop="5dip" android:gravity="top|left"
-					android:inputType="text|textMultiLine" android:background="@drawable/edit_text_background"
-					android:minLines="4" android:text="android" android:textSize="16sp" />
+                <TextView
+                    android:id="@+id/selectPhoto"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/checkpointPhoto"
+                    android:layout_centerHorizontal="true"
+                    android:layout_centerInParent="true"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginTop="10dip"
+                    android:background="@color/login_text_color"
+                    android:paddingBottom="8sp"
+                    android:paddingLeft="5sp"
+                    android:paddingRight="5sp"
+                    android:paddingTop="8sp"
+                    android:text="@string/select_photo"
+                    android:textSize="16sp" >
+                </TextView>
 
+                <TextView
+                    android:id="@+id/qcDefectTextView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/selectPhoto"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginTop="10dip"
+                    android:text="Quantity Defect"
+                    android:textSize="16sp" >
+                </TextView>
 
+                <EditText
+                    android:id="@+id/qcDefectEditText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/selectPhoto"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginLeft="20dip"
+                    android:layout_marginRight="30dip"
+                    android:layout_marginTop="5dip"
+                    android:layout_toRightOf="@+id/qcDefectTextView"
+                    android:background="@drawable/edit_text_background"
+                    android:gravity="center|left"
+                    android:inputType="number"
+                    android:textSize="16sp" />
 
-				<ImageView android:id="@+id/checkpointPhoto"
-					android:layout_width="150dp" android:layout_height="150dp"
-					android:layout_below="@+id/detailEditText"
-					android:layout_centerInParent="true" android:layout_margin="10dip"
-					android:src="@drawable/logo_asiaction" />
+                <TextView
+                    android:id="@+id/tvStatus"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/qcDefectEditText"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginTop="15dip"
+                    android:text="QC status"
+                    android:textSize="16sp" >
+                </TextView>
 
-				<TextView android:id="@+id/selectPhoto"
-					android:layout_width="wrap_content" android:layout_height="wrap_content"
-					android:layout_below="@+id/checkpointPhoto"
-					android:layout_centerHorizontal="true" android:background="@color/login_text_color"
-					android:layout_centerInParent="true" android:layout_marginLeft="10dp"
-					android:layout_marginTop="10dip" android:text="@string/select_photo"
-					android:textSize="16sp" android:paddingTop="8sp"
-					android:paddingLeft="5sp" android:paddingRight="5sp"
-					android:paddingBottom="8sp">
-				</TextView>
+                <LinearLayout
+                    android:id="@+id/statusLin"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/qcDefectEditText"
+                    android:layout_marginTop="15dip"
+                    android:layout_toRightOf="@+id/tvStatus"
+                    android:baselineAligned="false"
+                    android:gravity="center_vertical|center_horizontal"
+                    android:orientation="horizontal" >
 
-				<TextView android:id="@+id/qcDefectTextView"
-					android:layout_width="wrap_content" android:layout_height="wrap_content"
-					android:layout_below="@+id/selectPhoto" android:layout_marginLeft="10dp"
-					android:layout_marginTop="10dip" android:text="Quantity Defect"
-					android:textSize="16sp">
-				</TextView>
+                    <TextView
+                        android:id="@+id/acStatusEEmpty"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_marginLeft="10dp"
+                        android:background="@color/content_background"
+                        android:text="      "
+                        android:textSize="16sp" >
+                    </TextView>
 
-				<EditText android:id="@+id/qcDefectEditText"
-					android:layout_width="wrap_content" android:layout_height="wrap_content"
-					android:layout_below="@+id/selectPhoto"
-					android:layout_centerHorizontal="true" android:layout_marginLeft="20dip"
-					android:layout_marginRight="30dip" android:layout_marginTop="5dip"
-					android:layout_toRightOf="@+id/qcDefectTextView"
-					android:background="@drawable/edit_text_background"
-					android:gravity="center|left" android:inputType="number"
-					android:textSize="16sp" />
+                    <TextView
+                        android:id="@+id/acStatusEFailed"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_marginLeft="10dp"
+                        android:background="@color/content_background"
+                        android:text="Failed"
+                        android:textSize="16sp" >
+                    </TextView>
 
-				<TextView android:id="@+id/tvStatus" android:layout_width="wrap_content"
-					android:layout_height="wrap_content" android:layout_below="@+id/qcDefectEditText"
-					android:layout_marginLeft="10dp" android:layout_marginTop="15dip"
-					android:text="QC status" android:textSize="16sp">
-				</TextView>
+                    <TextView
+                        android:id="@+id/tvStatusEAlert"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_marginLeft="10dp"
+                        android:background="@color/content_background"
+                        android:text="Alert"
+                        android:textSize="16sp" >
+                    </TextView>
 
-				<LinearLayout android:id="@+id/statusLin"
-					android:layout_width="match_parent" android:layout_height="wrap_content"
-					android:layout_below="@+id/qcDefectEditText"
-					android:layout_marginTop="15dip" android:layout_toRightOf="@+id/tvStatus"
-					android:baselineAligned="false" android:gravity="center_vertical|center_horizontal"
-					android:orientation="horizontal">
+                    <TextView
+                        android:id="@+id/tvStatusEPassed"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_marginLeft="10dp"
+                        android:background="@color/content_background"
+                        android:text="Passed"
+                        android:textSize="16sp" >
+                    </TextView>
 
-					<TextView android:id="@+id/acStatusEEmpty"
-						android:layout_width="wrap_content" android:layout_height="match_parent"
-						android:layout_marginLeft="10dp" android:text="      "
-						android:textSize="16sp" android:background="@color/content_background">
-					</TextView>
-					<TextView android:id="@+id/acStatusEFailed"
-						android:layout_width="wrap_content" android:layout_height="match_parent"
-						android:layout_marginLeft="10dp" android:background="@color/content_background"
-						android:text="Failed" android:textSize="16sp">
-					</TextView>
+                    <TextView
+                        android:id="@+id/tvStatusEReady"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_marginLeft="10dp"
+                        android:background="@color/content_background"
+                        android:text="Ready"
+                        android:textSize="16sp" >
+                    </TextView>
+                </LinearLayout>
 
-					<TextView android:id="@+id/tvStatusEAlert"
-						android:layout_width="wrap_content" android:layout_height="match_parent"
-						android:background="@color/content_background"
-						android:layout_marginLeft="10dp" android:text="Alert"
-						android:textSize="16sp">
-					</TextView>
+                <TextView
+                    android:id="@+id/tvAction"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_below="@+id/statusLin"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginTop="20dip"
+                    android:text="Action"
+                    android:textSize="16sp" >
+                </TextView>
 
-					<TextView android:id="@+id/tvStatusEPassed"
-						android:layout_width="wrap_content" android:layout_height="match_parent"
-						android:background="@color/content_background"
-						android:layout_marginLeft="10dp" android:text="Passed"
-						android:textSize="16sp">
-					</TextView>
+                <LinearLayout
+                    android:id="@+id/qcActionLin"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/statusLin"
+                    android:layout_marginBottom="10dip"
+                    android:layout_marginTop="15dip"
+                    android:layout_toRightOf="@+id/tvAction"
+                    android:baselineAligned="false"
+                    android:gravity="center_vertical|center_horizontal"
+                    android:orientation="horizontal" >
 
-					<TextView android:id="@+id/tvStatusEReady"
-						android:layout_width="wrap_content" android:layout_height="match_parent"
-						android:layout_marginLeft="10dp" android:background="@color/content_background"
-						android:text="Ready" android:textSize="16sp">
-					</TextView>
-				</LinearLayout>
+                    <Spinner
+                        android:id="@+id/qcActionSpinner"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_marginLeft="20dip"
+                        android:layout_marginRight="20dip"
+                        android:background="@drawable/edit_text_background"
+                        android:gravity="center"
+                        android:height="20dp"
+                        android:textColor="@color/login_text_color"
+                        android:textSize="16sp" />
+                </LinearLayout>
 
-				<TextView android:id="@+id/tvAction" android:layout_width="wrap_content"
-					android:layout_below="@+id/statusLin" android:text="Action"
-					android:textSize="16sp" android:layout_height="match_parent"
-					android:layout_marginLeft="10dp" android:layout_marginTop="20dip">
-				</TextView>
+                <TextView
+                    android:id="@+id/qcCommentTextView"
+                    android:layout_width="110dp"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/qcActionLin"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginTop="10dip"
+                    android:text="QC Comment"
+                    android:textSize="16sp" >
+                </TextView>
 
-				<LinearLayout android:id="@+id/qcActionLin"
-					android:layout_width="match_parent" android:layout_height="wrap_content"
-					android:layout_below="@+id/statusLin" android:layout_marginBottom="10dip"
-					android:layout_marginTop="15dip" android:layout_toRightOf="@+id/tvAction"
-					android:baselineAligned="false" android:gravity="center_vertical|center_horizontal"
-					android:orientation="horizontal">
+                <EditText
+                    android:id="@+id/qcCommentEditText"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/qcCommentTextView"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginBottom="5dp"
+                    android:layout_marginLeft="10dip"
+                    android:layout_marginRight="10dip"
+                    android:layout_marginTop="5dip"
+                    android:background="@drawable/edit_text_background"
+                    android:gravity="top|left"
+                    android:inputType="textMultiLine|text"
+                    android:minLines="8"
+                    android:text="android"
+                    android:textSize="16sp" />
+            </RelativeLayout>
 
-					<Spinner android:id="@+id/qcActionSpinner"
-						android:layout_width="wrap_content" android:layout_height="wrap_content"
-						android:layout_gravity="center" android:layout_marginLeft="20dip"
-						android:layout_marginRight="20dip" android:gravity="center"
-						android:height="20dp" android:textColor="@color/login_text_color"
-						android:background="@drawable/edit_text_background"
-						android:textSize="16sp" />
+            <LinearLayout
+                android:id="@+id/bottom_tab_add_or_update_checkpoint_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:layout_weight="1"
+                android:background="@color/add_project_background"
+                android:gravity="center"
+                android:visibility="invisible" >
 
-				</LinearLayout>
+                <TextView
+                    android:id="@+id/bottom_tab_add_or_update_checkpoint"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:padding="4dp"
+                    android:textColor="@color/selected_tab"
+                    android:textSize="24sp"
+                    android:textStyle="bold" />
+            </LinearLayout>
+        </LinearLayout>
+    </ScrollView>
 
-				<TextView android:id="@+id/qcCommentTextView"
-					android:layout_width="110dp" android:layout_height="wrap_content"
-					android:layout_below="@+id/qcActionLin" android:layout_marginLeft="10dp"
-					android:layout_marginTop="10dip" android:text="QC Comment"
-					android:textSize="16sp">
-				</TextView>
-
-				<EditText android:id="@+id/qcCommentEditText"
-					android:layout_width="match_parent" android:layout_height="wrap_content"
-					android:layout_below="@+id/qcCommentTextView"
-					android:layout_centerHorizontal="true" android:layout_marginBottom="5dp"
-					android:layout_marginLeft="10dip" android:background="@drawable/edit_text_background"
-					android:layout_marginRight="10dip" android:layout_marginTop="5dip"
-					android:gravity="top|left" android:inputType="textMultiLine|text"
-					android:minLines="8" android:text="android" android:textSize="16sp" />
-			</RelativeLayout>
-
-			<LinearLayout android:id="@+id/bottom_tab_add_or_update_checkpoint_layout"
-				android:layout_width="match_parent" android:layout_height="wrap_content"
-				android:layout_marginTop="10dp" android:layout_weight="1"
-				android:background="@color/add_project_background" android:gravity="center"
-				android:visibility="invisible">
-
-				<TextView android:id="@+id/bottom_tab_add_or_update_checkpoint"
-					android:layout_width="wrap_content" android:layout_height="wrap_content"
-					android:padding="4dp" android:textColor="@color/selected_tab"
-					android:textSize="24dp" android:textStyle="bold" />
-			</LinearLayout>
-		</LinearLayout>
-
-	</ScrollView>
 </LinearLayout>

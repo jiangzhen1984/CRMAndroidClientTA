@@ -19,7 +19,7 @@ import com.auguraclient.util.Constants;
 import com.auguraclient.util.GlobalHolder;
 import com.auguraclient.util.Util;
 
-public class ProjectOrder  extends AbstractModel implements ProjectJSONParser, Serializable {
+public class ProjectOrder  extends AbstractModel implements ProjectJSONParser, Serializable, Comparable<ProjectOrder>  {
 
 	/**
      *
@@ -84,6 +84,12 @@ public class ProjectOrder  extends AbstractModel implements ProjectJSONParser, S
 
 			this.quantityChecked = ((JSONObject) NameValue
 					.get("quantity_checked")).getString("value");
+			
+			this.description = ((JSONObject) NameValue
+					.get("description")).getString("value");
+			
+			this.qcComment = ((JSONObject) NameValue
+					.get("qc_comment")).getString("value");
 
 			String lastDate = ((JSONObject) NameValue.get("date_modified"))
 					.getString("value");
@@ -362,4 +368,40 @@ public class ProjectOrder  extends AbstractModel implements ProjectJSONParser, S
 	public JSONArray toJSONArray() throws JSONParserException {
 		return null;
 	}
+
+	@Override
+	public int compareTo(ProjectOrder po) {
+		if(po == null || po.getName() == null ||po.getName().equals("")) {
+			return 1;
+		} else if(this.name == null || this.name.equals("")) {
+			return -1;
+		} else {
+			return compare(this.name.toCharArray(), po.getName().toCharArray());
+		}
+	}
+	
+	
+	private int compare(char[] oldC, char[] newC) {
+		int i= 0;
+		int j=0;
+		for(; i<newC.length && j <oldC.length; i++, j++) {
+			if(newC[i] == oldC[j]) {
+				continue;
+			} else if(newC[i] < oldC[j]) {
+				return 1;
+			} else {
+				return -1;
+			}
+		}
+		
+		if(i == newC.length) {
+			return 1;
+		} else if(j == oldC.length) {
+			return -1;
+		}
+		
+		return 0;
+	}
+	
+	
 }

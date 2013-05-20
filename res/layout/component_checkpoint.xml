@@ -25,7 +25,7 @@
         android:layout_marginTop="10dip"
         android:layout_toRightOf="@+id/projectItemOrderPhoto"
         android:text="temOrderCategoryCheckType"
-        android:textSize="10sp"
+        android:textSize="16sp"
         android:textStyle="bold" />
    
    
@@ -38,7 +38,7 @@
         android:layout_toRightOf="@+id/projectItemOrderPhoto"
         android:layout_marginLeft="7dip"
         android:text="mOrderDefectAlert"
-        android:textSize="10sp"
+        android:textSize="16sp"
         android:textStyle="bold" />
         
         
@@ -51,7 +51,7 @@
         android:layout_toRightOf="@+id/projectItemOrderPhoto"
         android:layout_marginLeft="7dip"
         android:text="OrderQcComments11"
-        android:textSize="8sp"
+        android:textSize="16sp"
         android:textStyle="bold" />
    
     

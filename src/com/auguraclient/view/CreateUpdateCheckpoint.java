@@ -167,11 +167,8 @@ public class CreateUpdateCheckpoint extends Activity implements
 	@Override
 	protected void onResume() {
 		super.onResume();
-		
-		// categoryEditText.setText(projectCheckpoint.getCategory());
-		// checkpointEditText.setText(projectCheckpoint.getCheckType());
-		if(projectCheckpoint != null && projectCheckpoint.getProjectItem()!=null && projectCheckpoint.getProjectItem().getProject() !=null) {
-			headerTV.setText(projectCheckpoint.getProjectItem().getProject().getName());
+		if(projectCheckpoint != null && projectCheckpoint.getProjectItem()!=null) {
+			headerTV.setText(projectCheckpoint.getProjectItem().getName());
 		}
 		nameEditText.setText(projectCheckpoint.getName());
 		detailEditText.setText(projectCheckpoint.getDescription());
@@ -269,10 +266,6 @@ public class CreateUpdateCheckpoint extends Activity implements
 
 	@Override
 	public void onBackPressed() {
-		Intent i = new Intent();
-		if (projectCheckpoint.getId() != null)
-			i.putExtra("checkpoint", projectCheckpoint.getId());
-		setResult(4, i);
 		recordData();
 		try {
 			submit();
@@ -284,6 +277,10 @@ public class CreateUpdateCheckpoint extends Activity implements
 			e.printStackTrace();
 		}
 		super.onBackPressed();
+		Intent i = new Intent();
+		if (projectCheckpoint.getId() != null)
+			i.putExtra("checkpoint", projectCheckpoint.getId());
+		setResult(4, i);
 		finish();
 	}
 
@@ -701,7 +698,7 @@ public class CreateUpdateCheckpoint extends Activity implements
 
 				// photo = (Bitmap) data.getExtras().get("data");
 				ByteArrayOutputStream bytes = new ByteArrayOutputStream();
-				photo.compress(Bitmap.CompressFormat.JPEG, 80, bytes);
+				photo.compress(Bitmap.CompressFormat.JPEG, 100, bytes);
 
 				Random randomGenerator = new Random();
 				String newimagename = randomGenerator.nextInt() + ".jpg";

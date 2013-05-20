@@ -95,7 +95,12 @@ public class Project extends AbstractModel implements ProjectJSONParser,Serializ
     }
 
 
-    public int getOrderCount() {
+    public List<ProjectOrder> getProjectOrderList() {
+		return projectOrderList;
+	}
+
+
+	public int getOrderCount() {
         return projectOrderList.size();
     }
 

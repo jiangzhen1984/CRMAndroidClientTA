@@ -159,6 +159,7 @@ public class AuguraRestAPIImpl implements IAuguraRestAPI {
 			selectFields.put("qc_comment");
 			selectFields.put("date_modified");
 			selectFields.put("quantity");
+			selectFields.put("description");
 			restData.put("related_fields", selectFields);
 			restData.put("deleted", "0");
 			Log.i(Constants.TAG, restData.toString());

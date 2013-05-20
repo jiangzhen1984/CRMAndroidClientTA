@@ -196,7 +196,7 @@ public class LogoView extends Activity {
 			loadCheckpointFromDB(po);
 			po.setLoadedCheckpointFromDB(true);
 		}
-
+		Collections.sort(p.getProjectOrderList());
 		p.setLoadOrderFromDB(true);
 		c.close();
 
