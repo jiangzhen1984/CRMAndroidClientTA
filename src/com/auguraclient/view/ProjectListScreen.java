@@ -93,13 +93,13 @@ public class ProjectListScreen extends Activity {
 		addProjectLayout.setOnClickListener(addProjectListener);
 		showMenuButton = (ImageView) findViewById(R.id.imgShowMenu);
 
-		
 		showMenuButton.setOnClickListener(new OnClickListener() {
 
 			public void onClick(View arg0) {
 				PopupMenu popupMenu = new PopupMenu(context, showMenuButton);
 				popupMenu.getMenuInflater().inflate(
-						R.layout.menu_item_project_list_title, popupMenu.getMenu());
+						R.layout.menu_item_project_list_title,
+						popupMenu.getMenu());
 				popupMenu
 						.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
 
@@ -184,7 +184,6 @@ public class ProjectListScreen extends Activity {
 				}
 				Editor ed = sp.edit();
 
-				
 				ed.putString(Constants.SaveConfig.USER_NAME, etName.getText()
 						.toString());
 				ed.putString(Constants.SaveConfig.PASSWORD, etPwd.getText()
@@ -283,13 +282,17 @@ public class ProjectListScreen extends Activity {
 	private void doSync(Project p) throws APIException, SessionAPIException,
 			Exception {
 		Cursor c = null;
-		try {
-			c = this.getContentResolver().query(
-					ContentDescriptor.UpdateDesc.CONTENT_URI,
-					ContentDescriptor.UpdateDesc.Cols.ALL_COLS,
-					ContentDescriptor.UpdateDesc.Cols.PRO_ID + "=?",
-					new String[] { p.getId() }, null);
-			while (c.moveToNext()) {
+		boolean finishUpdate = true;
+		c = this.getContentResolver().query(
+				ContentDescriptor.UpdateDesc.CONTENT_URI,
+				ContentDescriptor.UpdateDesc.Cols.ALL_COLS,
+				ContentDescriptor.UpdateDesc.Cols.PRO_ID + "=?",
+				new String[] { p.getId() }, null);
+		while (c.moveToNext()) {
+			try {
+				String id = c
+						.getString(c
+								.getColumnIndex(ContentDescriptor.UpdateDesc.Cols.ID));
 				String relatedId = c
 						.getString(c
 								.getColumnIndex(ContentDescriptor.UpdateDesc.Cols.RELATE_ID));
@@ -394,21 +397,30 @@ public class ProjectListScreen extends Activity {
 				} else {
 					Log.e(Constants.TAG, "Incorrect type:" + flag);
 				}
-			}
-		} catch (APIException e) {
-			throw e;
-		} catch (SessionAPIException e) {
-			throw e;
-		} finally {
-			if (c != null)
-				c.close();
-		}
-		
-		this.moduleApi.deleteFromDB(UpdateRecord.class,
-				ContentDescriptor.UpdateDesc.Cols.PRO_ID + "=?",
-				new String[] { p.getId() });
+				
+				
+				this.moduleApi.deleteFromDB(UpdateRecord.class,
+						ContentDescriptor.UpdateDesc.Cols.ID + "=?",
+						new String[] {id });
 
-		p.setNeededUpdate(false);
+			} catch (APIException e) {
+				Log.e(Constants.TAG, "error:" + e.getMessage());
+				finishUpdate = false;
+			} catch (SessionAPIException e) {
+				Log.e(Constants.TAG, "Session error:" + e.getMessage());
+				finishUpdate = false;
+			} finally {
+
+			}
+		}
+
+		if (c != null)
+			c.close();
+		if (finishUpdate) {
+			p.setNeededUpdate(false);
+		} else {
+			//TODO show no update record
+		}
 	}
 
 	private ProgressDialog dialog;
@@ -580,8 +592,8 @@ public class ProjectListScreen extends Activity {
 		}
 
 		public int getCount() {
-			return GlobalHolder.getInstance().getPl() == null ? 0 : GlobalHolder.getInstance().getPl()
-					.getResultCount();
+			return GlobalHolder.getInstance().getPl() == null ? 0
+					: GlobalHolder.getInstance().getPl().getResultCount();
 		}
 
 		public Object getItem(int position) {
@@ -595,7 +607,8 @@ public class ProjectListScreen extends Activity {
 		public View getView(int position, View convertView, ViewGroup parent) {
 			if (convertView == null) {
 				ItemView appView = new ItemView(context);
-				appView.updateView(GlobalHolder.getInstance().getProject(position));
+				appView.updateView(GlobalHolder.getInstance().getProject(
+						position));
 				convertView = appView;
 			} else {
 				((ItemView) convertView).updateView(GlobalHolder.getInstance()
@@ -637,7 +650,8 @@ public class ProjectListScreen extends Activity {
 				public void onClick(View v) {
 					Intent i = new Intent();
 					i.setClass(context, ProjectOrderListView.class);
-					i.putExtra("project", GlobalHolder.getInstance().getIndex(p));
+					i.putExtra("project", GlobalHolder.getInstance()
+							.getIndex(p));
 					context.startActivity(i);
 				}
 

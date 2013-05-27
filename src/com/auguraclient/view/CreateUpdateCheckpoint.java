@@ -698,7 +698,7 @@ public class CreateUpdateCheckpoint extends Activity implements
 
 				// photo = (Bitmap) data.getExtras().get("data");
 				ByteArrayOutputStream bytes = new ByteArrayOutputStream();
-				photo.compress(Bitmap.CompressFormat.JPEG, 100, bytes);
+				photo.compress(Bitmap.CompressFormat.JPEG, 95, bytes);
 
 				Random randomGenerator = new Random();
 				String newimagename = randomGenerator.nextInt() + ".jpg";
