@@ -299,6 +299,10 @@ public class ProjectListScreen extends Activity {
 				String orderId = c
 						.getString(c
 								.getColumnIndex(ContentDescriptor.UpdateDesc.Cols.PRO_ORDER_ID));
+				
+				String proId = c
+				.getString(c
+						.getColumnIndex(ContentDescriptor.UpdateDesc.Cols.PRO_ID));
 				String flag = c
 						.getString(c
 								.getColumnIndex(ContentDescriptor.UpdateDesc.Cols.FLAG));
@@ -348,6 +352,12 @@ public class ProjectListScreen extends Activity {
 						api.updateOrder(po);
 					}
 
+					
+					
+					int i = this.moduleApi.deleteFromDB(UpdateRecord.class,
+							ContentDescriptor.UpdateDesc.Cols.ID + "=? ",
+							new String[] {id });
+					
 					// TODO update order
 					continue;
 				}
@@ -399,9 +409,10 @@ public class ProjectListScreen extends Activity {
 				}
 				
 				
-				this.moduleApi.deleteFromDB(UpdateRecord.class,
-						ContentDescriptor.UpdateDesc.Cols.ID + "=?",
+				int i = this.moduleApi.deleteFromDB(UpdateRecord.class,
+						ContentDescriptor.UpdateDesc.Cols.ID + "=? "  ,
 						new String[] {id });
+				System.out.println("==222====333========="+id+"   "+i);
 
 			} catch (APIException e) {
 				Log.e(Constants.TAG, "error:" + e.getMessage());
